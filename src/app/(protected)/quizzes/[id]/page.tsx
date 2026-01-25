@@ -27,10 +27,12 @@ import type { QuizResult } from "@/lib/demo-storage";
 
 export default function QuizPage() {
   const params = useParams();
-  const id = Number(params?.id);
+  const idParam = params?.id;
+  const id = Number(Array.isArray(idParam) ? idParam[0] : idParam);
   const quiz = getQuizById(id);
   const questions = getQuestionsByQuizId(id);
   const moduleData = quiz ? getModuleById(quiz.moduleId) : undefined;
+  const moduleHref = moduleData ? `/modules/${moduleData.id}` : "/subjects";
   const { user } = useAuth();
   const { results, recordResult } = useDemoQuizResults(user?.id);
 
@@ -52,6 +54,19 @@ export default function QuizPage() {
       <Card>
         <CardContent>
           <Typography variant="h6">Quiz not found</Typography>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (questions.length === 0) {
+    return (
+      <Card>
+        <CardContent>
+          <Typography variant="h6">No questions available</Typography>
+          <Typography color="text.secondary">
+            This quiz does not have any questions yet.
+          </Typography>
         </CardContent>
       </Card>
     );
@@ -117,12 +132,7 @@ export default function QuizPage() {
             </Typography>
             <Typography color="text.secondary">{result.feedback}</Typography>
             <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-              <Button
-                component={Link}
-                href={`/modules/${moduleData?.id ?? ""}`}
-                variant="contained"
-                fullWidth
-              >
+              <Button component={Link} href={moduleHref} variant="contained" fullWidth>
                 Back to module
               </Button>
               <Button

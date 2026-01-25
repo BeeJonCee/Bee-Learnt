@@ -12,6 +12,7 @@ import {
   Typography,
 } from "@mui/material";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import EventIcon from "@mui/icons-material/Event";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import QueryStatsIcon from "@mui/icons-material/QueryStats";
 import SchoolIcon from "@mui/icons-material/School";
@@ -21,6 +22,7 @@ import AiTutorWidget from "@/components/AiTutorWidget";
 import { useAuth } from "@/providers/AuthProvider";
 import { useDemoProgress } from "@/hooks/useDemoProgress";
 import { useDemoQuizResults } from "@/hooks/useDemoQuizResults";
+import { useDemoAssignments } from "@/hooks/useDemoAssignments";
 
 const chartData = [
   { day: "Mon", score: 62 },
@@ -34,6 +36,7 @@ export default function StudentDashboardPage() {
   const { user } = useAuth();
   const { completedCount, recentProgress } = useDemoProgress(user?.id);
   const { stats } = useDemoQuizResults(user?.id);
+  const { summary } = useDemoAssignments(user?.id);
 
   return (
     <Stack spacing={4}>
@@ -53,19 +56,24 @@ export default function StudentDashboardPage() {
             Ready to continue learning?
           </Typography>
         </Box>
-        <Button
-          component={Link}
-          href="/subjects"
-          variant="contained"
-          size="large"
-          endIcon={<ArrowForwardIcon />}
-        >
-          Explore subjects
-        </Button>
+        <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5}>
+          <Button
+            component={Link}
+            href="/subjects"
+            variant="contained"
+            size="large"
+            endIcon={<ArrowForwardIcon />}
+          >
+            Explore subjects
+          </Button>
+          <Button component={Link} href="/assignments" variant="outlined" size="large">
+            View assignments
+          </Button>
+        </Stack>
       </Stack>
 
       <Grid container spacing={3}>
-        <Grid item xs={12} md={4}>
+        <Grid item xs={12} md={3}>
           <StatCard
             label="Lessons completed"
             value={`${completedCount}`}
@@ -73,7 +81,7 @@ export default function StudentDashboardPage() {
             accent="#f6c945"
           />
         </Grid>
-        <Grid item xs={12} md={4}>
+        <Grid item xs={12} md={3}>
           <StatCard
             label="Quiz average"
             value={`${stats.averageScore}%`}
@@ -81,12 +89,20 @@ export default function StudentDashboardPage() {
             accent="#5bc0eb"
           />
         </Grid>
-        <Grid item xs={12} md={4}>
+        <Grid item xs={12} md={3}>
           <StatCard
             label="Hours learned"
             value="12.5"
             icon={TimerIcon}
-            accent="#a78bfa"
+            accent="#f97316"
+          />
+        </Grid>
+        <Grid item xs={12} md={3}>
+          <StatCard
+            label="Assignments due soon"
+            value={`${summary.dueSoon}`}
+            icon={EventIcon}
+            accent="#ef5350"
           />
         </Grid>
       </Grid>

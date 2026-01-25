@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { type ReactNode, useMemo, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -22,12 +22,18 @@ import {
   useTheme,
 } from "@mui/material";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
+import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
+import Brightness4Icon from "@mui/icons-material/Brightness4";
+import Brightness7Icon from "@mui/icons-material/Brightness7";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import GroupIcon from "@mui/icons-material/Group";
 import LogoutIcon from "@mui/icons-material/Logout";
 import MenuIcon from "@mui/icons-material/Menu";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
-import { useAuth } from "@/providers/AuthProvider";
+import SearchIcon from "@mui/icons-material/Search";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
+import { signOut, useSession } from "next-auth/react";
+import { useColorMode } from "@/providers/ThemeModeProvider";
 import { getDashboardPath } from "@/lib/navigation";
 
 const drawerWidth = 280;
@@ -39,15 +45,17 @@ type NavItem = {
   visible: boolean;
 };
 
-export default function AppShell({ children }: { children: React.ReactNode }) {
-  const { user, logout } = useAuth();
+export default function AppShell({ children }: { children: ReactNode }) {
+  const { data: session } = useSession();
+  const user = session?.user;
   const pathname = usePathname() ?? "";
   const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { mode, toggleMode } = useColorMode();
 
   const navItems = useMemo<NavItem[]>(() => {
-    const role = user?.role ?? "student";
+    const role = user?.role ?? "STUDENT";
     return [
       {
         label: "Dashboard",
@@ -59,19 +67,37 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         label: "Subjects",
         href: "/subjects",
         icon: MenuBookIcon,
-        visible: role === "student",
+        visible: role === "STUDENT",
+      },
+      {
+        label: "Assignments",
+        href: "/assignments",
+        icon: AssignmentTurnedInIcon,
+        visible: role === "STUDENT",
+      },
+      {
+        label: "Search",
+        href: "/search",
+        icon: SearchIcon,
+        visible: true,
       },
       {
         label: "AI Tutor",
         href: "/ai-tutor",
         icon: AutoAwesomeIcon,
-        visible: role === "student",
+        visible: role === "STUDENT",
       },
       {
         label: "Children",
         href: "/children",
         icon: GroupIcon,
-        visible: role === "parent",
+        visible: role === "PARENT",
+      },
+      {
+        label: "Admin",
+        href: "/admin",
+        icon: AdminPanelSettingsIcon,
+        visible: role === "ADMIN",
       },
     ];
   }, [user?.role]);
@@ -145,7 +171,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         <Button
           variant="outlined"
           startIcon={<LogoutIcon />}
-          onClick={logout}
+          onClick={() => signOut({ callbackUrl: "/login" })}
           fullWidth
           sx={{
             borderColor: "rgba(255,255,255,0.16)",
@@ -168,13 +194,20 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             </IconButton>
           )}
           <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
-            {user?.role === "parent" ? "Parent View" : "Student Dashboard"}
+            BeeLearnt Workspace
           </Typography>
+          <IconButton color="inherit" onClick={toggleMode}>
+            {mode === "dark" ? <Brightness7Icon /> : <Brightness4Icon />}
+          </IconButton>
           <Stack direction="row" spacing={1.5} alignItems="center">
             <Box textAlign="right">
               <Typography variant="subtitle2">{user?.name}</Typography>
               <Typography variant="caption" color="text.secondary">
-                {user?.role === "parent" ? "Parent" : "Student"}
+                {user?.role === "PARENT"
+                  ? "Parent"
+                  : user?.role === "ADMIN"
+                  ? "Admin"
+                  : "Student"}
               </Typography>
             </Box>
             <Avatar sx={{ bgcolor: "secondary.main" }}>{user?.name?.[0]}</Avatar>

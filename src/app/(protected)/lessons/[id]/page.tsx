@@ -20,9 +20,11 @@ import { useDemoProgress } from "@/hooks/useDemoProgress";
 
 export default function LessonPage() {
   const params = useParams();
-  const id = Number(params?.id);
+  const idParam = params?.id;
+  const id = Number(Array.isArray(idParam) ? idParam[0] : idParam);
   const lesson = getLessonById(id);
   const moduleData = lesson ? getModuleById(lesson.moduleId) : undefined;
+  const moduleHref = moduleData ? `/modules/${moduleData.id}` : "/subjects";
   const { user } = useAuth();
   const { progress, markLessonComplete, touchLesson } = useDemoProgress(user?.id);
 
@@ -48,7 +50,7 @@ export default function LessonPage() {
     <Stack spacing={4} sx={{ maxWidth: 960 }}>
       <Button
         component={Link}
-        href={`/modules/${moduleData?.id ?? ""}`}
+        href={moduleHref}
         startIcon={<ArrowBackIcon />}
         sx={{ alignSelf: "flex-start" }}
       >
@@ -90,7 +92,15 @@ export default function LessonPage() {
                   </Typography>
                 ),
                 ul: ({ children }) => (
-                  <Box component="ul" sx={{ pl: 3, mb: 2, color: "text.secondary" }}>
+                  <Box
+                    component="ul"
+                    sx={{
+                      pl: 3,
+                      mb: 2,
+                      color: "text.secondary",
+                      listStyleType: "disc",
+                    }}
+                  >
                     {children}
                   </Box>
                 ),

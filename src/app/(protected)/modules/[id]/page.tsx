@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+import NextLink from "next/link";
 import { useParams } from "next/navigation";
 import {
   Alert,
@@ -11,6 +11,7 @@ import {
   Card,
   CardContent,
   Chip,
+  Link as MuiLink,
   Snackbar,
   Stack,
   Typography,
@@ -25,15 +26,23 @@ import {
   getQuizzesByModuleId,
   getSubjectById,
 } from "@/lib/demo-data";
+import AssignmentList from "@/components/AssignmentList";
+import { useAuth } from "@/providers/AuthProvider";
+import { useDemoAssignments } from "@/hooks/useDemoAssignments";
 
 export default function ModulePage() {
   const params = useParams();
-  const id = Number(params?.id);
+  const idParam = params?.id;
+  const id = Number(Array.isArray(idParam) ? idParam[0] : idParam);
   const moduleData = getModuleById(id);
   const lessons = getLessonsByModuleId(id);
   const quizzes = getQuizzesByModuleId(id);
   const subject = moduleData ? getSubjectById(moduleData.subjectId) : undefined;
+  const subjectHref = subject ? `/subjects/${subject.id}` : "/subjects";
   const [toastOpen, setToastOpen] = useState(false);
+  const { user } = useAuth();
+  const { getAssignmentsForModule, toggleAssignment } = useDemoAssignments(user?.id);
+  const assignments = getAssignmentsForModule(id);
 
   if (!moduleData) {
     return (
@@ -48,9 +57,9 @@ export default function ModulePage() {
   return (
     <Stack spacing={4}>
       <Breadcrumbs sx={{ color: "text.secondary" }}>
-        <Typography component={Link} href={`/subjects/${subject?.id ?? ""}`} color="inherit">
+        <MuiLink component={NextLink} href={subjectHref} color="inherit" underline="hover">
           {subject?.name ?? "Subject"}
-        </Typography>
+        </MuiLink>
         <Typography color="text.primary">{moduleData.title}</Typography>
       </Breadcrumbs>
 
@@ -101,7 +110,7 @@ export default function ModulePage() {
                     />
                   </Stack>
                   <Button
-                    component={Link}
+                    component={NextLink}
                     href={`/lessons/${lesson.id}`}
                     variant="outlined"
                     endIcon={<ChevronRightIcon />}
@@ -142,7 +151,7 @@ export default function ModulePage() {
                     </Stack>
                   </Stack>
                   <Button
-                    component={Link}
+                    component={NextLink}
                     href={`/quizzes/${quiz.id}`}
                     variant="outlined"
                   >
@@ -153,6 +162,11 @@ export default function ModulePage() {
             </Card>
           ))}
         </Stack>
+      </Stack>
+
+      <Stack spacing={3}>
+        <Typography variant="h5">Assignments</Typography>
+        <AssignmentList items={assignments} onToggle={toggleAssignment} />
       </Stack>
 
       <Snackbar

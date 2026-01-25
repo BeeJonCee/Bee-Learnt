@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { Poppins, Urbanist } from "next/font/google";
+import type { ReactNode } from "react";
+import { Inter, Poppins, Urbanist } from "next/font/google";
 import Providers from "./providers";
 import "./globals.css";
 
@@ -9,10 +10,16 @@ const displayFont = Poppins({
   variable: "--font-display",
 });
 
-const bodyFont = Urbanist({
+const bodyFont = Inter({
   subsets: ["latin"],
   weight: ["400", "500", "600"],
   variable: "--font-body",
+});
+
+const uiFont = Urbanist({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-ui",
 });
 
 export const metadata: Metadata = {
@@ -23,10 +30,13 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${displayFont.variable} ${bodyFont.variable}`}>
+    <html
+      lang="en"
+      className={`${displayFont.variable} ${bodyFont.variable} ${uiFont.variable}`}
+    >
       <body>
         <Providers>{children}</Providers>
       </body>

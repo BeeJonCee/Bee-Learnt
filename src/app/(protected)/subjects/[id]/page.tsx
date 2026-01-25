@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import NextLink from "next/link";
 import { useParams } from "next/navigation";
 import {
   Box,
@@ -9,6 +9,7 @@ import {
   Card,
   CardContent,
   Chip,
+  Link as MuiLink,
   Stack,
   Typography,
 } from "@mui/material";
@@ -18,7 +19,8 @@ import { getModulesBySubjectId, getSubjectById } from "@/lib/demo-data";
 
 export default function SubjectDetailPage() {
   const params = useParams();
-  const id = Number(params?.id);
+  const idParam = params?.id;
+  const id = Number(Array.isArray(idParam) ? idParam[0] : idParam);
   const subject = getSubjectById(id);
   const modules = getModulesBySubjectId(id);
 
@@ -38,16 +40,24 @@ export default function SubjectDetailPage() {
   return (
     <Stack spacing={4}>
       <Breadcrumbs sx={{ color: "text.secondary" }}>
-        <Typography component={Link} href="/subjects" color="inherit">
+        <MuiLink component={NextLink} href="/subjects" color="inherit" underline="hover">
           Subjects
-        </Typography>
+        </MuiLink>
         <Typography color="text.primary">{subject.name}</Typography>
       </Breadcrumbs>
 
       <Card>
         <CardContent>
           <Stack spacing={2}>
-            <Chip label={`Grade ${subject.grade}`} color="primary" size="small" />
+            <Chip
+              label={
+                typeof subject.grade === "string"
+                  ? `Grades ${subject.grade}`
+                  : `Grade ${subject.grade}`
+              }
+              color="primary"
+              size="small"
+            />
             <Typography variant="h3">{subject.name}</Typography>
             <Typography color="text.secondary">{subject.description}</Typography>
           </Stack>
@@ -79,12 +89,20 @@ export default function SubjectDetailPage() {
                   justifyContent="space-between"
                 >
                   <Stack spacing={1}>
+                    {module.grade ? (
+                      <Chip
+                        label={`Grade ${module.grade}`}
+                        size="small"
+                        sx={{ alignSelf: "flex-start" }}
+                      />
+                    ) : null}
                     <Typography variant="h6">{module.title}</Typography>
                     <Typography variant="body2" color="text.secondary">
-                      {module.description}</Typography>
+                      {module.description}
+                    </Typography>
                   </Stack>
                   <Button
-                    component={Link}
+                    component={NextLink}
                     href={`/modules/${module.id}`}
                     variant="outlined"
                     endIcon={<PlayArrowIcon />}

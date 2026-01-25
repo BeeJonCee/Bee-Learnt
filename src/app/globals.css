@@ -1,11 +1,5 @@
 :root {
-  color-scheme: dark;
-  --app-bg: #0f1116;
-  --app-bg-alt: #0c0f14;
-  --app-surface: #151924;
-  --app-surface-strong: #1d2230;
-  --app-accent: #f6c945;
-  --app-muted: #9aa5b8;
+  color-scheme: light dark;
 }
 
 * {
@@ -22,11 +16,6 @@ body {
 body {
   margin: 0;
   font-family: var(--font-body);
-  color: #f5f7fb;
-  background:
-    radial-gradient(900px circle at 12% -10%, rgba(246, 201, 69, 0.16), transparent 55%),
-    radial-gradient(600px circle at 85% 12%, rgba(91, 192, 235, 0.16), transparent 50%),
-    linear-gradient(160deg, #0f1116 0%, #0b0d12 60%, #10141c 100%);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -37,7 +26,7 @@ a {
 }
 
 ::selection {
-  background: var(--app-accent);
+  background: #ffd600;
   color: #121212;
 }
 

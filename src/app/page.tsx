@@ -1,34 +1,14 @@
-"use client";
-
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { Box, CircularProgress } from "@mui/material";
-import { useAuth } from "@/providers/AuthProvider";
+import { redirect } from "next/navigation";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth/auth";
 import { getDashboardPath } from "@/lib/navigation";
 
-export default function HomePage() {
-  const { user, loading } = useAuth();
-  const router = useRouter();
+export default async function HomePage() {
+  const session = await getServerSession(authOptions);
 
-  useEffect(() => {
-    if (loading) return;
-    if (user) {
-      router.replace(getDashboardPath(user.role));
-    } else {
-      router.replace("/auth");
-    }
-  }, [loading, user, router]);
+  if (!session?.user) {
+    redirect("/login");
+  }
 
-  return (
-    <Box
-      sx={{
-        minHeight: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <CircularProgress color="primary" />
-    </Box>
-  );
+  redirect(getDashboardPath(session.user.role));
 }

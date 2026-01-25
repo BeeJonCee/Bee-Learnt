@@ -1,0 +1,126 @@
+"use client";
+
+import { type FormEvent, useState } from "react";
+import {
+  Alert,
+  Box,
+  Button,
+  Grid,
+  MenuItem,
+  Paper,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
+
+const roleOptions = [
+  { value: "STUDENT", label: "Student" },
+  { value: "PARENT", label: "Parent" },
+];
+
+export default function RegisterPage() {
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    password: "",
+    role: "STUDENT",
+  });
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+    setError(null);
+    setSuccess(null);
+    setLoading(true);
+
+    const response = await fetch("/api/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(form),
+    });
+
+    if (!response.ok) {
+      const payload = await response.json();
+      setError(payload.message ?? "Registration failed.");
+    } else {
+      setSuccess("Account created. You can now sign in.");
+    }
+
+    setLoading(false);
+  };
+
+  return (
+    <Grid container minHeight="100vh" alignItems="center" justifyContent="center">
+      <Grid item xs={12} md={8} lg={5} xl={4} px={{ xs: 2, sm: 4 }}>
+        <Paper sx={{ p: 4 }}>
+          <Stack spacing={3}>
+            <Box>
+              <Typography variant="h4">Create your account</Typography>
+              <Typography color="text.secondary">
+                Join BeeLearnt to access CAPS-aligned tutoring.
+              </Typography>
+            </Box>
+
+            {error && <Alert severity="error">{error}</Alert>}
+            {success && <Alert severity="success">{success}</Alert>}
+
+            <Box component="form" onSubmit={handleSubmit}>
+              <Stack spacing={2.5}>
+                <TextField
+                  label="Full name"
+                  value={form.name}
+                  onChange={(event) =>
+                    setForm((prev) => ({ ...prev, name: event.target.value }))
+                  }
+                  required
+                />
+                <TextField
+                  label="Email"
+                  type="email"
+                  value={form.email}
+                  onChange={(event) =>
+                    setForm((prev) => ({ ...prev, email: event.target.value }))
+                  }
+                  required
+                />
+                <TextField
+                  label="Password"
+                  type="password"
+                  value={form.password}
+                  onChange={(event) =>
+                    setForm((prev) => ({ ...prev, password: event.target.value }))
+                  }
+                  required
+                />
+                <TextField
+                  select
+                  label="Role"
+                  value={form.role}
+                  onChange={(event) =>
+                    setForm((prev) => ({ ...prev, role: event.target.value }))
+                  }
+                  required
+                >
+                  {roleOptions.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                      {option.label}
+                    </MenuItem>
+                  ))}
+                </TextField>
+                <Button type="submit" variant="contained" disabled={loading}>
+                  {loading ? "Creating..." : "Create account"}
+                </Button>
+              </Stack>
+            </Box>
+
+            <Typography variant="body2" color="text.secondary">
+              Already have an account? <a href="/login">Sign in</a>
+            </Typography>
+          </Stack>
+        </Paper>
+      </Grid>
+    </Grid>
+  );
+}

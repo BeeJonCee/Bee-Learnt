@@ -1,22 +1,22 @@
 "use client";
 
-import { useEffect } from "react";
+import { type ReactNode, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Box, CircularProgress } from "@mui/material";
-import { useAuth } from "@/providers/AuthProvider";
+import { useSession } from "next-auth/react";
 import AppShell from "@/components/layout/AppShell";
 
-export default function ProtectedLayout({ children }: { children: React.ReactNode }) {
-  const { user, loading } = useAuth();
+export default function ProtectedLayout({ children }: { children: ReactNode }) {
+  const { data: session, status } = useSession();
   const router = useRouter();
 
   useEffect(() => {
-    if (!loading && !user) {
-      router.replace("/auth");
+    if (status === "unauthenticated") {
+      router.replace("/login");
     }
-  }, [loading, user, router]);
+  }, [status, router]);
 
-  if (loading) {
+  if (status === "loading") {
     return (
       <Box
         sx={{
@@ -31,7 +31,7 @@ export default function ProtectedLayout({ children }: { children: React.ReactNod
     );
   }
 
-  if (!user) {
+  if (!session?.user) {
     return null;
   }
 

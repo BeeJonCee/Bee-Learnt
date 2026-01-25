@@ -3,7 +3,7 @@ export type UserRole = "student" | "parent";
 export type Subject = {
   id: number;
   name: string;
-  grade: number;
+  grade: number | string;
   description: string;
   imageUrl?: string | null;
 };
@@ -14,6 +14,7 @@ export type Module = {
   title: string;
   description: string;
   order: number;
+  grade?: number;
 };
 
 export type LessonType = "text" | "video";
@@ -47,6 +48,18 @@ export type Question = {
   explanation?: string;
 };
 
+export type AssignmentType = "project" | "practical" | "research";
+
+export type Assignment = {
+  id: number;
+  moduleId: number;
+  title: string;
+  description: string;
+  dueDate: string;
+  type: AssignmentType;
+  grade: number;
+};
+
 export type ParentOverview = {
   studentId: number;
   studentName: string;
@@ -73,6 +86,12 @@ const subjects: Subject[] = [
     grade: 12,
     description: "Explore cells, genetics, and modern biology with focused lessons.",
   },
+  {
+    id: 4,
+    name: "Information Technology",
+    grade: "10-12",
+    description: "CAPS-aligned computing, programming, and digital systems across Grades 10-12.",
+  },
 ];
 
 const modules: Module[] = [
@@ -82,6 +101,7 @@ const modules: Module[] = [
     title: "Algebraic Expressions",
     description: "Simplify expressions and understand algebraic structure.",
     order: 1,
+    grade: 10,
   },
   {
     id: 102,
@@ -89,6 +109,7 @@ const modules: Module[] = [
     title: "Functions and Graphs",
     description: "Analyze linear functions and interpret graphs with confidence.",
     order: 2,
+    grade: 10,
   },
   {
     id: 201,
@@ -96,6 +117,7 @@ const modules: Module[] = [
     title: "Motion and Force",
     description: "Explore vectors, Newton's laws, and motion in one dimension.",
     order: 1,
+    grade: 11,
   },
   {
     id: 202,
@@ -103,6 +125,7 @@ const modules: Module[] = [
     title: "Chemical Systems",
     description: "Understand atomic structure and key reaction types.",
     order: 2,
+    grade: 11,
   },
   {
     id: 301,
@@ -110,6 +133,7 @@ const modules: Module[] = [
     title: "Cell Biology",
     description: "Study the building blocks of life and cellular processes.",
     order: 1,
+    grade: 12,
   },
   {
     id: 302,
@@ -117,6 +141,55 @@ const modules: Module[] = [
     title: "Genetics and Inheritance",
     description: "Learn DNA basics and inheritance patterns.",
     order: 2,
+    grade: 12,
+  },
+  {
+    id: 401,
+    subjectId: 4,
+    title: "Computer Systems and Hardware",
+    description: "Explore CPU, memory, storage, and peripheral devices.",
+    order: 1,
+    grade: 10,
+  },
+  {
+    id: 402,
+    subjectId: 4,
+    title: "Programming Foundations",
+    description: "Build problem-solving skills with pseudocode and control flow.",
+    order: 2,
+    grade: 10,
+  },
+  {
+    id: 403,
+    subjectId: 4,
+    title: "Networks and the Internet",
+    description: "Learn networking models, IP addressing, and connectivity.",
+    order: 3,
+    grade: 11,
+  },
+  {
+    id: 404,
+    subjectId: 4,
+    title: "Data and Databases",
+    description: "Model data and practice SQL fundamentals.",
+    order: 4,
+    grade: 11,
+  },
+  {
+    id: 405,
+    subjectId: 4,
+    title: "Systems Analysis and Design",
+    description: "Plan software solutions with the SDLC and UML tools.",
+    order: 5,
+    grade: 12,
+  },
+  {
+    id: 406,
+    subjectId: 4,
+    title: "Cybersecurity and Ethics",
+    description: "Protect systems, data, and users with responsible practice.",
+    order: 6,
+    grade: 12,
   },
 ];
 
@@ -220,6 +293,105 @@ const lessons: Lesson[] = [
     type: "text",
     order: 2,
   },
+  {
+    id: 4001,
+    moduleId: 401,
+    title: "Hardware Essentials",
+    content: "# Hardware essentials\n\nComputer systems use hardware components that work together to process data.\n\n## Focus\n- CPU, RAM, storage\n- Input and output devices\n- Motherboard and power supply\n\n## Practice\nList three devices that are considered input devices.",
+    type: "text",
+    order: 1,
+  },
+  {
+    id: 4002,
+    moduleId: 401,
+    title: "Inside the CPU",
+    content: "# Inside the CPU\n\nThe CPU fetches, decodes, and executes instructions every cycle.\n\n## Concepts\n- Control unit\n- ALU\n- Registers\n\n## Tip\nClock speed affects how many cycles a CPU can complete each second.",
+    type: "video",
+    videoUrl: "https://www.youtube.com/embed/1I5ZMmrOfnA",
+    order: 2,
+  },
+  {
+    id: 4003,
+    moduleId: 402,
+    title: "Algorithms and Pseudocode",
+    content: "# Algorithms and pseudocode\n\nAlgorithms describe the steps needed to solve a problem. Pseudocode helps plan logic before coding.\n\n## Goals\n- Break problems into steps\n- Use sequence, selection, and iteration\n- Communicate logic clearly\n\n## Practice\nWrite pseudocode to calculate an average.",
+    type: "text",
+    order: 1,
+  },
+  {
+    id: 4004,
+    moduleId: 402,
+    title: "Control Flow Patterns",
+    content: "# Control flow patterns\n\nPrograms use conditions and loops to control behavior.\n\n## Patterns\n- If/else decisions\n- For and while loops\n- Nested conditions\n\n## Tip\nTest with small inputs before scaling up.",
+    type: "video",
+    videoUrl: "https://www.youtube.com/embed/4c6dyf0b7yo",
+    order: 2,
+  },
+  {
+    id: 4005,
+    moduleId: 403,
+    title: "Network Models",
+    content: "# Network models\n\nNetwork layers help describe how data moves across devices.\n\n## Key ideas\n- OSI model layers\n- TCP/IP stack\n- Encapsulation\n\n## Practice\nMatch each OSI layer to its role.",
+    type: "text",
+    order: 1,
+  },
+  {
+    id: 4006,
+    moduleId: 403,
+    title: "IP Addressing Basics",
+    content: "# IP addressing basics\n\nIP addresses identify devices on a network.\n\n## Focus\n- IPv4 format\n- Subnet masks\n- Public vs private IPs\n\n## Practice\nExplain why 192.168.1.10 is a private address.",
+    type: "text",
+    order: 2,
+  },
+  {
+    id: 4007,
+    moduleId: 404,
+    title: "Data Modeling",
+    content: "# Data modeling\n\nDatabases store data in related tables. Modeling helps plan the structure.\n\n## Goals\n- Identify entities\n- Define attributes\n- Use relationships\n\n## Practice\nCreate an entity list for a library system.",
+    type: "text",
+    order: 1,
+  },
+  {
+    id: 4008,
+    moduleId: 404,
+    title: "SQL Queries",
+    content: "# SQL queries\n\nSQL is used to create, read, update, and delete data.\n\n## Focus\n- SELECT statements\n- WHERE filters\n- Sorting with ORDER BY\n\n## Practice\nWrite a query to list all learners in Grade 11.",
+    type: "video",
+    videoUrl: "https://www.youtube.com/embed/HXV3zeQKqGY",
+    order: 2,
+  },
+  {
+    id: 4009,
+    moduleId: 405,
+    title: "Systems Development Life Cycle",
+    content: "# Systems development life cycle\n\nThe SDLC guides teams from planning to maintenance.\n\n## Phases\n- Planning\n- Analysis\n- Design\n- Implementation\n- Testing\n- Maintenance\n\n## Tip\nDocument requirements early to reduce rework.",
+    type: "text",
+    order: 1,
+  },
+  {
+    id: 4010,
+    moduleId: 405,
+    title: "Requirements and Use Cases",
+    content: "# Requirements and use cases\n\nUse cases describe how users interact with a system.\n\n## Goals\n- Capture user goals\n- Identify actors\n- Define success scenarios\n\n## Practice\nWrite a use case for submitting an assignment.",
+    type: "text",
+    order: 2,
+  },
+  {
+    id: 4011,
+    moduleId: 406,
+    title: "Security Principles",
+    content: "# Security principles\n\nSecure systems protect confidentiality, integrity, and availability.\n\n## Focus\n- CIA triad\n- Access control\n- Common threats\n\n## Practice\nExplain why multi-factor authentication improves security.",
+    type: "text",
+    order: 1,
+  },
+  {
+    id: 4012,
+    moduleId: 406,
+    title: "Digital Citizenship",
+    content: "# Digital citizenship\n\nResponsible computing keeps people safe and informed online.\n\n## Topics\n- Online privacy\n- Respectful communication\n- Managing digital footprints\n\n## Practice\nList two ways to protect your personal information online.",
+    type: "text",
+    order: 2,
+  },
 ];
 
 const quizzes: Quiz[] = [
@@ -268,6 +440,54 @@ const quizzes: Quiz[] = [
     moduleId: 302,
     title: "Genetics Review",
     description: "Practice genetics and inheritance basics.",
+    difficulty: "medium",
+    aiGenerated: false,
+  },
+  {
+    id: 6001,
+    moduleId: 401,
+    title: "Hardware Check",
+    description: "Confirm key computer hardware concepts.",
+    difficulty: "easy",
+    aiGenerated: false,
+  },
+  {
+    id: 6002,
+    moduleId: 402,
+    title: "Programming Foundations",
+    description: "Control flow and algorithmic thinking review.",
+    difficulty: "medium",
+    aiGenerated: false,
+  },
+  {
+    id: 6003,
+    moduleId: 403,
+    title: "Networking Basics",
+    description: "Quick check on networks and IP addressing.",
+    difficulty: "medium",
+    aiGenerated: false,
+  },
+  {
+    id: 6004,
+    moduleId: 404,
+    title: "Database Essentials",
+    description: "Review data models and SQL basics.",
+    difficulty: "medium",
+    aiGenerated: false,
+  },
+  {
+    id: 6005,
+    moduleId: 405,
+    title: "Systems Analysis Review",
+    description: "Assess SDLC and requirements knowledge.",
+    difficulty: "hard",
+    aiGenerated: false,
+  },
+  {
+    id: 6006,
+    moduleId: 406,
+    title: "Cybersecurity Awareness",
+    description: "Test your digital safety knowledge.",
     difficulty: "medium",
     aiGenerated: false,
   },
@@ -414,6 +634,171 @@ const questions: Question[] = [
     type: "short_answer",
     correctAnswer: "genetic makeup of an organism",
   },
+  {
+    id: 9101,
+    quizId: 6001,
+    questionText: "Which component provides short-term memory?",
+    type: "multiple_choice",
+    options: ["RAM", "CPU", "SSD", "Power supply"],
+    correctAnswer: "RAM",
+  },
+  {
+    id: 9102,
+    quizId: 6001,
+    questionText: "CPU stands for:",
+    type: "short_answer",
+    correctAnswer: "central processing unit",
+  },
+  {
+    id: 9111,
+    quizId: 6002,
+    questionText: "Which structure repeats a block of code?",
+    type: "multiple_choice",
+    options: ["Loop", "Variable", "Array", "Comment"],
+    correctAnswer: "Loop",
+  },
+  {
+    id: 9112,
+    quizId: 6002,
+    questionText: "What is an algorithm?",
+    type: "short_answer",
+    correctAnswer: "step-by-step procedure",
+  },
+  {
+    id: 9121,
+    quizId: 6003,
+    questionText: "Which device forwards packets between networks?",
+    type: "multiple_choice",
+    options: ["Router", "Switch", "Monitor", "Keyboard"],
+    correctAnswer: "Router",
+  },
+  {
+    id: 9122,
+    quizId: 6003,
+    questionText: "IP stands for:",
+    type: "short_answer",
+    correctAnswer: "internet protocol",
+  },
+  {
+    id: 9131,
+    quizId: 6004,
+    questionText: "Which SQL keyword retrieves rows?",
+    type: "multiple_choice",
+    options: ["SELECT", "INSERT", "UPDATE", "DELETE"],
+    correctAnswer: "SELECT",
+  },
+  {
+    id: 9132,
+    quizId: 6004,
+    questionText: "Define primary key.",
+    type: "short_answer",
+    correctAnswer: "unique identifier for a record",
+  },
+  {
+    id: 9141,
+    quizId: 6005,
+    questionText: "Which phase focuses on gathering requirements?",
+    type: "multiple_choice",
+    options: ["Analysis", "Testing", "Deployment", "Maintenance"],
+    correctAnswer: "Analysis",
+  },
+  {
+    id: 9142,
+    quizId: 6005,
+    questionText: "SDLC stands for:",
+    type: "short_answer",
+    correctAnswer: "systems development life cycle",
+  },
+  {
+    id: 9151,
+    quizId: 6006,
+    questionText: "Which is a strong password?",
+    type: "multiple_choice",
+    options: ["P@ssw0rd!82", "password", "123456", "qwerty"],
+    correctAnswer: "P@ssw0rd!82",
+  },
+  {
+    id: 9152,
+    quizId: 6006,
+    questionText: "What is phishing?",
+    type: "short_answer",
+    correctAnswer: "tricking users into revealing sensitive information",
+  },
+];
+
+const assignments: Assignment[] = [
+  {
+    id: 8001,
+    moduleId: 401,
+    title: "Hardware Spec Sheet",
+    description: "Compare CPU, RAM, and storage options for a study PC build.",
+    dueDate: "2026-03-12",
+    type: "research",
+    grade: 10,
+  },
+  {
+    id: 8002,
+    moduleId: 402,
+    title: "Pseudocode Drill Set",
+    description: "Write step-by-step logic for five everyday tasks.",
+    dueDate: "2026-03-20",
+    type: "practical",
+    grade: 10,
+  },
+  {
+    id: 8003,
+    moduleId: 402,
+    title: "Mini Calculator Program",
+    description: "Create a simple calculator with input validation.",
+    dueDate: "2026-03-28",
+    type: "project",
+    grade: 10,
+  },
+  {
+    id: 8004,
+    moduleId: 403,
+    title: "Network Topology Map",
+    description: "Diagram a small school network with switches and routers.",
+    dueDate: "2026-04-05",
+    type: "research",
+    grade: 11,
+  },
+  {
+    id: 8005,
+    moduleId: 404,
+    title: "SQL Practice Lab",
+    description: "Query a sample learner database and export results.",
+    dueDate: "2026-04-12",
+    type: "practical",
+    grade: 11,
+  },
+  {
+    id: 8006,
+    moduleId: 405,
+    title: "SDLC Case Study",
+    description: "Analyze a case study and outline the SDLC phases used.",
+    dueDate: "2026-04-25",
+    type: "project",
+    grade: 12,
+  },
+  {
+    id: 8007,
+    moduleId: 405,
+    title: "Requirements Document",
+    description: "Draft requirements for a homework tracking system.",
+    dueDate: "2026-05-03",
+    type: "practical",
+    grade: 12,
+  },
+  {
+    id: 8008,
+    moduleId: 406,
+    title: "Cybersecurity Awareness Poster",
+    description: "Design a one-page poster on safe online behavior.",
+    dueDate: "2026-05-12",
+    type: "research",
+    grade: 12,
+  },
 ];
 
 const parentOverview: ParentOverview[] = [
@@ -469,6 +854,26 @@ export function getQuizById(id: number): Quiz | undefined {
 
 export function getQuestionsByQuizId(quizId: number): Question[] {
   return questions.filter((question) => question.quizId === quizId);
+}
+
+export function getAssignments(): Assignment[] {
+  return assignments;
+}
+
+export function getAssignmentsByModuleId(moduleId: number): Assignment[] {
+  return assignments
+    .filter((assignment) => assignment.moduleId === moduleId)
+    .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime());
+}
+
+export function getAssignmentsByGrade(grade: number): Assignment[] {
+  return assignments
+    .filter((assignment) => assignment.grade === grade)
+    .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime());
+}
+
+export function getAssignmentById(id: number): Assignment | undefined {
+  return assignments.find((assignment) => assignment.id === id);
 }
 
 export function getParentOverview(): ParentOverview[] {
