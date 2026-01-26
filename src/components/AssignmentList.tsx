@@ -7,11 +7,15 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import type { Assignment } from "@/lib/demo-data";
 
-export type AssignmentItem = Assignment & {
-  completed: boolean;
-  completedAt?: string | null;
+export type AssignmentItem = {
+  id: number;
+  title: string;
+  description?: string | null;
+  dueDate: string | Date;
+  priority: "low" | "medium" | "high";
+  status: "todo" | "in_progress" | "submitted" | "graded";
+  grade: number;
   moduleTitle?: string;
 };
 
@@ -21,7 +25,7 @@ type AssignmentListProps = {
   showModule?: boolean;
 };
 
-function getDueLabel(dueDate: string) {
+function getDueLabel(dueDate: string | Date) {
   const now = new Date();
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const due = new Date(dueDate);
@@ -35,8 +39,8 @@ function getDueLabel(dueDate: string) {
   return `Due in ${diffDays} days`;
 }
 
-function formatTypeLabel(type: Assignment["type"]) {
-  return type.charAt(0).toUpperCase() + type.slice(1);
+function formatLabel(value: string) {
+  return value.charAt(0).toUpperCase() + value.slice(1);
 }
 
 export default function AssignmentList({ items, onToggle, showModule }: AssignmentListProps) {
@@ -52,8 +56,11 @@ export default function AssignmentList({ items, onToggle, showModule }: Assignme
 
   return (
     <Stack spacing={2}>
-      {items.map((assignment) => (
-        <Card key={assignment.id}>
+      {items.map((assignment) => {
+        const isCompleted =
+          assignment.status === "submitted" || assignment.status === "graded";
+        return (
+          <Card key={assignment.id}>
           <CardContent>
             <Stack
               direction={{ xs: "column", md: "row" }}
@@ -64,13 +71,13 @@ export default function AssignmentList({ items, onToggle, showModule }: Assignme
               <Stack spacing={1}>
                 <Stack direction="row" spacing={1} alignItems="center">
                   <Checkbox
-                    checked={assignment.completed}
+                    checked={isCompleted}
                     onChange={() => onToggle(assignment.id)}
                   />
                   <Typography
                     variant="subtitle1"
                     fontWeight={600}
-                    sx={{ textDecoration: assignment.completed ? "line-through" : "none" }}
+                    sx={{ textDecoration: isCompleted ? "line-through" : "none" }}
                   >
                     {assignment.title}
                   </Typography>
@@ -79,7 +86,8 @@ export default function AssignmentList({ items, onToggle, showModule }: Assignme
                   {assignment.description}
                 </Typography>
                 <Stack direction="row" spacing={1} flexWrap="wrap">
-                  <Chip label={formatTypeLabel(assignment.type)} size="small" />
+                  <Chip label={formatLabel(assignment.priority)} size="small" />
+                  <Chip label={formatLabel(assignment.status)} size="small" />
                   <Chip label={`Grade ${assignment.grade}`} size="small" />
                   {showModule && assignment.moduleTitle && (
                     <Chip label={assignment.moduleTitle} size="small" color="secondary" />
@@ -95,15 +103,16 @@ export default function AssignmentList({ items, onToggle, showModule }: Assignme
                 </Typography>
                 <Typography
                   variant="caption"
-                  color={assignment.completed ? "text.secondary" : "primary.main"}
+                  color={isCompleted ? "text.secondary" : "primary.main"}
                 >
-                  {assignment.completed ? "Completed" : getDueLabel(assignment.dueDate)}
+                  {isCompleted ? "Completed" : getDueLabel(assignment.dueDate)}
                 </Typography>
               </Box>
             </Stack>
           </CardContent>
         </Card>
-      ))}
+        );
+      })}
     </Stack>
   );
 }

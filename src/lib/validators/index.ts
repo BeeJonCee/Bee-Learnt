@@ -11,6 +11,13 @@ export const moduleCreateSchema = z.object({
 
 export const moduleUpdateSchema = moduleCreateSchema.partial();
 
+export const subjectCreateSchema = z.object({
+  name: z.string().min(3),
+  description: z.string().optional(),
+  minGrade: z.number().int().min(9).max(12),
+  maxGrade: z.number().int().min(9).max(12),
+});
+
 export const lessonCreateSchema = z.object({
   moduleId: z.number().int().positive(),
   title: z.string().min(3),
@@ -43,6 +50,15 @@ export const assignmentCreateSchema = z.object({
   grade: z.number().int().min(9).max(12),
 });
 
+export const assignmentUpdateSchema = z.object({
+  title: z.string().min(3).optional(),
+  description: z.string().optional(),
+  dueDate: z.string().datetime().optional(),
+  priority: z.enum(["low", "medium", "high"]).optional(),
+  status: z.enum(["todo", "in_progress", "submitted", "graded"]).optional(),
+  grade: z.number().int().min(9).max(12).optional(),
+});
+
 export const quizGenerateSchema = z.object({
   subjectId: z.number().int().positive(),
   moduleId: z.number().int().positive(),
@@ -68,10 +84,90 @@ export const quizSubmitSchema = z.object({
   ),
 });
 
+export const quizCheckSchema = z.object({
+  questionId: z.number().int().positive(),
+  answer: z.string().min(1),
+});
+
 export const studySessionCreateSchema = z.object({
   startedAt: z.string().datetime(),
   endedAt: z.string().datetime().optional(),
   durationMinutes: z.number().int().min(1),
+});
+
+export const progressUpdateSchema = z.object({
+  lessonId: z.number().int().positive().optional(),
+  moduleId: z.number().int().positive().optional(),
+  completed: z.boolean().optional(),
+  timeSpentMinutes: z.number().int().min(0).optional(),
+});
+
+export const progressQuerySchema = z.object({
+  lessonId: z.number().int().positive().optional(),
+  moduleId: z.number().int().positive().optional(),
+});
+
+export const checklistProgressSchema = z.object({
+  itemId: z.number().int().positive(),
+  completed: z.boolean(),
+});
+
+export const moduleQuerySchema = z.object({
+  subjectId: z.number().int().positive().optional(),
+  grade: z.number().int().min(9).max(12).optional(),
+});
+
+export const assignmentQuerySchema = z.object({
+  moduleId: z.number().int().positive().optional(),
+  grade: z.number().int().min(9).max(12).optional(),
+});
+
+export const lessonQuerySchema = z.object({
+  moduleId: z.number().int().positive().optional(),
+});
+
+export const resourceQuerySchema = z.object({
+  lessonId: z.number().int().positive().optional(),
+});
+
+export const quizQuerySchema = z.object({
+  moduleId: z.number().int().positive().optional(),
+});
+
+export const learningPathRefreshSchema = z.object({
+  goal: z.string().min(2).optional(),
+  focusTags: z.array(z.string()).optional(),
+});
+
+export const onboardingSelectSchema = z.object({
+  moduleId: z.number().int().positive(),
+  code: z.string().min(3),
+});
+
+export const lessonNoteCreateSchema = z.object({
+  lessonId: z.number().int().positive(),
+  content: z.string().min(3).max(2000),
+});
+
+export const lessonNoteQuerySchema = z.object({
+  lessonId: z.number().int().positive(),
+});
+
+export const accessibilityUpdateSchema = z.object({
+  textScale: z.number().int().min(80).max(150).optional(),
+  enableNarration: z.boolean().optional(),
+  highContrast: z.boolean().optional(),
+  language: z.string().min(2).max(12).optional(),
+  translationEnabled: z.boolean().optional(),
+});
+
+export const aiTutorSchema = z.object({
+  messages: z.array(
+    z.object({
+      role: z.enum(["user", "assistant"]),
+      content: z.string().min(1),
+    })
+  ),
 });
 
 export const searchQuerySchema = z.object({

@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { Box, Button, Card, CardContent, Stack, Typography } from "@mui/material";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
@@ -31,3 +33,4 @@ export default function NotFound() {
     </Box>
   );
 }
+

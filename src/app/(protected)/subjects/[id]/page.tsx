@@ -15,14 +15,45 @@ import {
 } from "@mui/material";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
-import { getModulesBySubjectId, getSubjectById } from "@/lib/demo-data";
+import { useApi } from "@/hooks/useApi";
+
+type Subject = {
+  id: number;
+  name: string;
+  description?: string | null;
+  minGrade: number;
+  maxGrade: number;
+};
+
+type Module = {
+  id: number;
+  subjectId: number;
+  title: string;
+  description?: string | null;
+  grade: number;
+  order: number;
+};
 
 export default function SubjectDetailPage() {
   const params = useParams();
   const idParam = params?.id;
   const id = Number(Array.isArray(idParam) ? idParam[0] : idParam);
-  const subject = getSubjectById(id);
-  const modules = getModulesBySubjectId(id);
+  const { data: subject, loading: subjectLoading } = useApi<Subject>(
+    Number.isNaN(id) ? null : `/api/subjects/${id}`
+  );
+  const { data: modules, loading: modulesLoading } = useApi<Module[]>(
+    Number.isNaN(id) ? null : `/api/modules?subjectId=${id}`
+  );
+
+  if (subjectLoading) {
+    return (
+      <Card>
+        <CardContent>
+          <Typography color="text.secondary">Loading subject...</Typography>
+        </CardContent>
+      </Card>
+    );
+  }
 
   if (!subject) {
     return (
@@ -51,9 +82,9 @@ export default function SubjectDetailPage() {
           <Stack spacing={2}>
             <Chip
               label={
-                typeof subject.grade === "string"
-                  ? `Grades ${subject.grade}`
-                  : `Grade ${subject.grade}`
+                subject.minGrade === subject.maxGrade
+                  ? `Grade ${subject.minGrade}`
+                  : `Grades ${subject.minGrade}-${subject.maxGrade}`
               }
               color="primary"
               size="small"
@@ -79,7 +110,7 @@ export default function SubjectDetailPage() {
           <Typography variant="h5">Learning modules</Typography>
         </Stack>
         <Stack spacing={2}>
-          {modules.map((module) => (
+          {(modulesLoading ? [] : modules ?? []).map((module) => (
             <Card key={module.id}>
               <CardContent>
                 <Stack

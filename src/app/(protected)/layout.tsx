@@ -3,20 +3,20 @@
 import { type ReactNode, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Box, CircularProgress } from "@mui/material";
-import { useSession } from "next-auth/react";
 import AppShell from "@/components/layout/AppShell";
+import { useAuth } from "@/providers/AuthProvider";
 
 export default function ProtectedLayout({ children }: { children: ReactNode }) {
-  const { data: session, status } = useSession();
+  const { user, loading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (status === "unauthenticated") {
+    if (!loading && !user) {
       router.replace("/login");
     }
-  }, [status, router]);
+  }, [loading, user, router]);
 
-  if (status === "loading") {
+  if (loading) {
     return (
       <Box
         sx={{
@@ -31,7 +31,7 @@ export default function ProtectedLayout({ children }: { children: ReactNode }) {
     );
   }
 
-  if (!session?.user) {
+  if (!user) {
     return null;
   }
 

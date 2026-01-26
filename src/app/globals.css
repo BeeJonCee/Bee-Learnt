@@ -1,3 +1,5 @@
+@import "@neondatabase/auth/ui/css";
+
 :root {
   color-scheme: light dark;
 }
@@ -33,4 +35,19 @@ a {
 img {
   max-width: 100%;
   display: block;
+}
+
+html[data-contrast="high"] body {
+  background-color: #000;
+  color: #fff;
+}
+
+html[data-contrast="high"] .MuiCard-root,
+html[data-contrast="high"] .MuiPaper-root {
+  border-color: #fff;
+}
+
+html[data-contrast="high"] a,
+html[data-contrast="high"] .MuiTypography-root {
+  color: #fff;
 }

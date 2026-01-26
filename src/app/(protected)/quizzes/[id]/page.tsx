@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import {
+  Alert,
   Box,
   Button,
   Card,
@@ -16,38 +17,65 @@ import {
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
-import {
-  getModuleById,
-  getQuestionsByQuizId,
-  getQuizById,
-} from "@/lib/demo-data";
-import { useAuth } from "@/providers/AuthProvider";
-import { useDemoQuizResults } from "@/hooks/useDemoQuizResults";
-import type { QuizResult } from "@/lib/demo-storage";
+import { useApi } from "@/hooks/useApi";
+import { apiFetch } from "@/lib/utils/api";
 
 export default function QuizPage() {
   const params = useParams();
   const idParam = params?.id;
   const id = Number(Array.isArray(idParam) ? idParam[0] : idParam);
-  const quiz = getQuizById(id);
-  const questions = getQuestionsByQuizId(id);
-  const moduleData = quiz ? getModuleById(quiz.moduleId) : undefined;
+  const { data: quizPayload, loading } = useApi<{
+    quiz: {
+      id: number;
+      moduleId: number;
+      title: string;
+      description?: string | null;
+    };
+    questions: {
+      id: number;
+      type: "multiple_choice" | "short_answer" | "essay";
+      questionText: string;
+      options: string[] | null;
+      points: number;
+    }[];
+  }>(Number.isNaN(id) ? null : `/api/quizzes/${id}`);
+  const quiz = quizPayload?.quiz;
+  const questions = quizPayload?.questions ?? [];
+  const { data: moduleData } = useApi<{ id: number }>(
+    quiz ? `/api/modules/${quiz.moduleId}` : null
+  );
   const moduleHref = moduleData ? `/modules/${moduleData.id}` : "/subjects";
-  const { user } = useAuth();
-  const { results, recordResult } = useDemoQuizResults(user?.id);
 
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
-  const [result, setResult] = useState<QuizResult | null>(null);
-
-  useEffect(() => {
-    setResult(results[id] ?? null);
-  }, [id, results]);
+  const [result, setResult] = useState<{
+    score: number;
+    maxScore: number;
+    feedback: string;
+    recommendedDifficulty?: "easy" | "medium" | "hard";
+  } | null>(null);
+  const [feedbackMap, setFeedbackMap] = useState<
+    Record<
+      number,
+      { isCorrect: boolean; hint: string; explanation: string | null }
+    >
+  >({});
+  const [checkingQuestionId, setCheckingQuestionId] = useState<number | null>(null);
 
   const progress = useMemo(() => {
     if (questions.length === 0) return 0;
     return Math.round(((currentQuestion + 1) / questions.length) * 100);
   }, [currentQuestion, questions.length]);
+
+  if (loading) {
+    return (
+      <Card>
+        <CardContent>
+          <Typography color="text.secondary">Loading quiz...</Typography>
+        </CardContent>
+      </Card>
+    );
+  }
 
   if (!quiz) {
     return (
@@ -72,38 +100,26 @@ export default function QuizPage() {
     );
   }
 
-  const handleSubmit = () => {
-    let correct = 0;
-    questions.forEach((question) => {
-      const answer = (answers[question.id] ?? "").trim();
-      if (!answer) return;
-      if (question.type === "short_answer") {
-        if (answer.toLowerCase() === question.correctAnswer.toLowerCase()) {
-          correct += 1;
-        }
-      } else if (answer === question.correctAnswer) {
-        correct += 1;
-      }
-    });
-
-    const score = Math.round((correct / questions.length) * 100);
-    const feedback =
-      score >= 80
-        ? "Excellent work. You are ready for the next lesson."
-        : score >= 50
-        ? "Good effort. Review a few questions and try again."
-        : "Keep practicing. A quick recap will help a lot.";
-
-    const nextResult: QuizResult = {
+  const handleSubmit = async () => {
+    const payload = {
       quizId: quiz.id,
-      score,
-      totalQuestions: questions.length,
-      feedback,
-      completedAt: new Date().toISOString(),
+      answers: questions.map((question) => ({
+        questionId: question.id,
+        answer: (answers[question.id] ?? "").trim(),
+      })),
     };
 
-    recordResult(nextResult);
-    setResult(nextResult);
+    const response = await apiFetch<{
+      score: number;
+      maxScore: number;
+      feedback: string;
+      recommendedDifficulty?: "easy" | "medium" | "hard";
+    }>("/api/quizzes/submit", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+
+    setResult(response);
   };
 
   const handleNext = () => {
@@ -128,9 +144,14 @@ export default function QuizPage() {
             <CheckCircleIcon sx={{ fontSize: 64, color: "primary.main", mx: "auto" }} />
             <Typography variant="h4">Quiz completed</Typography>
             <Typography variant="h2" sx={{ color: "primary.main" }}>
-              {result.score}%
+              {Math.round((result.score / result.maxScore) * 100)}%
             </Typography>
             <Typography color="text.secondary">{result.feedback}</Typography>
+            {result.recommendedDifficulty && (
+              <Typography variant="body2" color="text.secondary">
+                Next suggested difficulty: {result.recommendedDifficulty}
+              </Typography>
+            )}
             <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
               <Button component={Link} href={moduleHref} variant="contained" fullWidth>
                 Back to module
@@ -151,6 +172,7 @@ export default function QuizPage() {
   }
 
   const question = questions[currentQuestion];
+  const feedback = feedbackMap[question.id];
 
   return (
     <Stack spacing={3} sx={{ maxWidth: 820, mx: "auto" }}>
@@ -186,7 +208,7 @@ export default function QuizPage() {
                   </Button>
                 ))}
 
-              {question.type === "short_answer" && (
+              {question.type !== "multiple_choice" && (
                 <TextField
                   placeholder="Type your answer"
                   multiline
@@ -202,17 +224,61 @@ export default function QuizPage() {
               )}
             </Stack>
 
+            {feedback && (
+              <Alert severity={feedback.isCorrect ? "success" : "info"}>
+                {feedback.isCorrect
+                  ? feedback.explanation || "Great job! You got it right."
+                  : feedback.hint}
+              </Alert>
+            )}
+
             <Box textAlign="right">
-              <Button
-                variant="contained"
-                endIcon={<ArrowForwardIcon />}
-                onClick={handleNext}
-                disabled={!answers[question.id]}
+              <Stack
+                direction={{ xs: "column", sm: "row" }}
+                spacing={1.5}
+                justifyContent="flex-end"
               >
-                {currentQuestion === questions.length - 1
-                  ? "Submit quiz"
-                  : "Next question"}
-              </Button>
+                <Button
+                  variant="outlined"
+                  onClick={async () => {
+                    if (!answers[question.id]) return;
+                    setCheckingQuestionId(question.id);
+                    try {
+                      const response = await apiFetch<{
+                        questionId: number;
+                        isCorrect: boolean;
+                        hint: string;
+                        explanation: string | null;
+                      }>("/api/quizzes/check", {
+                        method: "POST",
+                        body: JSON.stringify({
+                          questionId: question.id,
+                          answer: answers[question.id],
+                        }),
+                      });
+                      setFeedbackMap((prev) => ({
+                        ...prev,
+                        [question.id]: response,
+                      }));
+                    } finally {
+                      setCheckingQuestionId(null);
+                    }
+                  }}
+                  disabled={!answers[question.id] || checkingQuestionId === question.id}
+                >
+                  {checkingQuestionId === question.id ? "Checking..." : "Check answer"}
+                </Button>
+                <Button
+                  variant="contained"
+                  endIcon={<ArrowForwardIcon />}
+                  onClick={handleNext}
+                  disabled={!answers[question.id]}
+                >
+                  {currentQuestion === questions.length - 1
+                    ? "Submit quiz"
+                    : "Next question"}
+                </Button>
+              </Stack>
             </Box>
           </Stack>
         </CardContent>

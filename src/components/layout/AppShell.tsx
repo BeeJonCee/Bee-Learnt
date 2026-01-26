@@ -21,6 +21,8 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
@@ -32,11 +34,14 @@ import MenuIcon from "@mui/icons-material/Menu";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import SearchIcon from "@mui/icons-material/Search";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
-import { signOut, useSession } from "next-auth/react";
+import GroupsIcon from "@mui/icons-material/Groups";
+import AccessibilityNewIcon from "@mui/icons-material/AccessibilityNew";
 import { useColorMode } from "@/providers/ThemeModeProvider";
 import { getDashboardPath } from "@/lib/navigation";
+import { useAuth } from "@/providers/AuthProvider";
 
 const drawerWidth = 280;
+const collapsedDrawerWidth = 88;
 
 type NavItem = {
   label: string;
@@ -46,13 +51,16 @@ type NavItem = {
 };
 
 export default function AppShell({ children }: { children: ReactNode }) {
-  const { data: session } = useSession();
-  const user = session?.user;
+  const { user, logout } = useAuth();
   const pathname = usePathname() ?? "";
   const theme = useTheme();
   const isDesktop = useMediaQuery(theme.breakpoints.up("md"));
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const { mode, toggleMode } = useColorMode();
+  const effectiveDrawerWidth =
+    isDesktop && isCollapsed ? collapsedDrawerWidth : drawerWidth;
+  const showLabels = !isDesktop || !isCollapsed;
 
   const navItems = useMemo<NavItem[]>(() => {
     const role = user?.role ?? "STUDENT";
@@ -88,6 +96,18 @@ export default function AppShell({ children }: { children: ReactNode }) {
         visible: role === "STUDENT",
       },
       {
+        label: "Collaboration",
+        href: "/collaboration",
+        icon: GroupsIcon,
+        visible: role === "STUDENT" || role === "PARENT",
+      },
+      {
+        label: "Accessibility",
+        href: "/settings/accessibility",
+        icon: AccessibilityNewIcon,
+        visible: true,
+      },
+      {
         label: "Children",
         href: "/children",
         icon: GroupIcon,
@@ -104,7 +124,8 @@ export default function AppShell({ children }: { children: ReactNode }) {
 
   const drawer = (
     <Box sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
-      <Box sx={{ p: 3 }}>
+      {isDesktop && <Toolbar />}
+      <Box sx={{ p: 3, pt: isDesktop ? 2 : 3 }}>
         <Stack direction="row" spacing={1.5} alignItems="center">
           <Avatar
             sx={{
@@ -115,12 +136,24 @@ export default function AppShell({ children }: { children: ReactNode }) {
           >
             B
           </Avatar>
-          <Box>
-            <Typography variant="h6">BeeLearnt</Typography>
-            <Typography variant="caption" color="text.secondary">
-              CAPS-ready learning
-            </Typography>
-          </Box>
+          {showLabels && (
+            <Box>
+              <Typography variant="h6">BeeLearnt</Typography>
+              <Typography variant="caption" color="text.secondary">
+                CAPS-ready learning
+              </Typography>
+            </Box>
+          )}
+          {isDesktop && (
+            <IconButton
+              size="small"
+              onClick={() => setIsCollapsed((prev) => !prev)}
+              sx={{ ml: "auto" }}
+              aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            >
+              {isCollapsed ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+            </IconButton>
+          )}
         </Stack>
       </Box>
       <Divider />
@@ -131,38 +164,44 @@ export default function AppShell({ children }: { children: ReactNode }) {
             const selected =
               pathname === item.href || pathname.startsWith(`${item.href}/`);
             return (
-              <ListItemButton
-                key={item.href}
-                component={Link}
-                href={item.href}
-                selected={selected}
-                onClick={() => setMobileOpen(false)}
-                sx={{
-                  borderRadius: 2,
-                  mb: 0.5,
-                  color: selected ? "#101010" : "text.secondary",
-                  backgroundColor: selected
-                    ? "rgba(246, 201, 69, 0.95)"
-                    : "transparent",
-                  "&:hover": {
+                <ListItemButton
+                  key={item.href}
+                  component={Link}
+                  href={item.href}
+                  selected={selected}
+                  onClick={() => setMobileOpen(false)}
+                  sx={{
+                    borderRadius: 2,
+                    mb: 0.5,
+                    color: selected ? "#101010" : "text.secondary",
                     backgroundColor: selected
                       ? "rgba(246, 201, 69, 0.95)"
-                      : "rgba(255, 255, 255, 0.06)",
-                  },
-                }}
-              >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 40,
-                    color: selected ? "#101010" : "inherit",
+                      : "transparent",
+                    justifyContent: showLabels ? "flex-start" : "center",
+                    px: showLabels ? 2 : 1.5,
+                    "&:hover": {
+                      backgroundColor: selected
+                        ? "rgba(246, 201, 69, 0.95)"
+                        : "rgba(255, 255, 255, 0.06)",
+                    },
                   }}
                 >
+                  <ListItemIcon
+                    sx={{
+                      minWidth: showLabels ? 40 : "auto",
+                      mr: showLabels ? 1 : 0,
+                      color: selected ? "#101010" : "inherit",
+                      justifyContent: "center",
+                    }}
+                  >
                   <item.icon fontSize="small" />
                 </ListItemIcon>
-                <ListItemText
-                  primary={item.label}
-                  primaryTypographyProps={{ fontWeight: 600 }}
-                />
+                {showLabels && (
+                  <ListItemText
+                    primary={item.label}
+                    primaryTypographyProps={{ fontWeight: 600 }}
+                  />
+                )}
               </ListItemButton>
             );
           })}
@@ -170,15 +209,19 @@ export default function AppShell({ children }: { children: ReactNode }) {
       <Box sx={{ mt: "auto", px: 2, pb: 3 }}>
         <Button
           variant="outlined"
-          startIcon={<LogoutIcon />}
-          onClick={() => signOut({ callbackUrl: "/login" })}
+          startIcon={showLabels ? <LogoutIcon /> : undefined}
+          onClick={() => {
+            logout();
+            window.location.href = "/login";
+          }}
           fullWidth
           sx={{
             borderColor: "rgba(255,255,255,0.16)",
             color: "text.primary",
+            minWidth: 0,
           }}
         >
-          Logout
+          {showLabels ? "Logout" : <LogoutIcon fontSize="small" />}
         </Button>
       </Box>
     </Box>
@@ -186,11 +229,31 @@ export default function AppShell({ children }: { children: ReactNode }) {
 
   return (
     <Box sx={{ display: "flex", minHeight: "100vh" }}>
-      <AppBar position="fixed" elevation={0} sx={{ zIndex: theme.zIndex.drawer + 1 }}>
+      <AppBar
+        position="fixed"
+        elevation={0}
+        sx={{
+          zIndex: theme.zIndex.drawer + 1,
+          width: isDesktop ? `calc(100% - ${effectiveDrawerWidth}px)` : "100%",
+          ml: isDesktop ? `${effectiveDrawerWidth}px` : 0,
+          transition: theme.transitions.create(["margin-left", "width"], {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.shorter,
+          }),
+        }}
+      >
         <Toolbar sx={{ gap: 2 }}>
-          {!isDesktop && (
+          {!isDesktop ? (
             <IconButton color="inherit" onClick={() => setMobileOpen(true)}>
               <MenuIcon />
+            </IconButton>
+          ) : (
+            <IconButton
+              color="inherit"
+              onClick={() => setIsCollapsed((prev) => !prev)}
+              aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            >
+              {isCollapsed ? <ChevronRightIcon /> : <ChevronLeftIcon />}
             </IconButton>
           )}
           <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
@@ -215,19 +278,23 @@ export default function AppShell({ children }: { children: ReactNode }) {
         </Toolbar>
       </AppBar>
 
-      <Box component="nav">
+      <Box component="nav" sx={{ width: isDesktop ? effectiveDrawerWidth : 0, flexShrink: 0 }}>
         {isDesktop ? (
           <Drawer
             variant="permanent"
             sx={{
-              width: drawerWidth,
+              width: effectiveDrawerWidth,
               flexShrink: 0,
               [`& .MuiDrawer-paper`]: {
-                width: drawerWidth,
+                width: effectiveDrawerWidth,
                 boxSizing: "border-box",
                 backgroundImage: "none",
                 backgroundColor: "rgba(15, 17, 22, 0.9)",
                 borderRight: "1px solid rgba(255,255,255,0.06)",
+                transition: theme.transitions.create("width", {
+                  easing: theme.transitions.easing.sharp,
+                  duration: theme.transitions.duration.shorter,
+                }),
               },
             }}
             open
@@ -263,7 +330,6 @@ export default function AppShell({ children }: { children: ReactNode }) {
           px: { xs: 2, sm: 3, md: 4 },
           pt: { xs: 10, md: 12 },
           pb: 6,
-          ml: isDesktop ? `${drawerWidth}px` : 0,
           position: "relative",
         }}
       >

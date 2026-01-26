@@ -16,22 +16,31 @@ import ScienceIcon from "@mui/icons-material/Science";
 import BiotechIcon from "@mui/icons-material/Biotech";
 import ComputerIcon from "@mui/icons-material/Computer";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
-import { getSubjects, type Subject } from "@/lib/demo-data";
+import { useApi } from "@/hooks/useApi";
 
-const subjectIcons: Record<number, typeof MenuBookIcon> = {
-  1: FunctionsIcon,
-  2: ScienceIcon,
-  3: BiotechIcon,
-  4: ComputerIcon,
+type Subject = {
+  id: number;
+  name: string;
+  description?: string | null;
+  minGrade: number;
+  maxGrade: number;
+};
+
+const subjectIcons: Record<string, typeof MenuBookIcon> = {
+  Mathematics: FunctionsIcon,
+  "Physical Sciences": ScienceIcon,
+  "Life Sciences": BiotechIcon,
+  "Information Technology": ComputerIcon,
 };
 
 function SubjectIcon({ subject }: { subject: Subject }) {
-  const Icon = subjectIcons[subject.id] ?? MenuBookIcon;
+  const Icon = subjectIcons[subject.name] ?? MenuBookIcon;
   return <Icon sx={{ fontSize: 48, color: "primary.main" }} />;
 }
 
 export default function SubjectsPage() {
-  const subjects = getSubjects();
+  const { data } = useApi<Subject[]>("/api/subjects");
+  const subjects = data ?? [];
 
   return (
     <Stack spacing={4}>
@@ -45,9 +54,9 @@ export default function SubjectsPage() {
       <Grid container spacing={3}>
         {subjects.map((subject) => {
           const gradeLabel =
-            typeof subject.grade === "string"
-              ? `Grades ${subject.grade}`
-              : `Grade ${subject.grade}`;
+            subject.minGrade === subject.maxGrade
+              ? `Grade ${subject.minGrade}`
+              : `Grades ${subject.minGrade}-${subject.maxGrade}`;
 
           return (
             <Grid item xs={12} md={6} lg={4} key={subject.id}>

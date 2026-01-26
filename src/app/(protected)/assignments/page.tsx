@@ -19,9 +19,8 @@ import EventIcon from "@mui/icons-material/Event";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import AssignmentList from "@/components/AssignmentList";
 import StatCard from "@/components/StatCard";
-import { getModuleById } from "@/lib/demo-data";
-import { useAuth } from "@/providers/AuthProvider";
-import { useDemoAssignments } from "@/hooks/useDemoAssignments";
+import { useApi } from "@/hooks/useApi";
+import { apiFetch } from "@/lib/utils/api";
 
 const statusOptions = [
   { value: "all", label: "All" },
@@ -33,29 +32,105 @@ type StatusFilter = (typeof statusOptions)[number]["value"];
 
 type GradeFilter = "all" | "10" | "11" | "12";
 
+type Assignment = {
+  id: number;
+  moduleId: number;
+  lessonId: number | null;
+  title: string;
+  description?: string | null;
+  dueDate: string;
+  priority: "low" | "medium" | "high";
+  status: "todo" | "in_progress" | "submitted" | "graded";
+  grade: number;
+};
+
+type Module = {
+  id: number;
+  title: string;
+};
+
 export default function AssignmentsPage() {
-  const { user } = useAuth();
-  const { assignments, summary, toggleAssignment } = useDemoAssignments(user?.id);
+  const { data: assignments, setData } = useApi<Assignment[]>("/api/assignments");
+  const { data: modules } = useApi<Module[]>("/api/modules");
   const [status, setStatus] = useState<StatusFilter>("all");
   const [grade, setGrade] = useState<GradeFilter>("all");
 
+  const moduleById = useMemo(() => {
+    const map = new Map<number, string>();
+    (modules ?? []).forEach((module) => map.set(module.id, module.title));
+    return map;
+  }, [modules]);
+
+  const summary = useMemo(() => {
+    const list = assignments ?? [];
+    const completed = list.filter((assignment) =>
+      ["submitted", "graded"].includes(assignment.status)
+    );
+    const now = new Date();
+    const dueSoon = list.filter((assignment) => {
+      const due = new Date(assignment.dueDate);
+      const diffDays = Math.ceil((due.getTime() - now.getTime()) / 86400000);
+      return diffDays >= 0 && diffDays <= 7 && !completed.includes(assignment);
+    });
+    const overdue = list.filter((assignment) => {
+      const due = new Date(assignment.dueDate);
+      return due < now && !completed.includes(assignment);
+    });
+
+    return {
+      total: list.length,
+      completed: completed.length,
+      dueSoon: dueSoon.length,
+      overdue: overdue.length,
+    };
+  }, [assignments]);
+
   const items = useMemo(() => {
-    const withModules = assignments.map((assignment) => ({
+    const withModules = (assignments ?? []).map((assignment) => ({
       ...assignment,
-      moduleTitle: getModuleById(assignment.moduleId)?.title ?? "Module",
+      moduleTitle: moduleById.get(assignment.moduleId) ?? "Module",
     }));
 
     return withModules
       .filter((assignment) => {
-        if (status === "pending" && assignment.completed) return false;
-        if (status === "completed" && !assignment.completed) return false;
+        const isCompleted = ["submitted", "graded"].includes(assignment.status);
+        if (status === "pending" && isCompleted) return false;
+        if (status === "completed" && !isCompleted) return false;
         if (grade !== "all" && assignment.grade !== Number(grade)) return false;
         return true;
       })
       .sort(
         (a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
       );
-  }, [assignments, grade, status]);
+  }, [assignments, grade, moduleById, status]);
+
+  const handleToggle = async (assignmentId: number) => {
+    const current = assignments?.find((assignment) => assignment.id === assignmentId);
+    if (!current) return;
+    const isCompleted = ["submitted", "graded"].includes(current.status);
+    const nextStatus = isCompleted ? "todo" : "submitted";
+
+    setData((prev) =>
+      (prev ?? []).map((assignment) =>
+        assignment.id === assignmentId
+          ? { ...assignment, status: nextStatus }
+          : assignment
+      )
+    );
+
+    try {
+      await apiFetch(`/api/assignments/${assignmentId}`, {
+        method: "PATCH",
+        body: JSON.stringify({ status: nextStatus }),
+      });
+    } catch {
+      setData((prev) =>
+        (prev ?? []).map((assignment) =>
+          assignment.id === assignmentId ? current : assignment
+        )
+      );
+    }
+  };
 
   return (
     <Stack spacing={4}>
@@ -137,7 +212,7 @@ export default function AssignmentsPage() {
         </FormControl>
       </Box>
 
-      <AssignmentList items={items} onToggle={toggleAssignment} showModule />
+      <AssignmentList items={items} onToggle={handleToggle} showModule />
     </Stack>
   );
 }

@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
+import { apiFetch } from "@/lib/utils/api";
 
 type Message = { role: "user" | "assistant"; content: string };
 
@@ -24,22 +25,34 @@ export default function AiTutorPage() {
     },
   ]);
   const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (!input.trim()) return;
     const nextMessage = input.trim();
-    setMessages((prev) => [...prev, { role: "user", content: nextMessage }]);
+    const nextMessages = [...messages, { role: "user", content: nextMessage }];
+    setMessages(nextMessages);
     setInput("");
-    setTimeout(() => {
+    setLoading(true);
+    try {
+      const response = await apiFetch<{ message: string }>("/api/ai/tutor", {
+        method: "POST",
+        body: JSON.stringify({
+          messages: nextMessages.slice(-8),
+        }),
+      });
+      setMessages((prev) => [...prev, { role: "assistant", content: response.message }]);
+    } catch {
       setMessages((prev) => [
         ...prev,
         {
           role: "assistant",
-          content:
-            "Great. Want a quick summary, a worked example, or a mini quiz?",
+          content: "I ran into an issue. Try again or ask in a different way.",
         },
       ]);
-    }, 700);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -75,9 +88,23 @@ export default function AiTutorPage() {
                     <AutoAwesomeIcon sx={{ fontSize: 18 }} />
                   )}
                   <Typography variant="body2">{message.content}</Typography>
-                </Stack>
-              </Box>
+                  </Stack>
+                </Box>
             ))}
+            {loading && (
+              <Box
+                sx={{
+                  alignSelf: "flex-start",
+                  px: 2,
+                  py: 1.5,
+                  borderRadius: 2,
+                  maxWidth: "80%",
+                  bgcolor: "rgba(255,255,255,0.08)",
+                }}
+              >
+                <Typography variant="body2">Thinking...</Typography>
+              </Box>
+            )}
           </Stack>
         </CardContent>
       </Card>
@@ -96,6 +123,7 @@ export default function AiTutorPage() {
           size="large"
           endIcon={<SendIcon />}
           onClick={handleSend}
+          disabled={!input.trim() || loading}
         >
           Send
         </Button>

@@ -1,176 +1,97 @@
 "use client";
 
-import {
-  type ReactNode,
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import type { UserRole } from "@/lib/demo-data";
-
-export type DemoUser = {
-  id: string;
-  username: string;
-  name: string;
-  email: string;
-  role: UserRole;
-};
-
-type StoredUser = DemoUser & { password: string };
-
-type AuthResult = {
-  ok: boolean;
-  error?: string;
-};
-
-type RegisterInput = {
-  username: string;
-  password: string;
-  name: string;
-  email: string;
-  role: UserRole;
-};
+import { type ReactNode, createContext, useCallback, useContext, useMemo } from "react";
+import type { AuthUser } from "@/lib/auth/storage";
+import { authClient } from "@/lib/neon-auth/client";
 
 type AuthContextValue = {
-  user: DemoUser | null;
+  user: AuthUser | null;
   loading: boolean;
-  login: (username: string, password: string) => Promise<AuthResult>;
-  register: (input: RegisterInput) => Promise<AuthResult>;
+  login: (email: string, password: string) => Promise<void>;
+  register: (payload: { name: string; email: string; password: string; role: "STUDENT" | "PARENT" }) => Promise<void>;
+  magicLinkLogin: (email: string, callbackURL?: string) => Promise<void>;
+  socialLogin: (provider: "google" | "facebook" | "apple", callbackURL?: string) => Promise<void>;
+  sendEmailOtp: (email: string) => Promise<void>;
+  verifyEmailOtp: (email: string, code: string) => Promise<void>;
   logout: () => void;
 };
-
-const USERS_KEY = "beelearn-users";
-const CURRENT_USER_KEY = "beelearn-current-user";
-
-const DEFAULT_USERS: StoredUser[] = [
-  {
-    id: "student-01",
-    username: "student",
-    password: "learn",
-    name: "Nala Mokoena",
-    email: "nala@beelearn.local",
-    role: "student",
-  },
-  {
-    id: "parent-01",
-    username: "parent",
-    password: "care",
-    name: "Thabo Khumalo",
-    email: "thabo@beelearn.local",
-    role: "parent",
-  },
-];
-
-function toPublicUser(user: StoredUser): DemoUser {
-  const { password, ...publicUser } = user;
-  return publicUser;
-}
-
-function readUsers(): StoredUser[] {
-  if (typeof window === "undefined") return DEFAULT_USERS;
-  const raw = window.localStorage.getItem(USERS_KEY);
-  if (!raw) {
-    window.localStorage.setItem(USERS_KEY, JSON.stringify(DEFAULT_USERS));
-    return DEFAULT_USERS;
-  }
-  try {
-    return JSON.parse(raw) as StoredUser[];
-  } catch {
-    window.localStorage.setItem(USERS_KEY, JSON.stringify(DEFAULT_USERS));
-    return DEFAULT_USERS;
-  }
-}
-
-function writeUsers(users: StoredUser[]) {
-  if (typeof window === "undefined") return;
-  window.localStorage.setItem(USERS_KEY, JSON.stringify(users));
-}
-
-function readCurrentUser(): DemoUser | null {
-  if (typeof window === "undefined") return null;
-  const raw = window.localStorage.getItem(CURRENT_USER_KEY);
-  if (!raw) return null;
-  try {
-    return JSON.parse(raw) as DemoUser;
-  } catch {
-    return null;
-  }
-}
-
-function writeCurrentUser(user: DemoUser | null) {
-  if (typeof window === "undefined") return;
-  if (!user) {
-    window.localStorage.removeItem(CURRENT_USER_KEY);
-    return;
-  }
-  window.localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
-}
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<DemoUser | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    readUsers();
-    setUser(readCurrentUser());
-    setLoading(false);
-  }, []);
-
-  const login = useCallback(async (username: string, password: string) => {
-    const users = readUsers();
-    const match = users.find(
-      (entry) => entry.username === username && entry.password === password
-    );
-    if (!match) {
-      return { ok: false, error: "Invalid username or password." };
-    }
-    const publicUser = toPublicUser(match);
-    setUser(publicUser);
-    writeCurrentUser(publicUser);
-    return { ok: true };
-  }, []);
-
-  const register = useCallback(async (input: RegisterInput) => {
-    const users = readUsers();
-    const exists = users.some((entry) => entry.username === input.username);
-    if (exists) {
-      return { ok: false, error: "That username is already taken." };
-    }
-    const newUser: StoredUser = {
-      id: `user-${Date.now()}`,
-      username: input.username,
-      password: input.password,
-      name: input.name,
-      email: input.email,
-      role: input.role,
+  const session = authClient.useSession();
+  const neonAuthClient = authClient as typeof authClient & {
+    signIn: typeof authClient.signIn & {
+      magicLink: (payload: { email: string; callbackURL?: string }) => Promise<unknown>;
+      emailOtp: (payload: { email: string; otp: string }) => Promise<unknown>;
     };
-    const updated = [...users, newUser];
-    writeUsers(updated);
-    const publicUser = toPublicUser(newUser);
-    setUser(publicUser);
-    writeCurrentUser(publicUser);
-    return { ok: true };
+    emailOtp: {
+      sendVerificationOtp: (payload: { email: string; type: "sign-in" }) => Promise<unknown>;
+    };
+  };
+
+  const user: AuthUser | null = session.data?.user
+    ? {
+        id: session.data.user.id,
+        name: session.data.user.name ?? null,
+        email: session.data.user.email ?? null,
+        role: (session.data.user as { role?: AuthUser["role"] }).role ?? "STUDENT",
+      }
+    : null;
+
+  const loading = session.isPending;
+
+  const login = useCallback(async (email: string, password: string) => {
+    await authClient.signIn.email({ email, password });
   }, []);
+
+  const register = useCallback(
+    async (payload: { name: string; email: string; password: string; role: "STUDENT" | "PARENT" }) => {
+      await authClient.signUp.email({
+        email: payload.email,
+        password: payload.password,
+        name: payload.name,
+      });
+    },
+    []
+  );
+
+  const magicLinkLogin = useCallback(async (email: string, callbackURL?: string) => {
+    await neonAuthClient.signIn.magicLink({ email, callbackURL });
+  }, [neonAuthClient]);
+
+  const socialLogin = useCallback(
+    async (provider: "google" | "facebook" | "apple", callbackURL?: string) => {
+      await authClient.signIn.social({ provider, callbackURL });
+    },
+    []
+  );
+
+  const sendEmailOtp = useCallback(async (email: string) => {
+    await neonAuthClient.emailOtp.sendVerificationOtp({ email, type: "sign-in" });
+  }, [neonAuthClient]);
+
+  const verifyEmailOtp = useCallback(async (email: string, code: string) => {
+    await neonAuthClient.signIn.emailOtp({ email, otp: code });
+  }, [neonAuthClient]);
 
   const logout = useCallback(() => {
-    setUser(null);
-    writeCurrentUser(null);
+    authClient.signOut();
   }, []);
 
-  const value = useMemo<AuthContextValue>(
+  const value = useMemo(
     () => ({
       user,
       loading,
       login,
       register,
+      magicLinkLogin,
+      socialLogin,
+      sendEmailOtp,
+      verifyEmailOtp,
       logout,
     }),
-    [user, loading, login, register, logout]
+    [user, loading, login, register, magicLinkLogin, socialLogin, sendEmailOtp, verifyEmailOtp, logout]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

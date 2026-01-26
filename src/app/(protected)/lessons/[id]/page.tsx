@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import ReactMarkdown from "react-markdown";
@@ -14,25 +14,76 @@ import {
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import { getLessonById, getModuleById } from "@/lib/demo-data";
 import { useAuth } from "@/providers/AuthProvider";
-import { useDemoProgress } from "@/hooks/useDemoProgress";
+import LessonResources from "@/components/LessonResources";
+import LessonNotes from "@/components/LessonNotes";
+import { useApi } from "@/hooks/useApi";
+import { apiFetch } from "@/lib/utils/api";
 
 export default function LessonPage() {
   const params = useParams();
   const idParam = params?.id;
   const id = Number(Array.isArray(idParam) ? idParam[0] : idParam);
-  const lesson = getLessonById(id);
-  const moduleData = lesson ? getModuleById(lesson.moduleId) : undefined;
-  const moduleHref = moduleData ? `/modules/${moduleData.id}` : "/subjects";
+  const { data: lesson, loading: lessonLoading } = useApi<{
+    id: number;
+    moduleId: number;
+    title: string;
+    content?: string | null;
+    type: "text" | "video" | "diagram" | "pdf";
+    videoUrl?: string | null;
+    diagramUrl?: string | null;
+    pdfUrl?: string | null;
+  }>(Number.isNaN(id) ? null : `/api/lessons/${id}`);
+  const { data: moduleData } = useApi<{
+    id: number;
+    title: string;
+  }>(lesson ? `/api/modules/${lesson.moduleId}` : null);
+  const { data: unlockedModules, loading: accessLoading } = useApi<
+    { moduleId: number }[]
+  >(lesson ? "/api/user-modules" : null);
   const { user } = useAuth();
-  const { progress, markLessonComplete, touchLesson } = useDemoProgress(user?.id);
+  const { data: accessibility } = useApi<{
+    textScale: number;
+    enableNarration: boolean;
+    language: string;
+    translationEnabled: boolean;
+  }>("/api/accessibility");
+  const { data: progressEntries, refetch: refetchProgress } = useApi<
+    { id: number; completed: boolean }[]
+  >(Number.isNaN(id) ? null : `/api/progress?lessonId=${id}`);
+  const moduleHref = moduleData ? `/modules/${moduleData.id}` : "/subjects";
+  const [translatedContent, setTranslatedContent] = useState<string | null>(null);
+  const [translating, setTranslating] = useState(false);
 
   useEffect(() => {
-    if (lesson) {
-      touchLesson(lesson.id);
-    }
-  }, [lesson, touchLesson]);
+    if (!lesson) return;
+    apiFetch("/api/progress", {
+      method: "POST",
+      body: JSON.stringify({
+        lessonId: lesson.id,
+        moduleId: lesson.moduleId,
+        timeSpentMinutes: 0,
+      }),
+    }).catch(() => {});
+  }, [lesson]);
+
+  useEffect(() => {
+    setTranslatedContent(null);
+  }, [lesson?.id]);
+
+  const isCompleted = useMemo(() => {
+    return progressEntries?.[0]?.completed ?? false;
+  }, [progressEntries]);
+
+  if (lessonLoading) {
+    return (
+      <Card>
+        <CardContent>
+          <Typography color="text.secondary">Loading lesson...</Typography>
+        </CardContent>
+      </Card>
+    );
+  }
 
   if (!lesson) {
     return (
@@ -44,7 +95,39 @@ export default function LessonPage() {
     );
   }
 
-  const isCompleted = Boolean(progress[lesson.id]?.completed);
+  const isStudent = user?.role === "STUDENT";
+  const isUnlocked =
+    !isStudent ||
+    (unlockedModules ?? []).some((module) => module.moduleId === lesson.moduleId);
+
+  if (isStudent && accessLoading) {
+    return (
+      <Card>
+        <CardContent>
+          <Typography color="text.secondary">Checking access...</Typography>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (isStudent && !isUnlocked) {
+    return (
+      <Card>
+        <CardContent>
+          <Stack spacing={2}>
+            <Typography variant="h6">Unlock this module to continue</Typography>
+            <Typography color="text.secondary">
+              Your teacher can provide the access code for{" "}
+              {moduleData?.title ?? "this module"}.
+            </Typography>
+            <Button component={Link} href="/onboarding" variant="contained">
+              Unlock modules
+            </Button>
+          </Stack>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Stack spacing={4} sx={{ maxWidth: 960 }}>
@@ -59,6 +142,46 @@ export default function LessonPage() {
 
       <Stack spacing={2}>
         <Typography variant="h3">{lesson.title}</Typography>
+        <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5}>
+          {accessibility?.enableNarration && (
+            <Button
+              variant="outlined"
+              onClick={() => {
+                if (!lesson.content) return;
+                if (typeof window === "undefined" || !window.speechSynthesis) return;
+                const utterance = new SpeechSynthesisUtterance(lesson.content);
+                utterance.lang = accessibility?.language || "en";
+                window.speechSynthesis.cancel();
+                window.speechSynthesis.speak(utterance);
+              }}
+            >
+              Listen to lesson
+            </Button>
+          )}
+          {accessibility?.translationEnabled && lesson.content && (
+            <Button
+              variant="outlined"
+              disabled={translating}
+              onClick={async () => {
+                setTranslating(true);
+                try {
+                  const response = await apiFetch<{ translatedText: string }>("/api/translate", {
+                    method: "POST",
+                    body: JSON.stringify({
+                      text: lesson.content,
+                      targetLanguage: accessibility?.language || "en",
+                    }),
+                  });
+                  setTranslatedContent(response.translatedText);
+                } finally {
+                  setTranslating(false);
+                }
+              }}
+            >
+              {translating ? "Translating..." : "Translate lesson"}
+            </Button>
+          )}
+        </Stack>
         {lesson.videoUrl && (
           <Box
             component="iframe"
@@ -71,6 +194,29 @@ export default function LessonPage() {
               border: "1px solid rgba(255,255,255,0.08)",
             }}
           />
+        )}
+        {lesson.diagramUrl && (
+          <Box
+            component="img"
+            src={lesson.diagramUrl}
+            alt={`${lesson.title} diagram`}
+            sx={{
+              width: "100%",
+              borderRadius: 3,
+              border: "1px solid rgba(255,255,255,0.08)",
+            }}
+          />
+        )}
+        {lesson.pdfUrl && (
+          <Button
+            href={lesson.pdfUrl}
+            target="_blank"
+            rel="noopener"
+            variant="outlined"
+            sx={{ alignSelf: "flex-start" }}
+          >
+            Open lesson PDF
+          </Button>
         )}
         <Card>
           <CardContent>
@@ -111,18 +257,35 @@ export default function LessonPage() {
                 ),
               }}
             >
-              {lesson.content}
+              {translatedContent ?? lesson.content ?? ""}
             </ReactMarkdown>
           </CardContent>
         </Card>
       </Stack>
+
+      <LessonResources lessonId={lesson.id} />
+      <LessonNotes lessonId={lesson.id} />
 
       <Box sx={{ textAlign: "center" }}>
         <Button
           variant="contained"
           size="large"
           startIcon={<CheckCircleIcon />}
-          onClick={() => markLessonComplete(lesson.id)}
+          onClick={async () => {
+            try {
+              await apiFetch("/api/progress", {
+                method: "POST",
+                body: JSON.stringify({
+                  lessonId: lesson.id,
+                  moduleId: lesson.moduleId,
+                  completed: true,
+                }),
+              });
+              await refetchProgress();
+            } catch {
+              // Ignore for now; completion state remains unchanged.
+            }
+          }}
           disabled={isCompleted}
         >
           {isCompleted ? "Completed" : "Mark as complete"}
