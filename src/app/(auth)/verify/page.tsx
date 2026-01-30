@@ -4,15 +4,17 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Alert, Box, Button, Grid, Paper, Stack, TextField, Typography } from "@mui/material";
 import { useAuth } from "@/providers/AuthProvider";
+import { authClient } from "@/lib/neon-auth/client";
 
 export default function VerifyPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user, sendEmailOtp, verifyEmailOtp } = useAuth();
   const nextPath = useMemo(
-    () => searchParams.get("next") ?? "/dashboard/student",
+    () => searchParams.get("next") ?? "/dashboard",
     [searchParams]
   );
+  const skipAutoSend = useMemo(() => searchParams.get("sent") === "1", [searchParams]);
   const initialEmail = searchParams.get("email") ?? user?.email ?? "";
   const [email, setEmail] = useState(initialEmail);
   const [code, setCode] = useState("");
@@ -48,11 +50,11 @@ export default function VerifyPage() {
   }, [email, sendEmailOtp]);
 
   useEffect(() => {
-    if (!autoSendRef.current && email) {
+    if (!autoSendRef.current && email && !skipAutoSend) {
       autoSendRef.current = true;
       void handleSend();
     }
-  }, [email, handleSend]);
+  }, [email, handleSend, skipAutoSend]);
 
   const handleVerify = async () => {
     if (!email || !code) {
@@ -65,7 +67,18 @@ export default function VerifyPage() {
     setVerifying(true);
     try {
       await verifyEmailOtp(email, code);
-      router.replace(nextPath);
+      let hasSession = false;
+      if (typeof authClient.getSession === "function") {
+        const session = await authClient.getSession();
+        hasSession = Boolean(session?.data?.session);
+      }
+      if (hasSession) {
+        router.replace(nextPath);
+      } else {
+        router.replace(
+          `/login?email=${encodeURIComponent(email)}&next=${encodeURIComponent(nextPath)}`
+        );
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Verification failed.");
     } finally {

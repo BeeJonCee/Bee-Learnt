@@ -10,6 +10,7 @@ import {
   Grid,
   Stack,
   Typography,
+  Alert,
 } from "@mui/material";
 import FunctionsIcon from "@mui/icons-material/Functions";
 import ScienceIcon from "@mui/icons-material/Science";
@@ -39,7 +40,7 @@ function SubjectIcon({ subject }: { subject: Subject }) {
 }
 
 export default function SubjectsPage() {
-  const { data } = useApi<Subject[]>("/api/subjects");
+  const { data, loading, error } = useApi<Subject[]>("/api/subjects");
   const subjects = data ?? [];
 
   return (
@@ -51,49 +52,67 @@ export default function SubjectsPage() {
         </Typography>
       </Stack>
 
-      <Grid container spacing={3}>
-        {subjects.map((subject) => {
-          const gradeLabel =
-            subject.minGrade === subject.maxGrade
-              ? `Grade ${subject.minGrade}`
-              : `Grades ${subject.minGrade}-${subject.maxGrade}`;
+      {error && <Alert severity="error">{error}</Alert>}
 
-          return (
-            <Grid item xs={12} md={6} lg={4} key={subject.id}>
-              <Card>
-                <CardActionArea component={Link} href={`/subjects/${subject.id}`}>
-                  <Box
-                    sx={{
-                      height: 180,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      background:
-                        "linear-gradient(135deg, rgba(246, 201, 69, 0.16), rgba(255,255,255,0))",
-                    }}
-                  >
-                    <SubjectIcon subject={subject} />
-                  </Box>
-                  <CardContent>
-                    <Stack spacing={1.5}>
-                      <Chip
-                        label={gradeLabel}
-                        color="primary"
-                        size="small"
-                        sx={{ alignSelf: "flex-start" }}
-                      />
-                      <Typography variant="h5">{subject.name}</Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {subject.description}
-                      </Typography>
-                    </Stack>
-                  </CardContent>
-                </CardActionArea>
-              </Card>
-            </Grid>
-          );
-        })}
-      </Grid>
+      {loading ? (
+        <Card>
+          <CardContent>
+            <Typography color="text.secondary">Loading subjects...</Typography>
+          </CardContent>
+        </Card>
+      ) : subjects.length === 0 ? (
+        <Card>
+          <CardContent>
+            <Typography color="text.secondary">
+              No subjects found. Check your backend connection and seed data.
+            </Typography>
+          </CardContent>
+        </Card>
+      ) : (
+        <Grid container spacing={3}>
+          {subjects.map((subject) => {
+            const gradeLabel =
+              subject.minGrade === subject.maxGrade
+                ? `Grade ${subject.minGrade}`
+                : `Grades ${subject.minGrade}-${subject.maxGrade}`;
+
+            return (
+              <Grid item xs={12} md={6} lg={4} key={subject.id}>
+                <Card>
+                  <CardActionArea component={Link} href={`/subjects/${subject.id}`}>
+                    <Box
+                      sx={{
+                        height: 180,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        background:
+                          "linear-gradient(135deg, rgba(246, 201, 69, 0.16), rgba(255,255,255,0))",
+                      }}
+                    >
+                      <SubjectIcon subject={subject} />
+                    </Box>
+                    <CardContent>
+                      <Stack spacing={1.5}>
+                        <Chip
+                          label={gradeLabel}
+                          color="primary"
+                          size="small"
+                          sx={{ alignSelf: "flex-start" }}
+                        />
+                        <Typography variant="h5">{subject.name}</Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {subject.description}
+                        </Typography>
+                      </Stack>
+                    </CardContent>
+                  </CardActionArea>
+                </Card>
+              </Grid>
+            );
+          })}
+        </Grid>
+      )}
     </Stack>
   );
 }

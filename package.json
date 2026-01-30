@@ -18,25 +18,30 @@
     "codes:daily": "tsx scripts/print-daily-codes.ts"
   },
   "dependencies": {
-    "@neondatabase/auth": "^0.1.0-beta.21",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@mui/icons-material": "^6.5.0",
     "@mui/material": "^6.5.0",
     "@mui/material-nextjs": "^6.5.0",
+    "@neondatabase/auth": "^0.1.0-beta.21",
     "@sendgrid/mail": "^8.1.3",
     "d3": "^7.9.0",
     "idb-keyval": "^6.2.1",
     "next": "16.1.4",
     "react": "19.2.3",
+    "react-calendar": "^6.0.0",
     "react-dom": "19.2.3",
     "react-markdown": "^10.1.0",
+    "recharts": "^3.7.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.0",
-    "@types/node": "^20",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.1.0",
+    "@testing-library/user-event": "^14.5.2",
     "@types/jest": "^29.5.12",
+    "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "babel-plugin-react-compiler": "1.0.0",
@@ -46,9 +51,6 @@
     "jest-environment-jsdom": "^29.7.0",
     "ts-jest": "^29.2.5",
     "tsx": "^4.19.2",
-    "@testing-library/jest-dom": "^6.6.3",
-    "@testing-library/react": "^16.1.0",
-    "@testing-library/user-event": "^14.5.2",
     "typescript": "^5"
   }
 }

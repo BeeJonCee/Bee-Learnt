@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   Alert,
   Box,
@@ -19,11 +20,21 @@ import EventIcon from "@mui/icons-material/Event";
 import QueryStatsIcon from "@mui/icons-material/QueryStats";
 import SchoolIcon from "@mui/icons-material/School";
 import TimerIcon from "@mui/icons-material/Timer";
+import { getDashboardPath } from "@/lib/navigation";
 import { useAuth } from "@/providers/AuthProvider";
 import StatCard from "@/components/StatCard";
 import AiTutorWidget from "@/components/AiTutorWidget";
 import BadgeShelf from "@/components/BadgeShelf";
 import StudyTimerCard from "@/components/StudyTimerCard";
+import AnnouncementsPanel from "@/components/AnnouncementsPanel";
+import EventsCalendarPanel from "@/components/EventsCalendarPanel";
+import AttendanceSummaryPanel from "@/components/AttendanceSummaryPanel";
+import WeeklySchedulePanel from "@/components/WeeklySchedulePanel";
+import PerformanceGauge from "@/components/PerformanceGauge";
+import StudyGoalsPanel from "@/components/StudyGoalsPanel";
+import SubjectPerformancePanel from "@/components/SubjectPerformancePanel";
+import RecommendedResourcesPanel from "@/components/RecommendedResourcesPanel";
+import LearningPathPanel from "@/components/LearningPathPanel";
 import { useApi } from "@/hooks/useApi";
 
 const chartData = [
@@ -76,7 +87,7 @@ type LearningPathItem = {
 };
 
 type LeaderboardEntry = {
-  userId: number;
+  userId: string;
   name: string;
   score: number;
   averageScore: number;
@@ -90,6 +101,7 @@ type FeedResponse = {
 
 export default function StudentDashboardPage() {
   const { user } = useAuth();
+  const router = useRouter();
   const { data: progressSummary } = useApi<ProgressSummary>("/api/progress/summary");
   const { data: assignments } = useApi<Assignment[]>("/api/assignments");
   const { data: userModules, loading: userModulesLoading } =
@@ -99,6 +111,13 @@ export default function StudentDashboardPage() {
   const { data: leaderboard } = useApi<LeaderboardEntry[]>("/api/leaderboard");
   const { data: feed } = useApi<FeedResponse>("/api/external/education-feed");
   const [shareMessage, setShareMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!user) return;
+    if (user.role !== "STUDENT") {
+      router.replace(getDashboardPath(user.role));
+    }
+  }, [user, router]);
 
   const summary = useMemo(() => {
     const list = assignments ?? [];
@@ -140,6 +159,10 @@ export default function StudentDashboardPage() {
     return moduleProgress.filter((module) => selectedModuleIds.has(module.moduleId));
   }, [moduleProgress, selectedModuleIds, userModules]);
   const topModules = filteredProgress.slice(0, 3);
+
+  if (!user || user.role !== "STUDENT") {
+    return null;
+  }
 
   return (
     <Stack spacing={4}>
@@ -366,66 +389,32 @@ export default function StudentDashboardPage() {
             </Card>
           </Stack>
         </Grid>
+        <Grid item xs={12} lg={5}>
+          <Stack spacing={3}>
+            <WeeklySchedulePanel />
+            <AttendanceSummaryPanel />
+            <AnnouncementsPanel />
+            <EventsCalendarPanel />
+          </Stack>
+        </Grid>
       </Grid>
 
       <Grid container spacing={3}>
         <Grid item xs={12} lg={7}>
           <Stack spacing={2.5}>
-            <Typography variant="h5">Continue learning</Typography>
-            {topModules.length === 0 ? (
-              <Card>
-                <CardContent>
-                  <Typography color="text.secondary">
-                    No progress yet. Start a module to see it here.
-                  </Typography>
-                </CardContent>
-              </Card>
-            ) : (
-              <Stack spacing={2}>
-                {topModules.map((module) => (
-                  <Card key={module.moduleId}>
-                    <CardContent>
-                      <Stack
-                        direction={{ xs: "column", sm: "row" }}
-                        spacing={2}
-                        alignItems={{ xs: "flex-start", sm: "center" }}
-                        justifyContent="space-between"
-                      >
-                        <Stack spacing={0.5}>
-                          <Typography variant="subtitle1" fontWeight={600}>
-                            {module.title}
-                          </Typography>
-                          <Stack direction="row" spacing={1} alignItems="center">
-                            <Chip label={`Grade ${module.grade}`} size="small" />
-                            <Typography variant="caption" color="text.secondary">
-                              {module.completion}% complete
-                            </Typography>
-                          </Stack>
-                          <LinearProgress
-                            variant="determinate"
-                            value={module.completion}
-                            sx={{ height: 6, borderRadius: 6, mt: 1 }}
-                          />
-                        </Stack>
-                        <Button
-                          component={Link}
-                          href={`/modules/${module.moduleId}`}
-                          variant="outlined"
-                        >
-                          Open module
-                        </Button>
-                      </Stack>
-                    </CardContent>
-                  </Card>
-                ))}
-              </Stack>
-            )}
+            <Typography variant="h5">Study Goals</Typography>
+            <StudyGoalsPanel />
           </Stack>
         </Grid>
 
         <Grid item xs={12} lg={5}>
           <Stack spacing={2.5}>
             <Typography variant="h5">Performance</Typography>
+            <PerformanceGauge
+              score={progressSummary?.averageScore ?? 0}
+              maxScore={100}
+              label="Average quiz score"
+            />
             <Card sx={{ height: "100%" }}>
               <CardContent>
                 <Stack spacing={2}>
@@ -471,38 +460,18 @@ export default function StudentDashboardPage() {
       </Grid>
 
       <Stack spacing={2.5}>
-        <Typography variant="h5">Learning updates</Typography>
-        <Card>
-          <CardContent>
-            <Stack spacing={1.5}>
-              {(feed?.items ?? []).length === 0 ? (
-                <Typography color="text.secondary">
-                  No updates available yet.
-                </Typography>
-              ) : (
-                (feed?.items ?? []).map((item) => (
-                  <Stack key={item.title} spacing={0.5}>
-                    <Typography variant="subtitle1">{item.title}</Typography>
-                    <Typography variant="caption" color="text.secondary">
-                      {item.source} - {new Date(item.publishedAt).toLocaleDateString()}
-                    </Typography>
-                    <Button
-                      component="a"
-                      href={item.url}
-                      target="_blank"
-                      rel="noopener"
-                      size="small"
-                      variant="text"
-                      sx={{ alignSelf: "flex-start" }}
-                    >
-                      Read more
-                    </Button>
-                  </Stack>
-                ))
-              )}
-            </Stack>
-          </CardContent>
-        </Card>
+        <Typography variant="h5">📊 Subject Performance Analytics</Typography>
+        <SubjectPerformancePanel />
+      </Stack>
+
+      <Stack spacing={2.5}>
+        <Typography variant="h5">📚 Learning Paths</Typography>
+        <LearningPathPanel />
+      </Stack>
+
+      <Stack spacing={2.5}>
+        <Typography variant="h5">🎯 Recommended Resources</Typography>
+        <RecommendedResourcesPanel />
       </Stack>
 
       <Grid container spacing={3}>

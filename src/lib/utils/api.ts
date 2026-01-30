@@ -1,6 +1,56 @@
 import { authClient } from "@/lib/neon-auth/client";
 
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL ?? "";
+const tokenCache = {
+  value: null as string | null,
+  expiresAt: 0,
+  pending: null as Promise<string | null> | null,
+};
+const tokenTtlMs = 60_000;
+
+async function getAuthToken() {
+  if (typeof window === "undefined") return null;
+  const now = Date.now();
+  if (tokenCache.value && tokenCache.expiresAt > now) {
+    return tokenCache.value;
+  }
+  if (tokenCache.pending) {
+    return tokenCache.pending;
+  }
+
+  tokenCache.pending = (async () => {
+    try {
+      const tokenFetcher = authClient as typeof authClient & {
+        token?: () => Promise<{ data?: { token?: string | null } | null }>;
+      };
+
+      if (typeof tokenFetcher.token === "function") {
+        const response = await tokenFetcher.token();
+        const token = response?.data?.token ?? null;
+        if (token) {
+          tokenCache.value = token;
+          tokenCache.expiresAt = Date.now() + tokenTtlMs;
+          return token;
+        }
+      }
+
+      if (typeof authClient.getSession === "function") {
+        const response = await authClient.getSession();
+        const token = response?.data?.session?.token ?? null;
+        if (token) {
+          tokenCache.value = token;
+          tokenCache.expiresAt = Date.now() + tokenTtlMs;
+          return token;
+        }
+      }
+    } finally {
+      tokenCache.pending = null;
+    }
+    return null;
+  })();
+
+  return tokenCache.pending;
+}
 
 export async function apiFetch<T>(
   input: RequestInfo,
@@ -11,8 +61,8 @@ export async function apiFetch<T>(
     headers.set("Content-Type", "application/json");
   }
 
-  if (!headers.has("Authorization") && typeof window !== "undefined") {
-    const token = await authClient.getJWTToken?.();
+  if (!headers.has("Authorization")) {
+    const token = await getAuthToken();
     if (token) {
       headers.set("Authorization", `Bearer ${token}`);
     }

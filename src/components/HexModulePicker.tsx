@@ -2,7 +2,6 @@
 
 import { useMemo } from "react";
 import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
-import { symbol, symbolHexagon } from "d3";
 
 type HexModule = {
   id: number;
@@ -35,9 +34,15 @@ export default function HexModulePicker({ modules, onPick }: HexModulePickerProp
   const rowSpacing = hexHeight * 0.75;
 
   const hexPath = useMemo(() => {
-    const area = (3 * Math.sqrt(3) * radius * radius) / 2;
-    const generator = symbol().type(symbolHexagon).size(area);
-    return generator() ?? "";
+    const angle = Math.PI / 3;
+    const points = Array.from({ length: 6 }, (_value, index) => {
+      const radians = angle * index - Math.PI / 6;
+      return [radius * Math.cos(radians), radius * Math.sin(radians)];
+    });
+    const [first, ...rest] = points;
+    return `M ${first[0]} ${first[1]} ${rest
+      .map((point) => `L ${point[0]} ${point[1]}`)
+      .join(" ")} Z`;
   }, [radius]);
 
   const layout = useMemo(() => {

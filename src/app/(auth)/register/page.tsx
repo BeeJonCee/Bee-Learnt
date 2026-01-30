@@ -24,7 +24,7 @@ const roleOptions = [
 
 export default function RegisterPage() {
   const router = useRouter();
-  const { register, login, magicLinkLogin, socialLogin } = useAuth();
+  const { register, sendEmailOtp, magicLinkLogin, socialLogin } = useAuth();
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -51,10 +51,13 @@ export default function RegisterPage() {
         role: form.role as "STUDENT" | "PARENT",
       });
 
-      await login(form.email, form.password);
+      await sendEmailOtp(form.email);
+      setSuccess("Verification code sent. Check your email to finish setup.");
 
       const nextPath = form.role === "STUDENT" ? "/onboarding" : getDashboardPath(form.role);
-      router.replace(`/verify?email=${encodeURIComponent(form.email)}&next=${encodeURIComponent(nextPath)}`);
+      router.replace(
+        `/verify?email=${encodeURIComponent(form.email)}&next=${encodeURIComponent(nextPath)}&sent=1`
+      );
     } catch (err) {
       setError(err instanceof Error ? err.message : "Registration failed.");
     } finally {

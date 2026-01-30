@@ -1,7 +1,7 @@
 "use client";
 
-import { type FormEvent, useState } from "react";
-import { useRouter } from "next/navigation";
+import { type FormEvent, useEffect, useMemo, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   Alert,
   Box,
@@ -18,15 +18,24 @@ import { useAuth } from "@/providers/AuthProvider";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { login, magicLinkLogin, socialLogin } = useAuth();
+  const searchParams = useSearchParams();
+  const { login, sendEmailOtp, magicLinkLogin, socialLogin } = useAuth();
+  const nextPath = useMemo(() => searchParams.get("next") ?? "/dashboard", [searchParams]);
+  const initialEmail = useMemo(() => searchParams.get("email") ?? "", [searchParams]);
   const [step, setStep] = useState<"email" | "password">("email");
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(initialEmail);
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [magicLoading, setMagicLoading] = useState(false);
   const [socialLoading, setSocialLoading] = useState<null | "google" | "facebook" | "apple">(null);
+
+  useEffect(() => {
+    if (initialEmail && email !== initialEmail) {
+      setEmail(initialEmail);
+    }
+  }, [initialEmail, email]);
 
   const handleLogin = async (event: FormEvent) => {
     event.preventDefault();
@@ -36,9 +45,26 @@ export default function LoginPage() {
 
     try {
       await login(email, password);
-      router.replace(`/verify?email=${encodeURIComponent(email)}&next=/dashboard/student`);
+      router.replace(nextPath);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Invalid email or password.");
+      const message = err instanceof Error ? err.message : "Invalid email or password.";
+      if (message.toLowerCase().includes("not verified")) {
+        try {
+          await sendEmailOtp(email);
+          router.replace(
+            `/verify?email=${encodeURIComponent(email)}&next=${encodeURIComponent(nextPath)}&sent=1`
+          );
+          return;
+        } catch (sendErr) {
+          setError(
+            sendErr instanceof Error
+              ? sendErr.message
+              : "Email not verified. Unable to send verification code."
+          );
+          return;
+        }
+      }
+      setError(message);
     } finally {
       setLoading(false);
     }
@@ -64,7 +90,7 @@ export default function LoginPage() {
     setNotice(null);
     setMagicLoading(true);
     try {
-      const callbackPath = `/verify?next=${encodeURIComponent("/dashboard/student")}`;
+      const callbackPath = `/verify?next=${encodeURIComponent(nextPath)}`;
       const callbackUrl =
         typeof window === "undefined" ? callbackPath : `${window.location.origin}${callbackPath}`;
       await magicLinkLogin(email, callbackUrl);
@@ -81,7 +107,7 @@ export default function LoginPage() {
     setNotice(null);
     setSocialLoading(provider);
     try {
-      const callbackPath = `/verify?next=${encodeURIComponent("/dashboard/student")}`;
+      const callbackPath = `/verify?next=${encodeURIComponent(nextPath)}`;
       const callbackUrl =
         typeof window === "undefined" ? callbackPath : `${window.location.origin}${callbackPath}`;
       await socialLogin(provider, callbackUrl);

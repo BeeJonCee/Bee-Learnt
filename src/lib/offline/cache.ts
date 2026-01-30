@@ -11,7 +11,13 @@ export function isCacheable(url: string) {
     url.startsWith("/api/lessons") ||
     url.startsWith("/api/resources") ||
     url.startsWith("/api/modules") ||
-    url.startsWith("/api/subjects")
+    url.startsWith("/api/subjects") ||
+    url.startsWith("/api/announcements") ||
+    url.startsWith("/api/events") ||
+    url.startsWith("/api/attendance") ||
+    url.startsWith("/api/parent") ||
+    url.startsWith("/api/admin") ||
+    url.startsWith("/api/student")
   );
 }
 
