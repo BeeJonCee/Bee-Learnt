@@ -9,18 +9,19 @@ import { useAuth } from "@/providers/AuthProvider";
 
 type RoleGuard = {
   prefix: string;
-  roles: Array<"ADMIN" | "PARENT" | "STUDENT">;
+  roles: Array<"ADMIN" | "PARENT" | "STUDENT" | "TUTOR">;
 };
 
 const roleGuards: RoleGuard[] = [
   { prefix: "/admin", roles: ["ADMIN"] },
   { prefix: "/dashboard/parent", roles: ["PARENT"] },
   { prefix: "/dashboard/student", roles: ["STUDENT"] },
+  { prefix: "/dashboard/tutor", roles: ["TUTOR"] },
   { prefix: "/subjects", roles: ["STUDENT"] },
   { prefix: "/modules", roles: ["STUDENT"] },
-  { prefix: "/lessons", roles: ["STUDENT"] },
-  { prefix: "/assignments", roles: ["STUDENT"] },
-  { prefix: "/quizzes", roles: ["STUDENT"] },
+  { prefix: "/lessons", roles: ["STUDENT", "TUTOR"] },
+  { prefix: "/assignments", roles: ["STUDENT", "TUTOR"] },
+  { prefix: "/quizzes", roles: ["STUDENT", "TUTOR"] },
   { prefix: "/ai-tutor", roles: ["STUDENT"] },
   { prefix: "/study", roles: ["STUDENT"] },
   { prefix: "/onboarding", roles: ["STUDENT"] },
@@ -28,7 +29,7 @@ const roleGuards: RoleGuard[] = [
   { prefix: "/collaboration", roles: ["STUDENT", "PARENT"] },
 ];
 
-const isAllowedForRole = (pathname: string, role: "ADMIN" | "PARENT" | "STUDENT") => {
+const isAllowedForRole = (pathname: string, role: "ADMIN" | "PARENT" | "STUDENT" | "TUTOR") => {
   const guard = roleGuards.find((entry) => pathname.startsWith(entry.prefix));
   if (!guard) return true;
   return guard.roles.includes(role);
@@ -47,10 +48,14 @@ export default function ProtectedLayout({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (loading || !user) return;
-    if (pathname === "/dashboard" && user.role === "ADMIN") {
+    
+    // Always redirect /dashboard to role-specific dashboard
+    if (pathname === "/dashboard") {
       router.replace(getDashboardPath(user.role));
       return;
     }
+    
+    // Check if user has access to current path
     if (!isAllowedForRole(pathname, user.role)) {
       router.replace(getDashboardPath(user.role));
     }

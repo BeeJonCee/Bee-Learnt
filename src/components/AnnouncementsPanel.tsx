@@ -1,30 +1,35 @@
 "use client";
 
-import { Card, CardContent, Chip, Stack, Typography } from "@mui/material";
+import { alpha, Box, Button, Card, CardContent, Chip, IconButton, Stack, Typography } from "@mui/material";
+import CampaignIcon from "@mui/icons-material/Campaign";
+import PushPinIcon from "@mui/icons-material/PushPin";
 import { useApi } from "@/hooks/useApi";
 
 type Announcement = {
   id: number;
   title: string;
   body: string;
-  audience: "ALL" | "STUDENT" | "PARENT" | "ADMIN";
+  audience: "ALL" | "STUDENT" | "PARENT" | "ADMIN" | "TUTOR";
   pinned: boolean;
   publishedAt: string;
 };
 
-const audienceLabel: Record<Announcement["audience"], string> = {
-  ALL: "All",
+const audienceLabel: Record<string, string> = {
+  ALL: "Everyone",
   STUDENT: "Students",
   PARENT: "Parents",
   ADMIN: "Admin",
+  TUTOR: "Tutors",
 };
 
-const audienceColor: Record<Announcement["audience"], "default" | "primary" | "secondary" | "success"> = {
-  ALL: "default",
-  STUDENT: "primary",
-  PARENT: "secondary",
-  ADMIN: "success",
-};
+// Color palette for announcements - creates a colorful, alternating pattern
+const ANNOUNCEMENT_COLORS = [
+  { bg: "#5BC0EB", light: alpha("#5BC0EB", 0.08) },  // Sky Blue
+  { bg: "#9333EA", light: alpha("#9333EA", 0.08) },  // Purple
+  { bg: "#FFD600", light: alpha("#FFD600", 0.08) },  // Yellow
+  { bg: "#22C55E", light: alpha("#22C55E", 0.08) },  // Green
+  { bg: "#F97316", light: alpha("#F97316", 0.08) },  // Orange
+];
 
 const formatDate = (value: string) => {
   const date = new Date(value);
@@ -36,6 +41,18 @@ const formatDate = (value: string) => {
   });
 };
 
+const getRelativeTime = (value: string) => {
+  const date = new Date(value);
+  const now = new Date();
+  const diffMs = now.getTime() - date.getTime();
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+  if (diffDays === 0) return "Today";
+  if (diffDays === 1) return "Yesterday";
+  if (diffDays < 7) return `${diffDays} days ago`;
+  return formatDate(value);
+};
+
 export default function AnnouncementsPanel() {
   const { data, loading, error } = useApi<Announcement[]>("/api/announcements?limit=4");
   const announcements = data ?? [];
@@ -45,8 +62,13 @@ export default function AnnouncementsPanel() {
       <CardContent>
         <Stack spacing={2.5}>
           <Stack direction="row" alignItems="center" justifyContent="space-between">
-            <Typography variant="h6">Announcements</Typography>
-            <Chip label={`${announcements.length} total`} size="small" />
+            <Stack direction="row" spacing={1.5} alignItems="center">
+              <CampaignIcon color="primary" />
+              <Typography variant="h6">Announcements</Typography>
+            </Stack>
+            <Button size="small" sx={{ color: "text.secondary" }}>
+              View All
+            </Button>
           </Stack>
 
           {loading ? (
@@ -57,38 +79,78 @@ export default function AnnouncementsPanel() {
             <Typography color="text.secondary">No announcements yet.</Typography>
           ) : (
             <Stack spacing={1.5}>
-              {announcements.map((announcement) => (
-                <Stack
-                  key={announcement.id}
-                  spacing={0.75}
-                  sx={{
-                    borderRadius: 2,
-                    border: "1px solid",
-                    borderColor: "divider",
-                    p: 1.5,
-                  }}
-                >
-                  <Stack direction="row" spacing={1} alignItems="center">
-                    <Typography variant="subtitle1" fontWeight={600} flex={1}>
-                      {announcement.title}
-                    </Typography>
-                    {announcement.pinned && <Chip label="Pinned" size="small" color="warning" />}
-                  </Stack>
-                  <Typography variant="body2" color="text.secondary">
-                    {announcement.body}
-                  </Typography>
-                  <Stack direction="row" spacing={1} alignItems="center">
-                    <Chip
-                      label={audienceLabel[announcement.audience]}
-                      size="small"
-                      color={audienceColor[announcement.audience]}
-                    />
-                    <Typography variant="caption" color="text.secondary">
-                      {formatDate(announcement.publishedAt)}
-                    </Typography>
-                  </Stack>
-                </Stack>
-              ))}
+              {announcements.map((announcement, index) => {
+                const colorSet = ANNOUNCEMENT_COLORS[index % ANNOUNCEMENT_COLORS.length];
+                return (
+                  <Box
+                    key={announcement.id}
+                    sx={{
+                      borderRadius: 2,
+                      bgcolor: colorSet.light,
+                      p: 2,
+                      borderLeft: `4px solid ${colorSet.bg}`,
+                      transition: "transform 0.2s, box-shadow 0.2s",
+                      cursor: "pointer",
+                      "&:hover": {
+                        transform: "translateX(4px)",
+                        boxShadow: `0 4px 12px ${alpha(colorSet.bg, 0.15)}`,
+                      },
+                    }}
+                  >
+                    <Stack spacing={1}>
+                      <Stack direction="row" spacing={1} alignItems="flex-start" justifyContent="space-between">
+                        <Typography variant="subtitle2" fontWeight={600}>
+                          {announcement.title}
+                        </Typography>
+                        <Stack direction="row" spacing={0.5} alignItems="center">
+                          {announcement.pinned && (
+                            <PushPinIcon
+                              sx={{
+                                fontSize: 16,
+                                color: "#F97316",
+                                transform: "rotate(45deg)",
+                              }}
+                            />
+                          )}
+                          <Chip
+                            label={getRelativeTime(announcement.publishedAt)}
+                            size="small"
+                            sx={{
+                              bgcolor: "background.paper",
+                              fontSize: 10,
+                              height: 20,
+                            }}
+                          />
+                        </Stack>
+                      </Stack>
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{
+                          fontSize: 13,
+                          display: "-webkit-box",
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: "vertical",
+                          overflow: "hidden",
+                        }}
+                      >
+                        {announcement.body}
+                      </Typography>
+                      <Chip
+                        label={audienceLabel[announcement.audience]}
+                        size="small"
+                        sx={{
+                          width: "fit-content",
+                          bgcolor: alpha(colorSet.bg, 0.15),
+                          color: colorSet.bg,
+                          fontWeight: 600,
+                          fontSize: 10,
+                        }}
+                      />
+                    </Stack>
+                  </Box>
+                );
+              })}
             </Stack>
           )}
         </Stack>

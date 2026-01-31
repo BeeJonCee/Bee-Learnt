@@ -2,7 +2,7 @@ export type AuthUser = {
   id: string;
   name?: string | null;
   email?: string | null;
-  role: "STUDENT" | "PARENT" | "ADMIN";
+  role: "STUDENT" | "PARENT" | "ADMIN" | "TUTOR";
 };
 
 export type StoredAuth = {

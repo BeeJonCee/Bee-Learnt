@@ -1,0 +1,41 @@
+npm warn ERESOLVE overriding peer dependency
+npm warn ERESOLVE overriding peer dependency
+npm error code ERESOLVE
+npm error ERESOLVE could not resolve
+npm error
+npm error While resolving: @mui/material-nextjs@6.5.0
+npm error Found: next@16.1.4
+npm error node_modules/next
+npm error   peerOptional next@">=16.0.6" from @neondatabase/auth@0.1.0-beta.21
+npm error   node_modules/@neondatabase/auth
+npm error     peer @neondatabase/auth@">=0.1.0-alpha.8" from @neondatabase/auth-ui@0.1.0-alpha.11
+npm error     @neondatabase/auth@"^0.1.0-beta.21" from the root project
+npm error   peerOptional next@"^14.0.0 || ^15.0.0 || ^16.0.0" from better-auth@1.4.6
+npm error   node_modules/better-auth
+npm error     peer better-auth@"1.4.18" from @better-auth/passkey@1.4.18
+npm error     node_modules/@better-auth/passkey
+npm error       peer @better-auth/passkey@">=1.4.6" from @daveyplate/better-auth-ui@3.3.9
+npm error       node_modules/@daveyplate/better-auth-ui
+npm error         @daveyplate/better-auth-ui@"3.3.9" from @neondatabase/auth-ui@0.1.0-alpha.11
+npm error         node_modules/@neondatabase/auth-ui
+npm error   2 more (the root project, @sentry/nextjs)
+npm error
+npm error Could not resolve dependency:
+npm error peer next@"^13.0.0 || ^14.0.0 || ^15.0.0" from @mui/material-nextjs@6.5.0
+npm error node_modules/@mui/material-nextjs
+npm error   @mui/material-nextjs@"^6.5.0" from the root project
+npm error
+npm error Conflicting peer dependency: next@15.5.11
+npm error node_modules/next
+npm error   peer next@"^13.0.0 || ^14.0.0 || ^15.0.0" from @mui/material-nextjs@6.5.0
+npm error   node_modules/@mui/material-nextjs
+npm error     @mui/material-nextjs@"^6.5.0" from the root project
+npm error
+npm error Fix the upstream dependency conflict, or retry
+npm error this command with --force or --legacy-peer-deps
+npm error to accept an incorrect (and potentially broken) dependency resolution.
+npm error
+npm error
+npm error For a full report see:
+npm error C:\Users\Bee\AppData\Local\npm-cache\_logs\2026-01-31T05_55_36_512Z-eresolve-report.txt
+npm error A complete log of this run can be found in: C:\Users\Bee\AppData\Local\npm-cache\_logs\2026-01-31T05_55_36_512Z-debug-0.log

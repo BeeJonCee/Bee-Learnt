@@ -20,11 +20,15 @@ import EditNoteIcon from "@mui/icons-material/EditNote";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import ShieldIcon from "@mui/icons-material/Shield";
 import CampaignIcon from "@mui/icons-material/Campaign";
+import SchoolIcon from "@mui/icons-material/School";
 import { getDashboardPath } from "@/lib/navigation";
 import { useAuth } from "@/providers/AuthProvider";
 import AdminInsightsPanel from "@/components/AdminInsightsPanel";
 import SystemHealthPanel from "@/components/SystemHealthPanel";
 import AdminReportsPanel from "@/components/AdminReportsPanel";
+import { StudentCountChart, EngagementChart, PerformanceMeter } from "@/components/charts";
+import AnnouncementsPanel from "@/components/AnnouncementsPanel";
+import EventsCalendarPanel from "@/components/EventsCalendarPanel";
 
 const quickStats = [
   { label: "Active learners", value: "1,248", helper: "Last 7 days" },
@@ -90,6 +94,30 @@ export default function AdminPage() {
             </Card>
           </Grid>
         ))}
+      </Grid>
+
+      {/* Visual Analytics Charts */}
+      <Grid container spacing={3}>
+        <Grid item xs={12} md={4}>
+          <StudentCountChart
+            data={{
+              total: 1248,
+              grades: [
+                { grade: 9, count: 312 },
+                { grade: 10, count: 345 },
+                { grade: 11, count: 298 },
+                { grade: 12, count: 293 },
+              ],
+            }}
+            title="Students by Grade"
+          />
+        </Grid>
+        <Grid item xs={12} md={8}>
+          <EngagementChart
+            title="Weekly Platform Engagement"
+            showMinutes
+          />
+        </Grid>
       </Grid>
 
       {/* Platform Analytics */}
@@ -173,7 +201,7 @@ export default function AdminPage() {
                 </Typography>
                 <Divider />
                 <Typography variant="body2" color="text.secondary">
-                  Share updates with students, parents, or admins only.
+                  Share updates with students, parents, tutors, or admins only.
                 </Typography>
               </Stack>
             </CardContent>
@@ -183,6 +211,40 @@ export default function AdminPage() {
               </Button>
             </CardActions>
           </Card>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <Card>
+            <CardContent>
+              <Stack spacing={2}>
+                <Stack direction="row" spacing={1.5} alignItems="center">
+                  <SchoolIcon color="primary" />
+                  <Typography variant="h6">Tutor management</Typography>
+                </Stack>
+                <Typography color="text.secondary">
+                  Manage tutor profiles, assignments, and monitor tutoring sessions.
+                </Typography>
+                <Divider />
+                <Typography variant="body2" color="text.secondary">
+                  Review tutor performance, expertise, and student feedback.
+                </Typography>
+              </Stack>
+            </CardContent>
+            <CardActions sx={{ px: 2, pb: 2 }}>
+              <Button component={Link} href="/admin/tutors" variant="outlined">
+                Manage tutors
+              </Button>
+            </CardActions>
+          </Card>
+        </Grid>
+      </Grid>
+
+      {/* Announcements & Events */}
+      <Grid container spacing={3}>
+        <Grid item xs={12} lg={6}>
+          <AnnouncementsPanel />
+        </Grid>
+        <Grid item xs={12} lg={6}>
+          <EventsCalendarPanel />
         </Grid>
       </Grid>
     </Stack>

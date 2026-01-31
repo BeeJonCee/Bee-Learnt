@@ -165,325 +165,374 @@ export default function StudentDashboardPage() {
   }
 
   return (
-    <Stack spacing={4}>
-      <Stack
-        direction={{ xs: "column", md: "row" }}
-        spacing={3}
-        alignItems={{ xs: "flex-start", md: "center" }}
-        justifyContent="space-between"
-      >
-        <Box>
-          <Typography variant="h3">
-            Hello, <Box component="span" sx={{ color: "primary.main" }}>
-              {user?.name ?? "Learner"}
-            </Box>
-          </Typography>
-          <Typography color="text.secondary" sx={{ mt: 1 }}>
-            Ready to continue learning?
-          </Typography>
-        </Box>
-        <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5}>
-          <Button
-            component={Link}
-            href="/subjects"
-            variant="contained"
-            size="large"
-            endIcon={<ArrowForwardIcon />}
-          >
-            Explore subjects
-          </Button>
-          <Button component={Link} href="/assignments" variant="outlined" size="large">
-            View assignments
-          </Button>
-          <Button
-            variant="outlined"
-            size="large"
-            onClick={async () => {
-              const message = `I just studied with BeeLearnt and completed ${progressSummary?.lessonCompletions ?? 0} lessons!`;
-              try {
-                if (navigator.share) {
-                  await navigator.share({
-                    title: "BeeLearnt progress",
-                    text: message,
-                    url: window.location.origin,
-                  });
-                } else if (navigator.clipboard) {
-                  await navigator.clipboard.writeText(message);
-                  setShareMessage("Share message copied to clipboard.");
-                } else {
-                  setShareMessage("Sharing not supported in this browser.");
-                }
-              } catch {
-                setShareMessage("Unable to share right now.");
-              }
-            }}
-          >
-            Share progress
-          </Button>
-        </Stack>
-      </Stack>
-
-      {shareMessage && (
-        <Alert severity="info" onClose={() => setShareMessage(null)}>
-          {shareMessage}
-        </Alert>
-      )}
-
-      <Grid container spacing={3}>
-        <Grid item xs={12} md={3}>
-          <StatCard
-            label="Lessons completed"
-            value={`${progressSummary?.lessonCompletions ?? 0}`}
-            icon={SchoolIcon}
-            accent="#f6c945"
-          />
-        </Grid>
-        <Grid item xs={12} md={3}>
-          <StatCard
-            label="Quiz average"
-            value={`${progressSummary?.averageScore ?? 0}%`}
-            icon={QueryStatsIcon}
-            accent="#5bc0eb"
-          />
-        </Grid>
-        <Grid item xs={12} md={3}>
-          <StatCard
-            label="Hours learned"
-            value={`${hoursLearned}`}
-            icon={TimerIcon}
-            accent="#f97316"
-          />
-        </Grid>
-        <Grid item xs={12} md={3}>
-          <StatCard
-            label="Assignments due soon"
-            value={`${summary.dueSoon}`}
-            icon={EventIcon}
-            accent="#ef5350"
-          />
-        </Grid>
-      </Grid>
-
-      <Stack spacing={2.5}>
+    <Box sx={{ width: "100%", maxWidth: "1600px", mx: "auto", px: { xs: 2, sm: 3, md: 4 } }}>
+      <Stack spacing={3}>
+        {/* Header Section */}
         <Stack
-          direction={{ xs: "column", sm: "row" }}
+          direction={{ xs: "column", md: "row" }}
           spacing={2}
-          alignItems={{ xs: "flex-start", sm: "center" }}
+          alignItems={{ xs: "flex-start", md: "center" }}
           justifyContent="space-between"
+          sx={{ py: 2 }}
         >
-          <Typography variant="h5">Your modules</Typography>
-          <Button component={Link} href="/onboarding" variant="outlined" size="small">
-            Manage modules
-          </Button>
-        </Stack>
-        {userModulesLoading ? (
-          <Card>
-            <CardContent>
-              <Typography color="text.secondary">Loading modules...</Typography>
-            </CardContent>
-          </Card>
-        ) : (userModules ?? []).length === 0 ? (
-          <Card>
-            <CardContent>
-              <Typography color="text.secondary">
-                Select modules in onboarding to personalize your dashboard.
-              </Typography>
-            </CardContent>
-          </Card>
-        ) : (
-          <Card>
-            <CardContent>
-              <Stack direction="row" spacing={1} flexWrap="wrap">
-                {(userModules ?? []).map((module) => (
-                  <Chip
-                    key={module.moduleId}
-                    label={`${module.title} - Grade ${module.grade}`}
-                    color="primary"
-                    variant="outlined"
-                    sx={{ mb: 1 }}
-                  />
-                ))}
-              </Stack>
-            </CardContent>
-          </Card>
-        )}
-      </Stack>
-
-      <Grid container spacing={3}>
-        <Grid item xs={12} lg={7}>
-          <Stack spacing={2.5}>
-            <Typography variant="h5">Personalized learning path</Typography>
-            {learningPathLoading ? (
-              <Card>
-                <CardContent>
-                  <Typography color="text.secondary">Building your path...</Typography>
-                </CardContent>
-              </Card>
-            ) : (learningPath ?? []).length === 0 ? (
-              <Card>
-                <CardContent>
-                  <Typography color="text.secondary">
-                    Your learning path will appear after you start a few lessons.
-                  </Typography>
-                </CardContent>
-              </Card>
-            ) : (
-              <Stack spacing={2}>
-                {(learningPath ?? []).map((item) => (
-                  <Card key={item.id}>
-                    <CardContent>
-                      <Stack
-                        direction={{ xs: "column", sm: "row" }}
-                        spacing={2}
-                        alignItems={{ xs: "flex-start", sm: "center" }}
-                        justifyContent="space-between"
-                      >
-                        <Stack spacing={0.5}>
-                          <Typography variant="subtitle1" fontWeight={600}>
-                            {item.title}
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            {item.reason ?? "Focus here next to strengthen your skills."}
-                          </Typography>
-                        </Stack>
-                        {item.moduleId && (
-                          <Button component={Link} href={`/modules/${item.moduleId}`} variant="outlined">
-                            Open module
-                          </Button>
-                        )}
-                      </Stack>
-                    </CardContent>
-                  </Card>
-                ))}
-              </Stack>
-            )}
+          <Box>
+            <Typography variant="h4" fontWeight={600}>
+              Hello, <Box component="span" sx={{ color: "primary.main" }}>
+                {user?.name ?? "Learner"}
+              </Box>
+            </Typography>
+            <Typography color="text.secondary" sx={{ mt: 0.5 }}>
+              Ready to continue learning?
+            </Typography>
+          </Box>
+          <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5}>
+            <Button
+              component={Link}
+              href="/subjects"
+              variant="contained"
+              size="medium"
+              endIcon={<ArrowForwardIcon />}
+            >
+              Explore subjects
+            </Button>
+            <Button component={Link} href="/assignments" variant="outlined" size="medium">
+              View assignments
+            </Button>
+            <Button
+              variant="outlined"
+              size="medium"
+              onClick={async () => {
+                const message = `I just studied with BeeLearnt and completed ${progressSummary?.lessonCompletions ?? 0} lessons!`;
+                try {
+                  if (navigator.share) {
+                    await navigator.share({
+                      title: "BeeLearnt progress",
+                      text: message,
+                      url: window.location.origin,
+                    });
+                  } else if (navigator.clipboard) {
+                    await navigator.clipboard.writeText(message);
+                    setShareMessage("Share message copied to clipboard.");
+                  } else {
+                    setShareMessage("Sharing not supported in this browser.");
+                  }
+                } catch {
+                  setShareMessage("Unable to share right now.");
+                }
+              }}
+            >
+              Share progress
+            </Button>
           </Stack>
+        </Stack>
+
+        {shareMessage && (
+          <Alert severity="info" onClose={() => setShareMessage(null)}>
+            {shareMessage}
+          </Alert>
+        )}
+
+        {/* Quick Stats Section */}
+        <Grid container spacing={2}>
+          <Grid item xs={6} sm={6} md={3}>
+            <StatCard
+              label="Lessons completed"
+              value={`${progressSummary?.lessonCompletions ?? 0}`}
+              icon={SchoolIcon}
+              accent="#f6c945"
+            />
+          </Grid>
+          <Grid item xs={6} sm={6} md={3}>
+            <StatCard
+              label="Quiz average"
+              value={`${progressSummary?.averageScore ?? 0}%`}
+              icon={QueryStatsIcon}
+              accent="#5bc0eb"
+            />
+          </Grid>
+          <Grid item xs={6} sm={6} md={3}>
+            <StatCard
+              label="Hours learned"
+              value={`${hoursLearned}`}
+              icon={TimerIcon}
+              accent="#f97316"
+            />
+          </Grid>
+          <Grid item xs={6} sm={6} md={3}>
+            <StatCard
+              label="Assignments due soon"
+              value={`${summary.dueSoon}`}
+              icon={EventIcon}
+              accent="#ef5350"
+            />
+          </Grid>
         </Grid>
-        <Grid item xs={12} lg={5}>
-          <Stack spacing={2.5}>
-            <Typography variant="h5">Leaderboard</Typography>
+
+        {/* Your Modules Section */}
+        <Box>
+          <Stack
+            direction={{ xs: "column", sm: "row" }}
+            spacing={2}
+            alignItems={{ xs: "flex-start", sm: "center" }}
+            justifyContent="space-between"
+            sx={{ mb: 1.5 }}
+          >
+            <Typography variant="h5" fontWeight={600}>Your modules</Typography>
+            <Button component={Link} href="/onboarding" variant="outlined" size="small">
+              Manage modules
+            </Button>
+          </Stack>
+          {userModulesLoading ? (
             <Card>
               <CardContent>
-                <Stack spacing={2}>
-                  {(leaderboard ?? []).length === 0 ? (
-                    <Typography color="text.secondary">
-                      Leaderboard updates after quiz attempts.
-                    </Typography>
-                  ) : (
-                    (leaderboard ?? []).slice(0, 5).map((entry, index) => (
-                      <Stack
-                        key={entry.userId}
-                        direction="row"
-                        alignItems="center"
-                        justifyContent="space-between"
-                      >
-                        <Typography variant="subtitle2">
-                          {index + 1}. {entry.name}
-                        </Typography>
-                        <Chip label={`${entry.score} pts`} size="small" />
-                      </Stack>
-                    ))
-                  )}
-                </Stack>
+                <Typography color="text.secondary">Loading modules...</Typography>
               </CardContent>
             </Card>
-          </Stack>
-        </Grid>
-        <Grid item xs={12} lg={5}>
-          <Stack spacing={3}>
-            <WeeklySchedulePanel />
-            <AttendanceSummaryPanel />
-            <AnnouncementsPanel />
-            <EventsCalendarPanel />
-          </Stack>
-        </Grid>
-      </Grid>
-
-      <Grid container spacing={3}>
-        <Grid item xs={12} lg={7}>
-          <Stack spacing={2.5}>
-            <Typography variant="h5">Study Goals</Typography>
-            <StudyGoalsPanel />
-          </Stack>
-        </Grid>
-
-        <Grid item xs={12} lg={5}>
-          <Stack spacing={2.5}>
-            <Typography variant="h5">Performance</Typography>
-            <PerformanceGauge
-              score={progressSummary?.averageScore ?? 0}
-              maxScore={100}
-              label="Average quiz score"
-            />
-            <Card sx={{ height: "100%" }}>
+          ) : (userModules ?? []).length === 0 ? (
+            <Card>
               <CardContent>
-                <Stack spacing={2}>
-                  <Stack direction="row" spacing={1} alignItems="center">
-                    <Chip label="This week" color="primary" size="small" />
-                    <Typography variant="body2" color="text.secondary">
-                      Average score trend
-                    </Typography>
-                  </Stack>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "flex-end",
-                      gap: 1.5,
-                      height: 220,
-                    }}
-                  >
-                    {chartData.map((item) => (
-                      <Stack key={item.day} alignItems="center" spacing={1} flex={1}>
-                        <Box
-                          sx={{
-                            width: "100%",
-                            borderRadius: 2,
-                            backgroundColor:
-                              item.score > 85
-                                ? "primary.main"
-                                : "rgba(255,255,255,0.12)",
-                            height: `${item.score * 2}px`,
-                            transition: "height 0.4s ease",
-                          }}
-                        />
-                        <Typography variant="caption" color="text.secondary">
-                          {item.day}
-                        </Typography>
-                      </Stack>
-                    ))}
-                  </Box>
+                <Typography color="text.secondary">
+                  Select modules in onboarding to personalize your dashboard.
+                </Typography>
+              </CardContent>
+            </Card>
+          ) : (
+            <Card>
+              <CardContent>
+                <Stack direction="row" spacing={1} flexWrap="wrap" sx={{ gap: 1 }}>
+                  {(userModules ?? []).map((module) => (
+                    <Chip
+                      key={module.moduleId}
+                      label={`${module.title} - Grade ${module.grade}`}
+                      color="primary"
+                      variant="outlined"
+                    />
+                  ))}
                 </Stack>
               </CardContent>
             </Card>
-          </Stack>
+          )}
+        </Box>
+
+        {/* Main Content Grid - Learning & Engagement */}
+        <Grid container spacing={2.5}>
+          {/* Left Column - Learning Path & Goals */}
+          <Grid item xs={12} lg={8}>
+            <Stack spacing={2.5}>
+              {/* Personalized Learning Path */}
+              <Box>
+                <Typography variant="h5" fontWeight={600} sx={{ mb: 1.5 }}>
+                  Personalized learning path
+                </Typography>
+                {learningPathLoading ? (
+                  <Card>
+                    <CardContent>
+                      <Typography color="text.secondary">Building your path...</Typography>
+                    </CardContent>
+                  </Card>
+                ) : (learningPath ?? []).length === 0 ? (
+                  <Card>
+                    <CardContent>
+                      <Typography color="text.secondary">
+                        Your learning path will appear after you start a few lessons.
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  <Stack spacing={1.5}>
+                    {(learningPath ?? []).map((item) => (
+                      <Card key={item.id}>
+                        <CardContent>
+                          <Stack
+                            direction={{ xs: "column", sm: "row" }}
+                            spacing={2}
+                            alignItems={{ xs: "flex-start", sm: "center" }}
+                            justifyContent="space-between"
+                          >
+                            <Stack spacing={0.5} sx={{ flex: 1 }}>
+                              <Typography variant="subtitle1" fontWeight={600}>
+                                {item.title}
+                              </Typography>
+                              <Typography variant="body2" color="text.secondary">
+                                {item.reason ?? "Focus here next to strengthen your skills."}
+                              </Typography>
+                            </Stack>
+                            {item.moduleId && (
+                              <Button 
+                                component={Link} 
+                                href={`/modules/${item.moduleId}`} 
+                                variant="outlined"
+                                size="small"
+                                sx={{ flexShrink: 0 }}
+                              >
+                                Open module
+                              </Button>
+                            )}
+                          </Stack>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </Stack>
+                )}
+              </Box>
+
+              {/* Study Goals */}
+              <Box>
+                <Typography variant="h5" fontWeight={600} sx={{ mb: 1.5 }}>
+                  Study Goals
+                </Typography>
+                <StudyGoalsPanel />
+              </Box>
+            </Stack>
+          </Grid>
+
+          {/* Right Column - Leaderboard & Performance */}
+          <Grid item xs={12} lg={4}>
+            <Stack spacing={2.5}>
+              {/* Leaderboard */}
+              <Box>
+                <Typography variant="h5" fontWeight={600} sx={{ mb: 1.5 }}>
+                  Leaderboard
+                </Typography>
+                <Card>
+                  <CardContent>
+                    <Stack spacing={2}>
+                      {(leaderboard ?? []).length === 0 ? (
+                        <Typography color="text.secondary">
+                          Leaderboard updates after quiz attempts.
+                        </Typography>
+                      ) : (
+                        (leaderboard ?? []).slice(0, 5).map((entry, index) => (
+                          <Stack
+                            key={entry.userId}
+                            direction="row"
+                            alignItems="center"
+                            justifyContent="space-between"
+                          >
+                            <Typography variant="subtitle2">
+                              {index + 1}. {entry.name}
+                            </Typography>
+                            <Chip label={`${entry.score} pts`} size="small" color="primary" />
+                          </Stack>
+                        ))
+                      )}
+                    </Stack>
+                  </CardContent>
+                </Card>
+              </Box>
+
+              {/* Performance Gauge */}
+              <Box>
+                <Typography variant="h5" fontWeight={600} sx={{ mb: 1.5 }}>
+                  Performance
+                </Typography>
+                <PerformanceGauge
+                  score={progressSummary?.averageScore ?? 0}
+                  maxScore={100}
+                  label="Average quiz score"
+                />
+              </Box>
+
+              {/* Weekly Trend Chart */}
+              <Card>
+                <CardContent>
+                  <Stack spacing={2}>
+                    <Stack direction="row" spacing={1} alignItems="center">
+                      <Chip label="This week" color="primary" size="small" />
+                      <Typography variant="body2" color="text.secondary">
+                        Average score trend
+                      </Typography>
+                    </Stack>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "flex-end",
+                        gap: 1.5,
+                        height: 180,
+                      }}
+                    >
+                      {chartData.map((item) => (
+                        <Stack key={item.day} alignItems="center" spacing={1} flex={1}>
+                          <Box
+                            sx={{
+                              width: "100%",
+                              borderRadius: 2,
+                              backgroundColor:
+                                item.score > 85
+                                  ? "primary.main"
+                                  : "rgba(255,255,255,0.12)",
+                              height: `${item.score * 1.6}px`,
+                              transition: "height 0.4s ease",
+                            }}
+                          />
+                          <Typography variant="caption" color="text.secondary">
+                            {item.day}
+                          </Typography>
+                        </Stack>
+                      ))}
+                    </Box>
+                  </Stack>
+                </CardContent>
+              </Card>
+            </Stack>
+          </Grid>
         </Grid>
-      </Grid>
 
-      <Stack spacing={2.5}>
-        <Typography variant="h5">📊 Subject Performance Analytics</Typography>
-        <SubjectPerformancePanel />
-      </Stack>
-
-      <Stack spacing={2.5}>
-        <Typography variant="h5">📚 Learning Paths</Typography>
-        <LearningPathPanel />
-      </Stack>
-
-      <Stack spacing={2.5}>
-        <Typography variant="h5">🎯 Recommended Resources</Typography>
-        <RecommendedResourcesPanel />
-      </Stack>
-
-      <Grid container spacing={3}>
-        <Grid item xs={12} md={6}>
-          <StudyTimerCard />
+        {/* Schedule & Attendance Section */}
+        <Grid container spacing={2.5}>
+          <Grid item xs={12} md={6}>
+            <WeeklySchedulePanel />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <AttendanceSummaryPanel />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <AnnouncementsPanel />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <EventsCalendarPanel />
+          </Grid>
         </Grid>
-        <Grid item xs={12} md={6}>
-          <BadgeShelf />
-        </Grid>
-      </Grid>
 
-      <AiTutorWidget />
-    </Stack>
+        {/* Subject Performance Analytics */}
+        <Box>
+          <Typography variant="h5" fontWeight={600} sx={{ mb: 1.5 }}>
+            📊 Subject Performance Analytics
+          </Typography>
+          <SubjectPerformancePanel />
+        </Box>
+
+        {/* Learning Paths */}
+        <Box>
+          <Typography variant="h5" fontWeight={600} sx={{ mb: 1.5 }}>
+            📚 Learning Paths
+          </Typography>
+          <LearningPathPanel />
+        </Box>
+
+        {/* Recommended Resources */}
+        <Box>
+          <Typography variant="h5" fontWeight={600} sx={{ mb: 1.5 }}>
+            🎯 Recommended Resources
+          </Typography>
+          <RecommendedResourcesPanel />
+        </Box>
+
+        {/* Study Tools Section */}
+        <Grid container spacing={2.5}>
+          <Grid item xs={12} md={6}>
+            <StudyTimerCard />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <BadgeShelf />
+          </Grid>
+        </Grid>
+
+        {/* AI Tutor Widget */}
+        <Box sx={{ pb: 2 }}>
+          <AiTutorWidget />
+        </Box>
+      </Stack>
+    </Box>
   );
 }

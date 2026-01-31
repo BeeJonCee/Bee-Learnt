@@ -40,7 +40,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const candidates = Array.isArray(role) ? role : [role];
     for (const candidate of candidates) {
       const upper = candidate?.toUpperCase?.() ?? "";
-      if (upper === "ADMIN" || upper === "PARENT" || upper === "STUDENT") {
+      if (upper === "ADMIN" || upper === "PARENT" || upper === "STUDENT" || upper === "TUTOR") {
         return upper as AuthUser["role"];
       }
     }

@@ -15,11 +15,12 @@ import {
   Typography,
 } from "@mui/material";
 import { useAuth } from "@/providers/AuthProvider";
+import { getDashboardPath } from "@/lib/navigation";
 
 export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { login, sendEmailOtp, magicLinkLogin, socialLogin } = useAuth();
+  const { user, login, sendEmailOtp, magicLinkLogin, socialLogin } = useAuth();
   const nextPath = useMemo(() => searchParams.get("next") ?? "/dashboard", [searchParams]);
   const initialEmail = useMemo(() => searchParams.get("email") ?? "", [searchParams]);
   const [step, setStep] = useState<"email" | "password">("email");
@@ -37,6 +38,14 @@ export default function LoginPage() {
     }
   }, [initialEmail, email]);
 
+  // Redirect logged-in users to their role-specific dashboard
+  useEffect(() => {
+    if (user) {
+      const targetPath = nextPath === "/dashboard" ? getDashboardPath(user.role) : nextPath;
+      router.replace(targetPath);
+    }
+  }, [user, router, nextPath]);
+
   const handleLogin = async (event: FormEvent) => {
     event.preventDefault();
     setError(null);
@@ -45,7 +54,7 @@ export default function LoginPage() {
 
     try {
       await login(email, password);
-      router.replace(nextPath);
+      // User will be redirected by the useEffect hook above
     } catch (err) {
       const message = err instanceof Error ? err.message : "Invalid email or password.";
       if (message.toLowerCase().includes("not verified")) {

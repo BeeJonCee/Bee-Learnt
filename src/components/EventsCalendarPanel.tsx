@@ -2,17 +2,22 @@
 
 import { useMemo, useState } from "react";
 import {
+  alpha,
   Box,
+  Button,
   Card,
   CardContent,
   Chip,
-  Divider,
+  IconButton,
   Stack,
   ToggleButton,
   ToggleButtonGroup,
   Typography,
 } from "@mui/material";
 import EventIcon from "@mui/icons-material/Event";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { useApi } from "@/hooks/useApi";
@@ -25,7 +30,15 @@ type EventItem = {
   endAt: string | null;
   allDay: boolean;
   location: string | null;
-  audience: "ALL" | "STUDENT" | "PARENT" | "ADMIN";
+  audience: "ALL" | "STUDENT" | "PARENT" | "ADMIN" | "TUTOR";
+};
+
+const AUDIENCE_COLORS: Record<string, string> = {
+  ALL: "#5BC0EB",      // Blue
+  STUDENT: "#FFD600",  // Yellow
+  PARENT: "#9333EA",   // Purple
+  ADMIN: "#EF4444",    // Red
+  TUTOR: "#22C55E",    // Green
 };
 
 type CalendarValue = Date | [Date, Date] | null;
@@ -121,54 +134,73 @@ export default function EventsCalendarPanel() {
               <Typography color="text.secondary">No events scheduled yet.</Typography>
             ) : (
               <Stack spacing={1.5}>
-                {events.map((event) => (
-                  <Stack
-                    key={event.id}
-                    spacing={1}
-                    sx={{ borderRadius: 2, border: "1px solid", borderColor: "divider", p: 1.5 }}
-                  >
-                    <Stack direction="row" spacing={1} alignItems="center">
-                      <Typography variant="subtitle1" fontWeight={600} flex={1}>
-                        {event.title}
-                      </Typography>
-                      <Chip label={event.audience} size="small" />
-                    </Stack>
-                    <Typography variant="body2" color="text.secondary">
-                      {event.description}
-                    </Typography>
-                    <Divider />
-                    <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-                      <Stack spacing={0.5}>
-                        <Typography variant="caption" color="text.secondary">
-                          Start
+                {events.map((event, index) => {
+                  const color = AUDIENCE_COLORS[event.audience] || AUDIENCE_COLORS.ALL;
+                  return (
+                    <Box
+                      key={event.id}
+                      sx={{
+                        borderRadius: 2,
+                        border: "1px solid",
+                        borderColor: "divider",
+                        borderTop: "none",
+                        borderTopLeftRadius: 0,
+                        borderTopRightRadius: 0,
+                        position: "relative",
+                        overflow: "hidden",
+                        p: 1.5,
+                        bgcolor: alpha(color, 0.04),
+                        "&::before": {
+                          content: '""',
+                          position: "absolute",
+                          top: 0,
+                          left: 0,
+                          right: 0,
+                          height: 4,
+                          bgcolor: color,
+                        },
+                      }}
+                    >
+                      <Stack spacing={1}>
+                        <Stack direction="row" spacing={1} alignItems="flex-start" justifyContent="space-between">
+                          <Typography variant="subtitle2" fontWeight={600}>
+                            {event.title}
+                          </Typography>
+                          <Chip
+                            label={event.audience}
+                            size="small"
+                            sx={{
+                              bgcolor: alpha(color, 0.15),
+                              color: color,
+                              fontWeight: 600,
+                              fontSize: 10,
+                            }}
+                          />
+                        </Stack>
+                        <Typography variant="body2" color="text.secondary" sx={{ fontSize: 13 }}>
+                          {event.description}
                         </Typography>
-                        <Typography variant="body2">
-                          {formatDateTime(event.startAt)}
-                        </Typography>
+                        <Stack direction="row" spacing={2} flexWrap="wrap">
+                          <Stack direction="row" spacing={0.5} alignItems="center">
+                            <AccessTimeIcon sx={{ fontSize: 14, color: "text.secondary" }} />
+                            <Typography variant="caption" color="text.secondary">
+                              {formatDateTime(event.startAt)}
+                              {event.endAt && ` - ${formatDateTime(event.endAt)}`}
+                            </Typography>
+                          </Stack>
+                          {event.location && (
+                            <Stack direction="row" spacing={0.5} alignItems="center">
+                              <LocationOnIcon sx={{ fontSize: 14, color: "text.secondary" }} />
+                              <Typography variant="caption" color="text.secondary">
+                                {event.location}
+                              </Typography>
+                            </Stack>
+                          )}
+                        </Stack>
                       </Stack>
-                      {event.endAt && (
-                        <Stack spacing={0.5}>
-                          <Typography variant="caption" color="text.secondary">
-                            End
-                          </Typography>
-                          <Typography variant="body2">
-                            {formatDateTime(event.endAt)}
-                          </Typography>
-                        </Stack>
-                      )}
-                      {event.location && (
-                        <Stack spacing={0.5}>
-                          <Typography variant="caption" color="text.secondary">
-                            Location
-                          </Typography>
-                          <Typography variant="body2">
-                            {event.location}
-                          </Typography>
-                        </Stack>
-                      )}
-                    </Stack>
-                  </Stack>
-                ))}
+                    </Box>
+                  );
+                })}
               </Stack>
             )}
           </Stack>
