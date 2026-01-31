@@ -2,6 +2,11 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
+  "overrides": {
+    "@mui/material-nextjs": {
+      "next": "$next"
+    }
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -26,10 +31,10 @@
     "@sendgrid/mail": "^8.1.3",
     "d3": "^7.9.0",
     "idb-keyval": "^6.2.1",
-    "next": "16.1.4",
-    "react": "19.2.3",
+    "next": "15.3.3",
+    "react": "^19.0.0",
     "react-calendar": "^6.0.0",
-    "react-dom": "19.2.3",
+    "react-dom": "^19.0.0",
     "react-markdown": "^10.1.0",
     "recharts": "^3.7.0",
     "zod": "^3.23.8"
