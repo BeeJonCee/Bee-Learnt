@@ -82,7 +82,7 @@ export default function CollaborationPage() {
               label="Room type"
               value={form.type}
               onChange={(event) =>
-                setForm((prev) => ({ ...prev, type: event.target.value }))
+                setForm((prev) => ({ ...prev, type: event.target.value as "project" | "classroom" | "discussion" | "breakout" }))
               }
             >
               <MenuItem value="project">Group project</MenuItem>

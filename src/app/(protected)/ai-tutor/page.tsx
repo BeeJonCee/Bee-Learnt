@@ -30,7 +30,7 @@ export default function AiTutorPage() {
   const handleSend = async () => {
     if (!input.trim()) return;
     const nextMessage = input.trim();
-    const nextMessages = [...messages, { role: "user", content: nextMessage }];
+    const nextMessages: Message[] = [...messages, { role: "user", content: nextMessage }];
     setMessages(nextMessages);
     setInput("");
     setLoading(true);

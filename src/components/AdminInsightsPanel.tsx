@@ -34,7 +34,7 @@ type AdminInsights = {
   attendance: { day: string; present: number; absent: number; late: number; excused: number }[];
 };
 
-const formatDay = (value: string) => new Date(value).toLocaleDateString(undefined, {
+const formatDay = (value: any) => new Date(value).toLocaleDateString(undefined, {
   weekday: "short",
   month: "short",
   day: "numeric",

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
-import { Inter, Poppins, Urbanist } from "next/font/google";
+import { Inter, Poppins } from "next/font/google";
 import Providers from "./providers";
 import "./globals.css";
 
@@ -14,12 +14,6 @@ const bodyFont = Inter({
   subsets: ["latin"],
   weight: ["400", "500", "600"],
   variable: "--font-body",
-});
-
-const uiFont = Urbanist({
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
-  variable: "--font-ui",
 });
 
 export const metadata: Metadata = {
@@ -36,7 +30,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${displayFont.variable} ${bodyFont.variable} ${uiFont.variable}`}
+      className={`${displayFont.variable} ${bodyFont.variable}`}
     >
       <body>
         <Providers>{children}</Providers>
