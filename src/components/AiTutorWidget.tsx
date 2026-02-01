@@ -15,9 +15,14 @@ import CloseIcon from "@mui/icons-material/Close";
 import SendIcon from "@mui/icons-material/Send";
 import { useAuth } from "@/providers/AuthProvider";
 
-const starterMessages = [
+type Message = {
+  role: "assistant" | "user";
+  content: string;
+};
+
+const starterMessages: Message[] = [
   {
-    role: "assistant" as const,
+    role: "assistant",
     content:
       "I can help you break down lessons, quiz you, or summarize tricky topics.",
   },
@@ -27,7 +32,7 @@ export default function AiTutorWidget() {
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
-  const [messages, setMessages] = useState(starterMessages);
+  const [messages, setMessages] = useState<Message[]>(starterMessages);
 
   const greeting = useMemo(() => {
     const name = user?.name?.split(" ")[0] ?? "there";

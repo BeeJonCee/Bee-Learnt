@@ -78,7 +78,7 @@ export default function StudentCountChart({ data, title = "Students" }: StudentC
                     borderRadius: 12,
                     color: "#E0E0E0",
                   }}
-                  formatter={(value: number) => [`${value} students`, ""]}
+                  formatter={(value: number | undefined) => [`${value ?? 0} students`, ""]}
                 />
               </RadialBarChart>
             </ResponsiveContainer>
