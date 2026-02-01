@@ -45,7 +45,7 @@ export default function StudyGoalsPanel() {
     description: "",
     targetHours: 10,
     deadline: "",
-    priority: "medium" as const,
+    priority: "medium" as "low" | "medium" | "high",
   });
 
   const { data: goals, refetch: refetchGoals } = useApi<StudyGoal[]>(
