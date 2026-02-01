@@ -331,10 +331,10 @@ export default function RecommendedResourcesPanel() {
                     <Rating
                       value={
                         categoryData.length > 0
-                          ? (
+                          ? Number((
                               categoryData.reduce((sum, cat) => sum + cat.avgRating, 0) /
                               categoryData.length
-                            ).toFixed(1)
+                            ).toFixed(1))
                           : 0
                       }
                       readOnly

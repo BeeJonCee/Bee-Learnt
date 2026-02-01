@@ -26,6 +26,7 @@ export interface Notification {
   title: string;
   message?: string;
   createdAt: string;
+  readAt?: string;
   data?: Record<string, unknown>;
 }
 
