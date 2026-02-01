@@ -118,7 +118,18 @@ export default function EventsCalendarPanel() {
           </Stack>
 
           <Box sx={{ border: "1px solid", borderColor: "divider", borderRadius: 2, p: 1.5 }}>
-            <Calendar value={value} onChange={setValue} />
+            <Calendar 
+              value={value} 
+              onChange={(newValue) => {
+                if (Array.isArray(newValue) && newValue.length === 2) {
+                  setValue([newValue[0] as Date, newValue[1] as Date]);
+                } else if (newValue instanceof Date) {
+                  setValue(newValue);
+                } else if (newValue === null) {
+                  setValue(null);
+                }
+              }} 
+            />
           </Box>
 
           <Stack spacing={1}>
