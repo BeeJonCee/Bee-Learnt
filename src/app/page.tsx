@@ -35,18 +35,18 @@ type Highlight = {
 
 const highlights: Highlight[] = [
   {
-    title: "CAPS-aligned modules",
-    description: "Grade-specific IT lessons, quizzes, and resources in one path.",
+    title: "Multi-subject curriculum",
+    description: "CAPS-aligned modules across multiple subjects and grade levels.",
     icon: MenuBookIcon,
   },
   {
     title: "Progress intelligence",
-    description: "Track learner momentum, quiz mastery, and focus areas.",
+    description: "Track learner momentum, mastery, and focus areas across all subjects.",
     icon: InsightsIcon,
   },
   {
-    title: "Mentored learning flow",
-    description: "Guided practice with AI hints and parent-ready snapshots.",
+    title: "Adaptive learning paths",
+    description: "Personalized guidance with AI support and parent-ready insights.",
     icon: SchoolIcon,
   },
 ];
@@ -135,7 +135,7 @@ export default function HomePage() {
               <Box>
                 <Typography variant="h6">BeeLearnt</Typography>
                 <Typography variant="caption" color="text.secondary">
-                  Information Technology track
+                  Adaptive learning platform
                 </Typography>
               </Box>
             </Stack>
@@ -155,11 +155,10 @@ export default function HomePage() {
           <Grid container spacing={4} alignItems="center">
             <Grid item xs={12} md={7}>
               <Stack spacing={3}>
-                <Chip label="Information Technology" color="primary" sx={{ width: "fit-content" }} />
-                <Typography variant="h2">Information Technology</Typography>
+                <Chip label="Learning Platform" color="primary" sx={{ width: "fit-content" }} />
+                <Typography variant="h2">Personalized Learning at Scale</Typography>
                 <Typography color="text.secondary" variant="h6">
-                  Grade-specific modules and lessons for IT. Track progress, unlock modules,
-                  and review analytics with a learner-first flow.
+                  Comprehensive platform for multiple subjects and grade levels. Track progress, adapt to individual needs, and empower learners with data-driven insights.
                 </Typography>
                 <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
                   <Button component={Link} href="/dashboard" variant="contained" size="large">
@@ -174,11 +173,11 @@ export default function HomePage() {
                     <CardContent>
                       <Stack spacing={1}>
                         <Typography variant="overline" color="text.secondary">
-                          Live momentum
+                          Active subjects
                         </Typography>
-                        <Typography variant="h4">72%</Typography>
+                        <Typography variant="h4">5+</Typography>
                         <Typography color="text.secondary" variant="body2">
-                          Learners meeting weekly study goals.
+                          Subjects available for learners.
                         </Typography>
                       </Stack>
                     </CardContent>
@@ -187,11 +186,11 @@ export default function HomePage() {
                     <CardContent>
                       <Stack spacing={1}>
                         <Typography variant="overline" color="text.secondary">
-                          Active modules
+                          Curriculum modules
                         </Typography>
-                        <Typography variant="h4">18</Typography>
+                        <Typography variant="h4">100+</Typography>
                         <Typography color="text.secondary" variant="body2">
-                          Curated IT modules ready for rollout.
+                          CAPS-aligned modules ready to deploy.
                         </Typography>
                       </Stack>
                     </CardContent>
@@ -204,9 +203,9 @@ export default function HomePage() {
                 <CardContent>
                   <Stack spacing={3}>
                     <Stack spacing={1}>
-                      <Typography variant="h5">This week's focus</Typography>
+                      <Typography variant="h5">Why BeeLearnt</Typography>
                       <Typography color="text.secondary">
-                        Prioritize networking fundamentals and security basics across Grade 10-12.
+                        Supporting learners across all subjects and grade levels with intelligent feedback.
                       </Typography>
                     </Stack>
                     <Stack spacing={2}>
@@ -243,10 +242,9 @@ export default function HomePage() {
 
           <Stack spacing={2} alignItems="center" textAlign="center">
             <AutoAwesomeIcon sx={{ fontSize: 40, color: "primary.main" }} />
-            <Typography variant="h4">Keep every learner on pace</Typography>
+            <Typography variant="h4">Empower learners across all disciplines</Typography>
             <Typography color="text.secondary" sx={{ maxWidth: 720 }}>
-              BeeLearnt blends IT curriculum structure with adaptive support, so educators and
-              families can see what matters most each week.
+              BeeLearnt combines comprehensive curriculum with adaptive AI support and real-time analytics, helping educators and families keep every learner progressing.
             </Typography>
           </Stack>
         </Stack>
