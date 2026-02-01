@@ -352,6 +352,9 @@ export default function AppShell({ children }: { children: ReactNode }) {
 
       {/* Notification toast for achievements */}
       <NotificationToast />
+
+      {/* Mobile bottom navigation */}
+      <MobileBottomNav />
     </Box>
   );
 }
