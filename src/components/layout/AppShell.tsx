@@ -39,6 +39,9 @@ import AccessibilityNewIcon from "@mui/icons-material/AccessibilityNew";
 import { useColorMode } from "@/providers/ThemeModeProvider";
 import { getDashboardPath } from "@/lib/navigation";
 import { useAuth } from "@/providers/AuthProvider";
+import NotificationCenter from "@/components/NotificationCenter";
+import NotificationToast from "@/components/NotificationToast";
+import MobileBottomNav from "@/components/layout/MobileBottomNav";
 
 const drawerWidth = 280;
 const collapsedDrawerWidth = 88;
@@ -259,6 +262,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
           <Typography variant="subtitle1" sx={{ flexGrow: 1 }}>
             BeeLearnt Workspace
           </Typography>
+          <NotificationCenter />
           <IconButton color="inherit" onClick={toggleMode}>
             {mode === "dark" ? <Brightness7Icon /> : <Brightness4Icon />}
           </IconButton>
@@ -329,7 +333,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
           minHeight: "100vh",
           px: { xs: 2, sm: 3, md: 4 },
           pt: { xs: 10, md: 12 },
-          pb: 6,
+          pb: { xs: 12, md: 6 }, // Extra padding on mobile for bottom nav
           position: "relative",
         }}
       >
@@ -345,6 +349,9 @@ export default function AppShell({ children }: { children: ReactNode }) {
         />
         <Box sx={{ position: "relative" }}>{children}</Box>
       </Box>
+
+      {/* Notification toast for achievements */}
+      <NotificationToast />
     </Box>
   );
 }
