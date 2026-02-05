@@ -25,12 +25,6 @@
     "paths": {
       "@/*": [
         "./src/*"
-      ],
-      "kysely": [
-        "./types/kysely"
-      ],
-      "kysely/*": [
-        "./types/kysely"
       ]
     }
   },
@@ -47,4 +41,3 @@
     "node_modules"
   ]
 }
-
