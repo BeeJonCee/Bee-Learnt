@@ -1,4 +1,4 @@
-{
+﻿{
   "compilerOptions": {
     "target": "ES2017",
     "lib": [
@@ -25,6 +25,12 @@
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "kysely": [
+        "./types/kysely"
+      ],
+      "kysely/*": [
+        "./types/kysely"
       ]
     }
   },
@@ -41,3 +47,4 @@
     "node_modules"
   ]
 }
+

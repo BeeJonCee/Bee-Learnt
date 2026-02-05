@@ -176,12 +176,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         email: payload.email,
         password: payload.password,
         name: payload.name,
-        // Pass role in callbackURL or additional data
-        callbackURL: `${window.location.origin}/auth/callback?role=${payload.role}`,
       });
-      
-      // Alternatively, we could call the backend to sync the role immediately after signup
-      // But Neon Auth will handle the user creation and our middleware will sync on first login
     },
     []
   );
@@ -238,3 +233,10 @@ export function useAuth() {
   }
   return context;
 }
+
+
+
+
+
+
+
