@@ -1,70 +1,14 @@
-import { authClient } from "@/lib/neon-auth/client";
+import { getStoredAuth } from "@/lib/auth/storage";
 
-const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL ?? "";
+const backendUrl =
+  process.env.NEXT_PUBLIC_BACKEND_URL ??
+  process.env.NEXT_PUBLIC_API_URL ??
+  "http://localhost:4000";
 
-const tokenCache = {
-  value: null as string | null,
-  expiresAt: 0,
-  pending: null as Promise<string | null> | null,
-};
-
-const tokenTtlMs = 60_000;
-
-async function getAuthToken() {
-  // This helper is only used from client components/hooks.
+function getAuthToken() {
+  // Client-only token storage (JWT issued by the backend).
   if (typeof window === "undefined") return null;
-
-  const now = Date.now();
-  if (tokenCache.value && tokenCache.expiresAt > now) {
-    return tokenCache.value;
-  }
-  if (tokenCache.pending) {
-    return tokenCache.pending;
-  }
-
-  tokenCache.pending = (async () => {
-    try {
-      // Prefer the session token (set-auth-jwt injected into session.token).
-      if (typeof authClient.getSession === "function") {
-        try {
-          const sessionResponse = await authClient.getSession();
-          const sessionToken = sessionResponse?.data?.session?.token ?? null;
-          if (sessionToken) {
-            tokenCache.value = sessionToken;
-            tokenCache.expiresAt = Date.now() + tokenTtlMs;
-            return sessionToken;
-          }
-        } catch {
-          // Ignore and fall back.
-        }
-      }
-
-      // Fallback to token() if available.
-      const tokenFetcher = authClient as typeof authClient & {
-        token?: () => Promise<{ data?: { token?: string | null } | null }>;
-      };
-
-      if (typeof tokenFetcher.token === "function") {
-        try {
-          const response = await tokenFetcher.token();
-          const token = response?.data?.token ?? null;
-          if (token) {
-            tokenCache.value = token;
-            tokenCache.expiresAt = Date.now() + tokenTtlMs;
-            return token;
-          }
-        } catch {
-          // Ignore.
-        }
-      }
-
-      return null;
-    } finally {
-      tokenCache.pending = null;
-    }
-  })();
-
-  return tokenCache.pending;
+  return getStoredAuth()?.token ?? null;
 }
 
 export async function apiFetch<T>(input: RequestInfo, init: RequestInit = {}): Promise<T> {
@@ -74,7 +18,7 @@ export async function apiFetch<T>(input: RequestInfo, init: RequestInit = {}): P
   }
 
   if (!headers.has("Authorization")) {
-    const token = await getAuthToken();
+    const token = getAuthToken();
     if (token) {
       headers.set("Authorization", `Bearer ${token}`);
     }

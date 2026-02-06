@@ -22,6 +22,7 @@ const roleGuards: RoleGuard[] = [
   { prefix: "/lessons", roles: ["STUDENT", "TUTOR"] },
   { prefix: "/assignments", roles: ["STUDENT", "TUTOR"] },
   { prefix: "/quizzes", roles: ["STUDENT", "TUTOR"] },
+  { prefix: "/assessments", roles: ["STUDENT", "TUTOR", "ADMIN"] },
   { prefix: "/ai-tutor", roles: ["STUDENT"] },
   { prefix: "/study", roles: ["STUDENT"] },
   { prefix: "/onboarding", roles: ["STUDENT"] },

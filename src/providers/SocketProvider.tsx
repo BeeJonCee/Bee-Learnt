@@ -11,7 +11,7 @@ import {
   useState,
 } from "react";
 import { io, type Socket } from "socket.io-client";
-import { authClient } from "@/lib/neon-auth/client";
+import { useAuth } from "@/providers/AuthProvider";
 
 interface SocketContextValue {
   socket: Socket | null;
@@ -26,24 +26,26 @@ interface SocketContextValue {
 
 const SocketContext = createContext<SocketContextValue | undefined>(undefined);
 
-const SOCKET_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+const SOCKET_URL =
+  process.env.NEXT_PUBLIC_BACKEND_URL ??
+  process.env.NEXT_PUBLIC_API_URL ??
+  "http://localhost:4000";
 
 export function SocketProvider({ children }: { children: ReactNode }) {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const socketRef = useRef<Socket | null>(null);
-
-  const session = authClient.useSession();
-  const token = session.data?.session?.token;
+  const { token } = useAuth();
 
   // Initialize socket connection when token is available
   useEffect(() => {
     // Don't connect if already connected or no token
     if (socketRef.current?.connected) return;
+    if (!token) return;
 
     const newSocket = io(SOCKET_URL, {
       auth: {
-        token: token || undefined,
+        token,
       },
       transports: ["websocket", "polling"],
       reconnection: true,

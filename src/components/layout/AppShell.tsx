@@ -28,6 +28,7 @@ import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
 import DashboardIcon from "@mui/icons-material/Dashboard";
+import FactCheckIcon from "@mui/icons-material/FactCheck";
 import GroupIcon from "@mui/icons-material/Group";
 import LogoutIcon from "@mui/icons-material/Logout";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -85,6 +86,12 @@ export default function AppShell({ children }: { children: ReactNode }) {
         href: "/assignments",
         icon: AssignmentTurnedInIcon,
         visible: role === "STUDENT",
+      },
+      {
+        label: "Assessments",
+        href: "/assessments",
+        icon: FactCheckIcon,
+        visible: role === "STUDENT" || role === "TUTOR" || role === "ADMIN",
       },
       {
         label: "Search",
@@ -274,6 +281,8 @@ export default function AppShell({ children }: { children: ReactNode }) {
                   ? "Parent"
                   : user?.role === "ADMIN"
                   ? "Admin"
+                  : user?.role === "TUTOR"
+                  ? "Tutor"
                   : "Student"}
               </Typography>
             </Box>

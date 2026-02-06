@@ -1,12 +1,20 @@
 "use client";
 
-import { type ReactNode, createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import {
+  type ReactNode,
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import type { AuthUser } from "@/lib/auth/storage";
-import { authClient } from "@/lib/neon-auth/client";
-import { apiFetch } from "@/lib/utils/api";
+import { clearStoredAuth, getStoredAuth, setStoredAuth } from "@/lib/auth/storage";
 
 type AuthContextValue = {
   user: AuthUser | null;
+  token: string | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
   register: (payload: { name: string; email: string; password: string; role: "STUDENT" | "PARENT" }) => Promise<void>;
@@ -19,198 +27,149 @@ type AuthContextValue = {
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
+const backendUrl =
+  process.env.NEXT_PUBLIC_BACKEND_URL ??
+  process.env.NEXT_PUBLIC_API_URL ??
+  "http://localhost:4000";
+
+async function backendFetch<T>(path: string, init: RequestInit = {}): Promise<T> {
+  const url = path.startsWith("http") ? path : `${backendUrl}${path.startsWith("/") ? "" : "/"}${path}`;
+  const headers = new Headers(init.headers);
+  if (!headers.has("Content-Type") && init.body) {
+    headers.set("Content-Type", "application/json");
+  }
+
+  const response = await fetch(url, { ...init, headers });
+  if (!response.ok) {
+    const payload = await response.json().catch(() => ({}));
+    const message =
+      typeof payload?.message === "string"
+        ? payload.message
+        : `Request failed (${response.status})`;
+    throw new Error(message);
+  }
+  return response.json() as Promise<T>;
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const session = authClient.useSession();
-  const neonAuthClient = authClient as typeof authClient & {
-    signIn: typeof authClient.signIn & {
-      magicLink: (payload: { email: string; callbackURL?: string }) => Promise<unknown>;
-      emailOtp: (payload: { email: string; otp: string }) => Promise<unknown>;
-    };
-    emailOtp: {
-      sendVerificationOtp: (payload: {
-        email: string;
-        type: "sign-in" | "email-verification";
-      }) => Promise<unknown>;
-      verifyEmail?: (payload: { email: string; otp: string }) => Promise<unknown>;
-    };
-  };
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [token, setToken] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const normalizeRole = (role?: string | string[] | null): AuthUser["role"] | null => {
-    if (!role) return null;
-    const candidates = Array.isArray(role) ? role : [role];
-    for (const candidate of candidates) {
-      const upper = candidate?.toUpperCase?.() ?? "";
-      if (upper === "ADMIN" || upper === "PARENT" || upper === "STUDENT" || upper === "TUTOR") {
-        return upper as AuthUser["role"];
-      }
-    }
-    return null;
-  };
-
-  const [roleFromToken, setRoleFromToken] = useState<AuthUser["role"] | null>(null);
-  const [roleFromApi, setRoleFromApi] = useState<AuthUser["role"] | null>(null);
-  const [roleLoading, setRoleLoading] = useState(false);
-
-  const parseJwt = (token: string): Record<string, unknown> | null => {
-    const parts = token.split(".");
-    if (parts.length < 2) return null;
-    const payload = parts[1];
-    try {
-      const normalized = payload.replace(/-/g, "+").replace(/_/g, "/");
-      const json = atob(
-        normalized.padEnd(normalized.length + (4 - (normalized.length % 4)) % 4, "=")
-      );
-      return JSON.parse(json) as Record<string, unknown>;
-    } catch {
-      return null;
-    }
-  };
-
-  const extractRoleFromClaims = (claims: Record<string, unknown>): AuthUser["role"] | null => {
-    const candidates = [
-      claims.role,
-      claims.roles,
-      (claims.user_metadata as Record<string, unknown> | undefined)?.role,
-      (claims.user_metadata as Record<string, unknown> | undefined)?.roles,
-      (claims.app_metadata as Record<string, unknown> | undefined)?.role,
-      (claims.app_metadata as Record<string, unknown> | undefined)?.roles,
-    ];
-    for (const candidate of candidates) {
-      const parsed = normalizeRole(candidate as string | string[] | null);
-      if (parsed) return parsed;
-    }
-    return null;
-  };
-
+  // Hydrate from localStorage and validate token with the backend.
   useEffect(() => {
-    const sessionUser = session.data?.user as
-      | { id?: string; role?: string | null; roles?: string[] | null }
-      | undefined;
-    const sessionRole =
-      normalizeRole(sessionUser?.role ?? null) ?? normalizeRole(sessionUser?.roles ?? null);
-    const sessionToken = session.data?.session?.token ?? null;
-
-    if (!sessionUser) {
-      setRoleFromToken(null);
-      setRoleFromApi(null);
-      setRoleLoading(false);
-      return;
-    }
-
     let active = true;
-    setRoleLoading(true);
 
-    const resolveRoles = async () => {
-      let resolvedRole = sessionRole ?? null;
-      let token = sessionToken;
-
-      if (!resolvedRole && token) {
-        const claims = parseJwt(token);
-        resolvedRole = claims ? extractRoleFromClaims(claims) : null;
-      }
-
-      if (!resolvedRole && !token && typeof authClient.getSession === "function") {
-        const sessionResponse = await authClient.getSession();
-        token = sessionResponse?.data?.session?.token ?? null;
-        if (token) {
-          const claims = parseJwt(token);
-          resolvedRole = claims ? extractRoleFromClaims(claims) : null;
+    const hydrate = async () => {
+      const stored = getStoredAuth();
+      if (!stored) {
+        if (active) {
+          setUser(null);
+          setToken(null);
+          setLoading(false);
         }
+        return;
       }
 
       if (active) {
-        setRoleFromToken(resolvedRole);
+        setUser(stored.user);
+        setToken(stored.token);
       }
 
+      // Validate token and refresh user payload.
       try {
-        const me = await apiFetch<{ user?: { role?: string | null } }>("/api/auth/me");
-        const apiRole = normalizeRole(me?.user?.role ?? null);
+        const me = await backendFetch<{ user: AuthUser }>("/api/auth/me", {
+          headers: { Authorization: `Bearer ${stored.token}` },
+        });
         if (active) {
-          setRoleFromApi(apiRole);
+          setUser(me.user);
+          setToken(stored.token);
+          setStoredAuth({ token: stored.token, user: me.user });
         }
       } catch {
+        // Token invalid/expired; clear local state.
+        clearStoredAuth();
         if (active) {
-          setRoleFromApi(null);
+          setUser(null);
+          setToken(null);
         }
       } finally {
-        if (active) {
-          setRoleLoading(false);
-        }
+        if (active) setLoading(false);
       }
     };
 
-    resolveRoles();
+    void hydrate();
+
+    const onStorage = (event: StorageEvent) => {
+      if (event.key !== "beelearn-auth") return;
+      const next = getStoredAuth();
+      setUser(next?.user ?? null);
+      setToken(next?.token ?? null);
+    };
+    window.addEventListener("storage", onStorage);
 
     return () => {
       active = false;
+      window.removeEventListener("storage", onStorage);
     };
-  }, [session.data?.user?.id, session.data?.session?.token]);
-
-  const user: AuthUser | null = session.data?.user
-    ? {
-        id: session.data.user.id,
-        name: session.data.user.name ?? null,
-        email: session.data.user.email ?? null,
-        role:
-          roleFromApi ??
-          normalizeRole(
-            (session.data.user as { role?: string | null; roles?: string[] | null })
-              .role ??
-              (session.data.user as { roles?: string[] | null }).roles ??
-              null
-          ) ??
-          roleFromToken ??
-          "STUDENT",
-      }
-    : null;
-
-  const loading = session.isPending || roleLoading;
+  }, []);
 
   const login = useCallback(async (email: string, password: string) => {
-    await authClient.signIn.email({ email, password });
+    const result = await backendFetch<{ token: string; user: AuthUser }>("/api/auth/login", {
+      method: "POST",
+      body: JSON.stringify({ email, password }),
+    });
+
+    setStoredAuth({ token: result.token, user: result.user });
+    setUser(result.user);
+    setToken(result.token);
   }, []);
 
   const register = useCallback(
     async (payload: { name: string; email: string; password: string; role: "STUDENT" | "PARENT" }) => {
-      await authClient.signUp.email({
-        email: payload.email,
-        password: payload.password,
-        name: payload.name,
+      await backendFetch("/api/auth/register", {
+        method: "POST",
+        body: JSON.stringify(payload),
       });
     },
     []
   );
 
-  const magicLinkLogin = useCallback(async (email: string, callbackURL?: string) => {
-    await neonAuthClient.signIn.magicLink({ email, callbackURL });
-  }, [neonAuthClient]);
+  const sendEmailOtp = useCallback(async (email: string) => {
+    await backendFetch("/api/auth/verify/send", {
+      method: "POST",
+      body: JSON.stringify({ email }),
+    });
+  }, []);
+
+  const verifyEmailOtp = useCallback(async (email: string, code: string) => {
+    await backendFetch("/api/auth/verify/confirm", {
+      method: "POST",
+      body: JSON.stringify({ email, code }),
+    });
+  }, []);
+
+  const magicLinkLogin = useCallback(async (_email: string, _callbackURL?: string) => {
+    throw new Error("Magic link login is not enabled in this deployment.");
+  }, []);
 
   const socialLogin = useCallback(
-    async (provider: "google" | "facebook" | "apple", callbackURL?: string) => {
-      await authClient.signIn.social({ provider, callbackURL });
+    async (_provider: "google" | "facebook" | "apple", _callbackURL?: string) => {
+      throw new Error("Social login is not enabled in this deployment.");
     },
     []
   );
 
-  const sendEmailOtp = useCallback(async (email: string) => {
-    await neonAuthClient.emailOtp.sendVerificationOtp({ email, type: "email-verification" });
-  }, [neonAuthClient]);
-
-  const verifyEmailOtp = useCallback(async (email: string, code: string) => {
-    if (typeof neonAuthClient.emailOtp.verifyEmail === "function") {
-      await neonAuthClient.emailOtp.verifyEmail({ email, otp: code });
-      return;
-    }
-    await neonAuthClient.signIn.emailOtp({ email, otp: code });
-  }, [neonAuthClient]);
-
   const logout = useCallback(() => {
-    authClient.signOut();
+    clearStoredAuth();
+    setUser(null);
+    setToken(null);
   }, []);
 
   const value = useMemo(
     () => ({
       user,
+      token,
       loading,
       login,
       register,
@@ -220,7 +179,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       verifyEmailOtp,
       logout,
     }),
-    [user, loading, login, register, magicLinkLogin, socialLogin, sendEmailOtp, verifyEmailOtp, logout]
+    [user, token, loading, login, register, magicLinkLogin, socialLogin, sendEmailOtp, verifyEmailOtp, logout]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
@@ -233,10 +192,3 @@ export function useAuth() {
   }
   return context;
 }
-
-
-
-
-
-
-

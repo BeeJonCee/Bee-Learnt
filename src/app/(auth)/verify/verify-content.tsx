@@ -4,7 +4,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Alert, Box, Button, Grid, Paper, Stack, TextField, Typography } from "@mui/material";
 import { useAuth } from "@/providers/AuthProvider";
-import { authClient } from "@/lib/neon-auth/client";
 
 export default function VerifyPageContent() {
   const router = useRouter();
@@ -67,18 +66,7 @@ export default function VerifyPageContent() {
     setVerifying(true);
     try {
       await verifyEmailOtp(email, code);
-      let hasSession = false;
-      if (typeof authClient.getSession === "function") {
-        const session = await authClient.getSession();
-        hasSession = Boolean(session?.data?.session);
-      }
-      if (hasSession) {
-        router.replace(nextPath);
-      } else {
-        router.replace(
-          `/login?email=${encodeURIComponent(email)}&next=${encodeURIComponent(nextPath)}`
-        );
-      }
+      router.replace(`/login?email=${encodeURIComponent(email)}&next=${encodeURIComponent(nextPath)}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Verification failed.");
     } finally {
