@@ -2,7 +2,9 @@
 
 import { type ReactNode, useCallback, useMemo, useState } from "react";
 import { Responsive, WidthProvider, type Layout } from "react-grid-layout";
-import { Box, CircularProgress, Fab, Tooltip, useMediaQuery, useTheme } from "@mui/material";
+import { Box, CircularProgress, Fab, Tooltip } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import SettingsIcon from "@mui/icons-material/Settings";
 import DashboardWidget from "./DashboardWidget";
 import DashboardCustomizer from "./DashboardCustomizer";

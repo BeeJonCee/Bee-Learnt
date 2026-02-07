@@ -16,6 +16,8 @@ const plusJakarta = Plus_Jakarta_Sans({
   variable: "--font-display",
 });
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "BeeLearnt",
   description: "CAPS-aligned learning platform with tutoring and AI support.",

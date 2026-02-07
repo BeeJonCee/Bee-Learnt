@@ -1,7 +1,9 @@
 "use client";
 
 import { type ReactNode, createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { CssBaseline, ThemeProvider, type PaletteMode } from "@mui/material";
+import CssBaseline from "@mui/material/CssBaseline";
+import { ThemeProvider } from "@mui/material/styles";
+import type { PaletteMode } from "@mui/material/styles";
 import { getTheme } from "@/theme/theme";
 
 type ColorModeContextValue = {

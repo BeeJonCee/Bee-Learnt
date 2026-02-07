@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { alpha, Box, Button, Card, CardContent, Chip, Stack, Typography } from "@mui/material";
+import { Box, Button, Card, CardContent, Chip, Stack, Typography } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 

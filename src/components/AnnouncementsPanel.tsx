@@ -1,6 +1,7 @@
 "use client";
 
-import { alpha, Box, Button, Card, CardContent, Chip, IconButton, Stack, Typography } from "@mui/material";
+import { Box, Button, Card, CardContent, Chip, IconButton, Stack, Typography } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import CampaignIcon from "@mui/icons-material/Campaign";
 import PushPinIcon from "@mui/icons-material/PushPin";
 import { useApi } from "@/hooks/useApi";

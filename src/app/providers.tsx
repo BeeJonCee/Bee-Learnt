@@ -1,7 +1,7 @@
 "use client";
 
 import { type ReactNode } from "react";
-import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
+import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
 import { ThemeModeProvider } from "@/providers/ThemeModeProvider";
 import AccessibilityProvider from "@/providers/AccessibilityProvider";
 import OfflineSyncProvider from "@/providers/OfflineSyncProvider";

@@ -1,6 +1,7 @@
 "use client";
 
-import { Box, Card, CardContent, IconButton, Stack, Typography, alpha } from "@mui/material";
+import { Box, Card, CardContent, IconButton, Stack, Typography } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 
