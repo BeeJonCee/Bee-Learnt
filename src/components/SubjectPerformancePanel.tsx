@@ -1,34 +1,32 @@
 "use client";
 
-import { useMemo } from "react";
-import {
-  Card,
-  CardContent,
-  Stack,
-  Typography,
-  Box,
-  Grid,
-  Chip,
-  LinearProgress,
-} from "@mui/material";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  RadarChart,
-  PolarGrid,
-  PolarAngleAxis,
-  PolarRadiusAxis,
-  Radar,
-} from "recharts";
-import SchoolIcon from "@mui/icons-material/School";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
+import SchoolIcon from "@mui/icons-material/School";
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Chip from "@mui/material/Chip";
+import Grid from "@mui/material/Grid";
+import LinearProgress from "@mui/material/LinearProgress";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import { useMemo } from "react";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Legend,
+  PolarAngleAxis,
+  PolarGrid,
+  PolarRadiusAxis,
+  Radar,
+  RadarChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 import { useApi } from "@/hooks/useApi";
 
 type SubjectMetrics = {
@@ -56,9 +54,11 @@ type StudentPerformance = {
 };
 
 export default function SubjectPerformancePanel() {
-  const { data: performance, loading, error } = useApi<StudentPerformance>(
-    "/api/student/performance"
-  );
+  const {
+    data: performance,
+    loading,
+    error,
+  } = useApi<StudentPerformance>("/api/student/performance");
 
   const chartData = useMemo(() => {
     if (!performance?.subjects) return [];
@@ -83,7 +83,9 @@ export default function SubjectPerformancePanel() {
     return (
       <Card>
         <CardContent>
-          <Typography color="text.secondary">Loading performance metrics...</Typography>
+          <Typography color="text.secondary">
+            Loading performance metrics...
+          </Typography>
         </CardContent>
       </Card>
     );
@@ -122,16 +124,16 @@ export default function SubjectPerformancePanel() {
                     performance.overallAverage >= 80
                       ? "Excellent"
                       : performance.overallAverage >= 60
-                      ? "Good"
-                      : "Needs Work"
+                        ? "Good"
+                        : "Needs Work"
                   }
                   size="small"
                   color={
                     performance.overallAverage >= 80
                       ? "success"
                       : performance.overallAverage >= 60
-                      ? "warning"
-                      : "error"
+                        ? "warning"
+                        : "error"
                   }
                 />
               </Stack>
@@ -162,7 +164,9 @@ export default function SubjectPerformancePanel() {
                 <Typography variant="caption" color="text.secondary">
                   Consistency
                 </Typography>
-                <Typography variant="h5">{Math.round(performance.consistencyScore)}%</Typography>
+                <Typography variant="h5">
+                  {Math.round(performance.consistencyScore)}%
+                </Typography>
                 <LinearProgress
                   variant="determinate"
                   value={performance.consistencyScore}
@@ -180,7 +184,9 @@ export default function SubjectPerformancePanel() {
                 <Typography variant="caption" color="text.secondary">
                   Subjects
                 </Typography>
-                <Typography variant="h5">{performance.subjects.length}</Typography>
+                <Typography variant="h5">
+                  {performance.subjects.length}
+                </Typography>
                 <Typography variant="caption" color="text.secondary">
                   Being tracked
                 </Typography>
@@ -204,7 +210,10 @@ export default function SubjectPerformancePanel() {
               <Box sx={{ height: 350 }}>
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={chartData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      stroke="rgba(255,255,255,0.1)"
+                    />
                     <XAxis dataKey="name" stroke="rgba(255,255,255,0.5)" />
                     <YAxis stroke="rgba(255,255,255,0.5)" />
                     <Tooltip
@@ -215,8 +224,16 @@ export default function SubjectPerformancePanel() {
                       }}
                     />
                     <Legend />
-                    <Bar dataKey="Avg Score" fill="#8884d8" name="Average Score (%)" />
-                    <Bar dataKey="Engagement" fill="#82ca9d" name="Engagement (%)" />
+                    <Bar
+                      dataKey="Avg Score"
+                      fill="#8884d8"
+                      name="Average Score (%)"
+                    />
+                    <Bar
+                      dataKey="Engagement"
+                      fill="#82ca9d"
+                      name="Engagement (%)"
+                    />
                   </BarChart>
                 </ResponsiveContainer>
               </Box>
@@ -277,19 +294,33 @@ export default function SubjectPerformancePanel() {
               <Card>
                 <CardContent>
                   <Stack spacing={2}>
-                    <Stack direction="row" alignItems="center" justifyContent="space-between">
+                    <Stack
+                      direction="row"
+                      alignItems="center"
+                      justifyContent="space-between"
+                    >
                       <Typography variant="subtitle2" fontWeight={600}>
                         {subject.subjectName}
                       </Typography>
-                      <Chip label={`${Math.round(subject.averageScore)}%`} size="small" />
+                      <Chip
+                        label={`${Math.round(subject.averageScore)}%`}
+                        size="small"
+                      />
                     </Stack>
 
                     <Grid container spacing={2}>
                       <Grid item xs={6}>
                         <Stack spacing={0.5}>
-                          <Stack direction="row" spacing={0.5} alignItems="center">
+                          <Stack
+                            direction="row"
+                            spacing={0.5}
+                            alignItems="center"
+                          >
                             <SchoolIcon fontSize="small" color="primary" />
-                            <Typography variant="caption" color="text.secondary">
+                            <Typography
+                              variant="caption"
+                              color="text.secondary"
+                            >
                               Lessons
                             </Typography>
                           </Stack>
@@ -300,13 +331,22 @@ export default function SubjectPerformancePanel() {
                       </Grid>
                       <Grid item xs={6}>
                         <Stack spacing={0.5}>
-                          <Stack direction="row" spacing={0.5} alignItems="center">
+                          <Stack
+                            direction="row"
+                            spacing={0.5}
+                            alignItems="center"
+                          >
                             <AssignmentIcon fontSize="small" color="success" />
-                            <Typography variant="caption" color="text.secondary">
+                            <Typography
+                              variant="caption"
+                              color="text.secondary"
+                            >
                               Quizzes
                             </Typography>
                           </Stack>
-                          <Typography variant="subtitle2">{subject.quizAttempts}</Typography>
+                          <Typography variant="subtitle2">
+                            {subject.quizAttempts}
+                          </Typography>
                         </Stack>
                       </Grid>
                     </Grid>
@@ -327,7 +367,8 @@ export default function SubjectPerformancePanel() {
                           borderRadius: 4,
                           backgroundColor: "rgba(255,255,255,0.1)",
                           "& .MuiLinearProgress-bar": {
-                            backgroundColor: subject.strength >= 70 ? "#4caf50" : "#ff9800",
+                            backgroundColor:
+                              subject.strength >= 70 ? "#4caf50" : "#ff9800",
                           },
                         }}
                       />
@@ -370,9 +411,9 @@ export default function SubjectPerformancePanel() {
             <Stack spacing={2}>
               <Typography variant="h6">Areas for Improvement</Typography>
               <Stack spacing={1}>
-                {performance.improvementAreas.map((area, index) => (
+                {performance.improvementAreas.map((area) => (
                   <Stack
-                    key={index}
+                    key={area}
                     direction="row"
                     spacing={2}
                     sx={{

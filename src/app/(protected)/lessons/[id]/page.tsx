@@ -1,24 +1,22 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
-import { useParams } from "next/navigation";
-import ReactMarkdown from "react-markdown";
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Stack,
-  Typography,
-} from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import { useAuth } from "@/providers/AuthProvider";
-import LessonResources from "@/components/LessonResources";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import Link from "next/link";
+import { useParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
+import ReactMarkdown from "react-markdown";
 import LessonNotes from "@/components/LessonNotes";
+import LessonResources from "@/components/LessonResources";
 import { useApi } from "@/hooks/useApi";
 import { apiFetch } from "@/lib/utils/api";
+import { useAuth } from "@/providers/AuthProvider";
 
 export default function LessonPage() {
   const params = useParams();
@@ -52,7 +50,9 @@ export default function LessonPage() {
     { id: number; completed: boolean }[]
   >(Number.isNaN(id) ? null : `/api/progress?lessonId=${id}`);
   const moduleHref = moduleData ? `/modules/${moduleData.id}` : "/subjects";
-  const [translatedContent, setTranslatedContent] = useState<string | null>(null);
+  const [translatedContent, setTranslatedContent] = useState<string | null>(
+    null,
+  );
   const [translating, setTranslating] = useState(false);
 
   useEffect(() => {
@@ -69,7 +69,7 @@ export default function LessonPage() {
 
   useEffect(() => {
     setTranslatedContent(null);
-  }, [lesson?.id]);
+  }, []);
 
   const isCompleted = useMemo(() => {
     return progressEntries?.[0]?.completed ?? false;
@@ -98,7 +98,9 @@ export default function LessonPage() {
   const isStudent = user?.role === "STUDENT";
   const isUnlocked =
     !isStudent ||
-    (unlockedModules ?? []).some((module) => module.moduleId === lesson.moduleId);
+    (unlockedModules ?? []).some(
+      (module) => module.moduleId === lesson.moduleId,
+    );
 
   if (isStudent && accessLoading) {
     return (
@@ -148,7 +150,8 @@ export default function LessonPage() {
               variant="outlined"
               onClick={() => {
                 if (!lesson.content) return;
-                if (typeof window === "undefined" || !window.speechSynthesis) return;
+                if (typeof window === "undefined" || !window.speechSynthesis)
+                  return;
                 const utterance = new SpeechSynthesisUtterance(lesson.content);
                 utterance.lang = accessibility?.language || "en";
                 window.speechSynthesis.cancel();
@@ -165,13 +168,16 @@ export default function LessonPage() {
               onClick={async () => {
                 setTranslating(true);
                 try {
-                  const response = await apiFetch<{ translatedText: string }>("/api/translate", {
-                    method: "POST",
-                    body: JSON.stringify({
-                      text: lesson.content,
-                      targetLanguage: accessibility?.language || "en",
-                    }),
-                  });
+                  const response = await apiFetch<{ translatedText: string }>(
+                    "/api/translate",
+                    {
+                      method: "POST",
+                      body: JSON.stringify({
+                        text: lesson.content,
+                        targetLanguage: accessibility?.language || "en",
+                      }),
+                    },
+                  );
                   setTranslatedContent(response.translatedText);
                 } finally {
                   setTranslating(false);
@@ -251,7 +257,11 @@ export default function LessonPage() {
                   </Box>
                 ),
                 li: ({ children }) => (
-                  <Typography component="li" variant="body1" color="text.secondary">
+                  <Typography
+                    component="li"
+                    variant="body1"
+                    color="text.secondary"
+                  >
                     {children}
                   </Typography>
                 ),

@@ -1,32 +1,31 @@
 "use client";
 
-import { useState } from "react";
-import NextLink from "next/link";
-import { useParams } from "next/navigation";
-import {
-  Alert,
-  Box,
-  Breadcrumbs,
-  Button,
-  Card,
-  CardContent,
-  Chip,
-  Link as MuiLink,
-  Snackbar,
-  Stack,
-  Typography,
-} from "@mui/material";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import QuizIcon from "@mui/icons-material/Quiz";
-import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
-import { useAuth } from "@/providers/AuthProvider";
+import Alert from "@mui/material/Alert";
+import Box from "@mui/material/Box";
+import Breadcrumbs from "@mui/material/Breadcrumbs";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Chip from "@mui/material/Chip";
+import MuiLink from "@mui/material/Link";
+
+import Snackbar from "@mui/material/Snackbar";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import NextLink from "next/link";
+import { useParams } from "next/navigation";
+import { useState } from "react";
 import AssignmentList from "@/components/AssignmentList";
 import ModuleChecklist from "@/components/ModuleChecklist";
 import { useApi } from "@/hooks/useApi";
 import { prefetchModuleForOffline } from "@/lib/offline/prefetch";
 import { apiFetch } from "@/lib/utils/api";
+import { useAuth } from "@/providers/AuthProvider";
 
 export default function ModulePage() {
   const params = useParams();
@@ -126,8 +125,8 @@ export default function ModulePage() {
           <Stack spacing={2}>
             <Typography variant="h6">Unlock this module to begin</Typography>
             <Typography color="text.secondary">
-              Head to onboarding to enter the access code for{" "}
-              {moduleData.title}.
+              Head to onboarding to enter the access code for {moduleData.title}
+              .
             </Typography>
             <Button component={NextLink} href="/onboarding" variant="contained">
               Unlock modules
@@ -141,7 +140,12 @@ export default function ModulePage() {
   return (
     <Stack spacing={4}>
       <Breadcrumbs sx={{ color: "text.secondary" }}>
-        <MuiLink component={NextLink} href={subjectHref} color="inherit" underline="hover">
+        <MuiLink
+          component={NextLink}
+          href={subjectHref}
+          color="inherit"
+          underline="hover"
+        >
           {subject?.name ?? "Subject"}
         </MuiLink>
         <Typography color="text.primary">{moduleData.title}</Typography>
@@ -186,7 +190,9 @@ export default function ModulePage() {
                 setToastMessage("AI quiz generated. Check the quizzes list.");
               } catch (error) {
                 setToastMessage(
-                  error instanceof Error ? error.message : "Unable to generate quiz."
+                  error instanceof Error
+                    ? error.message
+                    : "Unable to generate quiz.",
                 );
               } finally {
                 setToastOpen(true);
@@ -206,11 +212,13 @@ export default function ModulePage() {
                 setToastMessage(
                   count > 0
                     ? `Saved ${count} lessons for offline access.`
-                    : "No lessons to cache yet."
+                    : "No lessons to cache yet.",
                 );
               } catch (error) {
                 setToastMessage(
-                  error instanceof Error ? error.message : "Offline download failed."
+                  error instanceof Error
+                    ? error.message
+                    : "Offline download failed.",
                 );
               } finally {
                 setToastOpen(true);
@@ -243,7 +251,9 @@ export default function ModulePage() {
                       </Typography>
                     </Stack>
                     <Chip
-                      label={lesson.type === "video" ? "Video lesson" : "Text lesson"}
+                      label={
+                        lesson.type === "video" ? "Video lesson" : "Text lesson"
+                      }
                       size="small"
                       sx={{ alignSelf: "flex-start" }}
                     />
@@ -275,20 +285,20 @@ export default function ModulePage() {
                   alignItems={{ xs: "flex-start", md: "center" }}
                   justifyContent="space-between"
                 >
-                    <Stack spacing={1}>
-                      <Stack direction="row" spacing={1} alignItems="center">
-                        <QuizIcon color="primary" />
-                        <Typography variant="subtitle1" fontWeight={600}>
-                          {quiz.title}
-                        </Typography>
-                      </Stack>
-                      <Stack direction="row" spacing={1}>
-                        <Chip label={quiz.difficulty} size="small" />
-                        {quiz.source === "ai" && (
-                          <Chip label="AI" size="small" color="secondary" />
-                        )}
-                      </Stack>
+                  <Stack spacing={1}>
+                    <Stack direction="row" spacing={1} alignItems="center">
+                      <QuizIcon color="primary" />
+                      <Typography variant="subtitle1" fontWeight={600}>
+                        {quiz.title}
+                      </Typography>
                     </Stack>
+                    <Stack direction="row" spacing={1}>
+                      <Chip label={quiz.difficulty} size="small" />
+                      {quiz.source === "ai" && (
+                        <Chip label="AI" size="small" color="secondary" />
+                      )}
+                    </Stack>
+                  </Stack>
                   <Button
                     component={NextLink}
                     href={`/quizzes/${quiz.id}`}
@@ -308,17 +318,21 @@ export default function ModulePage() {
         <AssignmentList
           items={assignments ?? []}
           onToggle={async (assignmentId) => {
-            const current = assignments?.find((item) => item.id === assignmentId);
+            const current = assignments?.find(
+              (item) => item.id === assignmentId,
+            );
             if (!current) return;
-            const isCompleted = ["submitted", "graded"].includes(current.status);
+            const isCompleted = ["submitted", "graded"].includes(
+              current.status,
+            );
             const nextStatus = isCompleted ? "todo" : "submitted";
 
             setAssignments((prev) =>
               (prev ?? []).map((assignment) =>
                 assignment.id === assignmentId
                   ? { ...assignment, status: nextStatus }
-                  : assignment
-              )
+                  : assignment,
+              ),
             );
 
             try {
@@ -329,8 +343,8 @@ export default function ModulePage() {
             } catch {
               setAssignments((prev) =>
                 (prev ?? []).map((assignment) =>
-                  assignment.id === assignmentId ? current : assignment
-                )
+                  assignment.id === assignmentId ? current : assignment,
+                ),
               );
             }
           }}

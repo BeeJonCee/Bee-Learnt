@@ -1,16 +1,14 @@
 "use client";
 
-import {
-  Alert,
-  Box,
-  Card,
-  CardContent,
-  Chip,
-  Grid,
-  LinearProgress,
-  Stack,
-  Typography,
-} from "@mui/material";
+import Alert from "@mui/material/Alert";
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Chip from "@mui/material/Chip";
+import Grid from "@mui/material/Grid";
+import LinearProgress from "@mui/material/LinearProgress";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 import { useApi } from "@/hooks/useApi";
 
 type MasteryEntry = {
@@ -51,17 +49,25 @@ function masteryColor(percent: number) {
 }
 
 export default function ProgressPage() {
-  const { data: overallData } = useApi<{ userId: string; overallMastery: number }>(
-    "/api/progress/mastery/overall"
+  const { data: overallData } = useApi<{
+    userId: string;
+    overallMastery: number;
+  }>("/api/progress/mastery/overall");
+  const {
+    data: masteryData,
+    loading: masteryLoading,
+    error: masteryError,
+  } = useApi<{ userId: string; mastery: MasteryEntry[] }>(
+    "/api/progress/mastery",
   );
-  const { data: masteryData, loading: masteryLoading, error: masteryError } =
-    useApi<{ userId: string; mastery: MasteryEntry[] }>("/api/progress/mastery");
-  const { data: weakData } = useApi<{ userId: string; weakTopics: WeakTopic[] }>(
-    "/api/progress/mastery/weak?limit=5"
-  );
-  const { data: strongData } = useApi<{ userId: string; weakTopics: WeakTopic[] }>(
-    "/api/progress/mastery/strong?limit=5"
-  );
+  const { data: weakData } = useApi<{
+    userId: string;
+    weakTopics: WeakTopic[];
+  }>("/api/progress/mastery/weak?limit=5");
+  const { data: strongData } = useApi<{
+    userId: string;
+    weakTopics: WeakTopic[];
+  }>("/api/progress/mastery/strong?limit=5");
   const { data: summary } = useApi<ProgressSummary>("/api/progress/summary");
 
   const mastery = masteryData?.mastery ?? [];
@@ -229,10 +235,13 @@ export default function ProgressPage() {
             Topic Mastery Breakdown
           </Typography>
           {masteryLoading ? (
-            <Typography color="text.secondary">Loading mastery data...</Typography>
+            <Typography color="text.secondary">
+              Loading mastery data...
+            </Typography>
           ) : mastery.length === 0 ? (
             <Typography variant="body2" color="text.secondary">
-              No mastery data yet. Complete some assessments to see your progress.
+              No mastery data yet. Complete some assessments to see your
+              progress.
             </Typography>
           ) : (
             <Grid container spacing={2}>

@@ -1,15 +1,18 @@
 "use client";
 
-import { type ReactNode, useCallback, useMemo, useState } from "react";
-import { Responsive, WidthProvider, type Layout } from "react-grid-layout";
-import { Box, CircularProgress, Fab, Tooltip } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
-import useMediaQuery from "@mui/material/useMediaQuery";
 import SettingsIcon from "@mui/icons-material/Settings";
-import DashboardWidget from "./DashboardWidget";
-import DashboardCustomizer from "./DashboardCustomizer";
+import Box from "@mui/material/Box";
+import CircularProgress from "@mui/material/CircularProgress";
+import Fab from "@mui/material/Fab";
+import { useTheme } from "@mui/material/styles";
+import Tooltip from "@mui/material/Tooltip";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { type ReactNode, useCallback, useMemo, useState } from "react";
+import { type Layout, Responsive, WidthProvider } from "react-grid-layout";
 import { useDashboardLayout } from "@/hooks/useDashboardLayout";
-import { DEFAULT_COLS, type WidgetConfig } from "./WidgetRegistry";
+import DashboardCustomizer from "./DashboardCustomizer";
+import DashboardWidget from "./DashboardWidget";
+import { DEFAULT_COLS } from "./WidgetRegistry";
 
 // Import react-grid-layout styles
 import "react-grid-layout/css/styles.css";
@@ -50,7 +53,7 @@ export default function DashboardGrid({ widgets }: DashboardGridProps) {
     (_layout: Layout[], _oldItem: Layout, newItem: Layout) => {
       setDraggingWidget(newItem.i);
     },
-    []
+    [],
   );
 
   // Handle drag stop
@@ -89,7 +92,7 @@ export default function DashboardGrid({ widgets }: DashboardGridProps) {
     (widgetId: string) => {
       removeWidget(widgetId);
     },
-    [removeWidget]
+    [removeWidget],
   );
 
   const handleCollapseWidget = useCallback(
@@ -98,7 +101,7 @@ export default function DashboardGrid({ widgets }: DashboardGridProps) {
         toggleWidgetCollapsed(widgetId);
       }
     },
-    [widgetSettings, toggleWidgetCollapsed]
+    [widgetSettings, toggleWidgetCollapsed],
   );
 
   if (isLoading) {
@@ -144,7 +147,9 @@ export default function DashboardGrid({ widgets }: DashboardGridProps) {
               <DashboardWidget
                 config={widget}
                 isCollapsed={widgetSettings[widget.id]?.collapsed}
-                onCollapse={(collapsed) => handleCollapseWidget(widget.id, collapsed)}
+                onCollapse={(collapsed) =>
+                  handleCollapseWidget(widget.id, collapsed)
+                }
                 onRemove={() => handleRemoveWidget(widget.id)}
                 isDragging={draggingWidget === widget.id}
               >

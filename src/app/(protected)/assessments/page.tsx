@@ -1,17 +1,15 @@
 "use client";
 
+import Alert from "@mui/material/Alert";
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import CardActionArea from "@mui/material/CardActionArea";
+import CardContent from "@mui/material/CardContent";
+import Chip from "@mui/material/Chip";
+import Grid from "@mui/material/Grid";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 import Link from "next/link";
-import {
-  Alert,
-  Box,
-  Card,
-  CardActionArea,
-  CardContent,
-  Chip,
-  Grid,
-  Stack,
-  Typography,
-} from "@mui/material";
 import { useApi } from "@/hooks/useApi";
 
 type AssessmentSummary = {
@@ -32,7 +30,9 @@ function formatType(value: AssessmentSummary["type"]) {
 }
 
 export default function AssessmentsPage() {
-  const { data, loading, error } = useApi<AssessmentSummary[]>("/api/assessments?limit=50");
+  const { data, loading, error } = useApi<AssessmentSummary[]>(
+    "/api/assessments?limit=50",
+  );
   const assessments = data ?? [];
 
   return (
@@ -49,14 +49,17 @@ export default function AssessmentsPage() {
       {loading ? (
         <Card>
           <CardContent>
-            <Typography color="text.secondary">Loading assessments...</Typography>
+            <Typography color="text.secondary">
+              Loading assessments...
+            </Typography>
           </CardContent>
         </Card>
       ) : assessments.length === 0 ? (
         <Card>
           <CardContent>
             <Typography color="text.secondary">
-              No assessments found. If this is a fresh database, run the backend seed.
+              No assessments found. If this is a fresh database, run the backend
+              seed.
             </Typography>
           </CardContent>
         </Card>
@@ -65,7 +68,10 @@ export default function AssessmentsPage() {
           {assessments.map((assessment) => (
             <Grid item xs={12} md={6} lg={4} key={assessment.id}>
               <Card>
-                <CardActionArea component={Link} href={`/assessments/${assessment.id}`}>
+                <CardActionArea
+                  component={Link}
+                  href={`/assessments/${assessment.id}`}
+                >
                   <Box
                     sx={{
                       height: 140,
@@ -78,10 +84,22 @@ export default function AssessmentsPage() {
                     }}
                   >
                     <Stack direction="row" spacing={1} flexWrap="wrap">
-                      <Chip size="small" color="primary" label={assessment.subjectName} />
-                      <Chip size="small" variant="outlined" label={formatType(assessment.type)} />
+                      <Chip
+                        size="small"
+                        color="primary"
+                        label={assessment.subjectName}
+                      />
+                      <Chip
+                        size="small"
+                        variant="outlined"
+                        label={formatType(assessment.type)}
+                      />
                       {assessment.grade ? (
-                        <Chip size="small" variant="outlined" label={`Grade ${assessment.grade}`} />
+                        <Chip
+                          size="small"
+                          variant="outlined"
+                          label={`Grade ${assessment.grade}`}
+                        />
                       ) : null}
                     </Stack>
                   </Box>
@@ -113,4 +131,3 @@ export default function AssessmentsPage() {
     </Stack>
   );
 }
-

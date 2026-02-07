@@ -1,18 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import Alert from "@mui/material/Alert";
+import Badge from "@mui/material/Badge";
+import Card from "@mui/material/Card";
+import CardActionArea from "@mui/material/CardActionArea";
+import CardContent from "@mui/material/CardContent";
+import Chip from "@mui/material/Chip";
+import Divider from "@mui/material/Divider";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 import Link from "next/link";
-import {
-  Alert,
-  Badge,
-  Card,
-  CardActionArea,
-  CardContent,
-  Chip,
-  Divider,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { useState } from "react";
 import { useApi } from "@/hooks/useApi";
 
 type Message = {
@@ -50,19 +48,26 @@ function formatDate(iso: string) {
 export default function MessagesPage() {
   const [tab, setTab] = useState<"inbox" | "sent">("inbox");
 
-  const { data: inboxData, loading: inboxLoading, error: inboxError } =
-    useApi<MessageListResponse>(
-      tab === "inbox" ? "/api/messages?limit=50" : null
-    );
-  const { data: sentData, loading: sentLoading, error: sentError } =
-    useApi<MessageListResponse>(
-      tab === "sent" ? "/api/messages/sent?limit=50" : null
-    );
-  const { data: unread } = useApi<{ count: number }>("/api/messages/unread-count");
+  const {
+    data: inboxData,
+    loading: inboxLoading,
+    error: inboxError,
+  } = useApi<MessageListResponse>(
+    tab === "inbox" ? "/api/messages?limit=50" : null,
+  );
+  const {
+    data: sentData,
+    loading: sentLoading,
+    error: sentError,
+  } = useApi<MessageListResponse>(
+    tab === "sent" ? "/api/messages/sent?limit=50" : null,
+  );
+  const { data: unread } = useApi<{ count: number }>(
+    "/api/messages/unread-count",
+  );
 
-  const messages = tab === "inbox"
-    ? (inboxData?.items ?? [])
-    : (sentData?.items ?? []);
+  const messages =
+    tab === "inbox" ? (inboxData?.items ?? []) : (sentData?.items ?? []);
   const loading = tab === "inbox" ? inboxLoading : sentLoading;
   const error = tab === "inbox" ? inboxError : sentError;
 
@@ -77,11 +82,7 @@ export default function MessagesPage() {
 
       <Stack direction="row" spacing={1} justifyContent="center">
         <Chip
-          label={
-            unread?.count
-              ? `Inbox (${unread.count})`
-              : "Inbox"
-          }
+          label={unread?.count ? `Inbox (${unread.count})` : "Inbox"}
           color={tab === "inbox" ? "primary" : "default"}
           onClick={() => setTab("inbox")}
           variant={tab === "inbox" ? "filled" : "outlined"}
@@ -113,7 +114,9 @@ export default function MessagesPage() {
         <Card>
           <CardContent>
             <Typography color="text.secondary">
-              {tab === "inbox" ? "No messages in your inbox." : "No sent messages."}
+              {tab === "inbox"
+                ? "No messages in your inbox."
+                : "No sent messages."}
             </Typography>
           </CardContent>
         </Card>
@@ -146,7 +149,10 @@ export default function MessagesPage() {
                       </Typography>
                     </Stack>
                     {msg.subject && (
-                      <Typography variant="body2" fontWeight={msg.readAt ? 400 : 600}>
+                      <Typography
+                        variant="body2"
+                        fontWeight={msg.readAt ? 400 : 600}
+                      >
                         {msg.subject}
                       </Typography>
                     )}

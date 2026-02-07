@@ -1,23 +1,18 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import {
-  alpha,
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Chip,
-  IconButton,
-  Stack,
-  ToggleButton,
-  ToggleButtonGroup,
-  Typography,
-} from "@mui/material";
-import EventIcon from "@mui/icons-material/Event";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import EventIcon from "@mui/icons-material/Event";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import alpha from "@mui/material/alpha";
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Chip from "@mui/material/Chip";
+import Stack from "@mui/material/Stack";
+import ToggleButton from "@mui/material/ToggleButton";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import Typography from "@mui/material/Typography";
+import { useMemo, useState } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { useApi } from "@/hooks/useApi";
@@ -34,11 +29,11 @@ type EventItem = {
 };
 
 const AUDIENCE_COLORS: Record<string, string> = {
-  ALL: "#5BC0EB",      // Blue
-  STUDENT: "#FFD600",  // Yellow
-  PARENT: "#9333EA",   // Purple
-  ADMIN: "#EF4444",    // Red
-  TUTOR: "#22C55E",    // Green
+  ALL: "#5BC0EB", // Blue
+  STUDENT: "#FFD600", // Yellow
+  PARENT: "#9333EA", // Purple
+  ADMIN: "#EF4444", // Red
+  TUTOR: "#22C55E", // Green
 };
 
 type CalendarValue = Date | [Date, Date] | null;
@@ -66,7 +61,7 @@ const formatDate = (value: Date) =>
 export default function EventsCalendarPanel() {
   const [value, setValue] = useState<CalendarValue>(new Date());
   const [scope, setScope] = useState<Scope>("week");
-  const selectedDate = Array.isArray(value) ? value[0] : value ?? new Date();
+  const selectedDate = Array.isArray(value) ? value[0] : (value ?? new Date());
 
   const fromDate = useMemo(() => {
     const start = new Date(selectedDate);
@@ -92,7 +87,7 @@ export default function EventsCalendarPanel() {
   }, [fromDate, scope]);
 
   const { data, loading, error } = useApi<EventItem[]>(
-    `/api/events?from=${fromDate.toISOString()}&to=${toDate.toISOString()}&limit=8`
+    `/api/events?from=${fromDate.toISOString()}&to=${toDate.toISOString()}&limit=8`,
   );
 
   const events = data ?? [];
@@ -101,7 +96,11 @@ export default function EventsCalendarPanel() {
     <Card>
       <CardContent>
         <Stack spacing={2.5}>
-          <Stack direction="row" alignItems="center" justifyContent="space-between">
+          <Stack
+            direction="row"
+            alignItems="center"
+            justifyContent="space-between"
+          >
             <Stack direction="row" spacing={1.5} alignItems="center">
               <EventIcon color="primary" />
               <Typography variant="h6">Events</Typography>
@@ -117,9 +116,16 @@ export default function EventsCalendarPanel() {
             </ToggleButtonGroup>
           </Stack>
 
-          <Box sx={{ border: "1px solid", borderColor: "divider", borderRadius: 2, p: 1.5 }}>
-            <Calendar 
-              value={value} 
+          <Box
+            sx={{
+              border: "1px solid",
+              borderColor: "divider",
+              borderRadius: 2,
+              p: 1.5,
+            }}
+          >
+            <Calendar
+              value={value}
               onChange={(newValue) => {
                 if (Array.isArray(newValue) && newValue.length === 2) {
                   setValue([newValue[0] as Date, newValue[1] as Date]);
@@ -128,7 +134,7 @@ export default function EventsCalendarPanel() {
                 } else if (newValue === null) {
                   setValue(null);
                 }
-              }} 
+              }}
             />
           </Box>
 
@@ -142,11 +148,14 @@ export default function EventsCalendarPanel() {
             ) : error ? (
               <Typography color="error">{error}</Typography>
             ) : events.length === 0 ? (
-              <Typography color="text.secondary">No events scheduled yet.</Typography>
+              <Typography color="text.secondary">
+                No events scheduled yet.
+              </Typography>
             ) : (
               <Stack spacing={1.5}>
-                {events.map((event, index) => {
-                  const color = AUDIENCE_COLORS[event.audience] || AUDIENCE_COLORS.ALL;
+                {events.map((event, _index) => {
+                  const color =
+                    AUDIENCE_COLORS[event.audience] || AUDIENCE_COLORS.ALL;
                   return (
                     <Box
                       key={event.id}
@@ -173,7 +182,12 @@ export default function EventsCalendarPanel() {
                       }}
                     >
                       <Stack spacing={1}>
-                        <Stack direction="row" spacing={1} alignItems="flex-start" justifyContent="space-between">
+                        <Stack
+                          direction="row"
+                          spacing={1}
+                          alignItems="flex-start"
+                          justifyContent="space-between"
+                        >
                           <Typography variant="subtitle2" fontWeight={600}>
                             {event.title}
                           </Typography>
@@ -188,21 +202,44 @@ export default function EventsCalendarPanel() {
                             }}
                           />
                         </Stack>
-                        <Typography variant="body2" color="text.secondary" sx={{ fontSize: 13 }}>
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          sx={{ fontSize: 13 }}
+                        >
                           {event.description}
                         </Typography>
                         <Stack direction="row" spacing={2} flexWrap="wrap">
-                          <Stack direction="row" spacing={0.5} alignItems="center">
-                            <AccessTimeIcon sx={{ fontSize: 14, color: "text.secondary" }} />
-                            <Typography variant="caption" color="text.secondary">
+                          <Stack
+                            direction="row"
+                            spacing={0.5}
+                            alignItems="center"
+                          >
+                            <AccessTimeIcon
+                              sx={{ fontSize: 14, color: "text.secondary" }}
+                            />
+                            <Typography
+                              variant="caption"
+                              color="text.secondary"
+                            >
                               {formatDateTime(event.startAt)}
-                              {event.endAt && ` - ${formatDateTime(event.endAt)}`}
+                              {event.endAt &&
+                                ` - ${formatDateTime(event.endAt)}`}
                             </Typography>
                           </Stack>
                           {event.location && (
-                            <Stack direction="row" spacing={0.5} alignItems="center">
-                              <LocationOnIcon sx={{ fontSize: 14, color: "text.secondary" }} />
-                              <Typography variant="caption" color="text.secondary">
+                            <Stack
+                              direction="row"
+                              spacing={0.5}
+                              alignItems="center"
+                            >
+                              <LocationOnIcon
+                                sx={{ fontSize: 14, color: "text.secondary" }}
+                              />
+                              <Typography
+                                variant="caption"
+                                color="text.secondary"
+                              >
                                 {event.location}
                               </Typography>
                             </Stack>

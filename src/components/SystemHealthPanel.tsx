@@ -1,31 +1,28 @@
 "use client";
 
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import ErrorIcon from "@mui/icons-material/Error";
+import SignalCellularAltIcon from "@mui/icons-material/SignalCellularAlt";
+import SpeedIcon from "@mui/icons-material/Speed";
+import StorageIcon from "@mui/icons-material/Storage";
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Chip from "@mui/material/Chip";
+import Grid from "@mui/material/Grid";
+import LinearProgress from "@mui/material/LinearProgress";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 import { useMemo } from "react";
 import {
-  Card,
-  CardContent,
-  Stack,
-  Typography,
-  Box,
-  Grid,
-  Chip,
-  LinearProgress,
-  Tooltip,
-} from "@mui/material";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
   CartesianGrid,
+  Line,
+  LineChart,
   Tooltip as RechartsTooltip,
   ResponsiveContainer,
+  XAxis,
+  YAxis,
 } from "recharts";
-import StorageIcon from "@mui/icons-material/Storage";
-import SpeedIcon from "@mui/icons-material/Speed";
-import SignalCellularAltIcon from "@mui/icons-material/SignalCellularAlt";
-import ErrorIcon from "@mui/icons-material/Error";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useApi } from "@/hooks/useApi";
 
 type SystemHealth = {
@@ -57,20 +54,28 @@ const STATUS_COLORS = {
 };
 
 export default function SystemHealthPanel() {
-  const { data: health, loading, error } = useApi<SystemHealth>("/api/admin/system-health");
+  const {
+    data: health,
+    loading,
+    error,
+  } = useApi<SystemHealth>("/api/admin/system-health");
 
   const healthStatus = useMemo(() => {
     if (!health) return { color: "#9e9e9e", label: "Unknown" };
-    if (health.status === "healthy") return { color: STATUS_COLORS.healthy, label: "Healthy" };
-    if (health.status === "warning") return { color: STATUS_COLORS.warning, label: "Warning" };
+    if (health.status === "healthy")
+      return { color: STATUS_COLORS.healthy, label: "Healthy" };
+    if (health.status === "warning")
+      return { color: STATUS_COLORS.warning, label: "Warning" };
     return { color: STATUS_COLORS.error, label: "Error" };
-  }, [health?.status]);
+  }, [health?.status, health]);
 
   if (loading) {
     return (
       <Card>
         <CardContent>
-          <Typography color="text.secondary">Loading system health...</Typography>
+          <Typography color="text.secondary">
+            Loading system health...
+          </Typography>
         </CardContent>
       </Card>
     );
@@ -93,12 +98,18 @@ export default function SystemHealthPanel() {
   return (
     <Stack spacing={3}>
       {/* Overall Status */}
-      <Card sx={{ background: `linear-gradient(135deg, ${healthStatus.color}20 0%, ${healthStatus.color}10 100%)` }}>
+      <Card
+        sx={{
+          background: `linear-gradient(135deg, ${healthStatus.color}20 0%, ${healthStatus.color}10 100%)`,
+        }}
+      >
         <CardContent>
           <Stack spacing={2}>
             <Stack direction="row" spacing={2} alignItems="center">
               {health.status === "healthy" ? (
-                <CheckCircleIcon sx={{ color: healthStatus.color, fontSize: 40 }} />
+                <CheckCircleIcon
+                  sx={{ color: healthStatus.color, fontSize: 40 }}
+                />
               ) : (
                 <ErrorIcon sx={{ color: healthStatus.color, fontSize: 40 }} />
               )}
@@ -113,8 +124,9 @@ export default function SystemHealthPanel() {
               </Stack>
             </Stack>
             <Typography variant="body2" color="text.secondary">
-              Uptime: {health.uptime.toFixed(2)}% | Response time: {health.responseTime}ms | Error
-              rate: {health.errorRate.toFixed(2)}%
+              Uptime: {health.uptime.toFixed(2)}% | Response time:{" "}
+              {health.responseTime}ms | Error rate:{" "}
+              {health.errorRate.toFixed(2)}%
             </Typography>
           </Stack>
         </CardContent>
@@ -153,7 +165,9 @@ export default function SystemHealthPanel() {
                     Cache Hit Rate
                   </Typography>
                 </Stack>
-                <Typography variant="h5">{health.cacheHitRate.toFixed(1)}%</Typography>
+                <Typography variant="h5">
+                  {health.cacheHitRate.toFixed(1)}%
+                </Typography>
                 <LinearProgress
                   variant="determinate"
                   value={health.cacheHitRate}
@@ -197,7 +211,9 @@ export default function SystemHealthPanel() {
                     Error Rate
                   </Typography>
                 </Stack>
-                <Typography variant="h5">{health.errorRate.toFixed(2)}%</Typography>
+                <Typography variant="h5">
+                  {health.errorRate.toFixed(2)}%
+                </Typography>
                 <Chip
                   label={health.errorRate < 1 ? "Excellent" : "Alert"}
                   size="small"
@@ -217,7 +233,11 @@ export default function SystemHealthPanel() {
           </Typography>
           <Stack spacing={2}>
             <Stack spacing={1}>
-              <Stack direction="row" justifyContent="space-between" alignItems="center">
+              <Stack
+                direction="row"
+                justifyContent="space-between"
+                alignItems="center"
+              >
                 <Typography variant="body2" color="text.secondary">
                   Disk Usage
                 </Typography>
@@ -236,15 +256,19 @@ export default function SystemHealthPanel() {
                       health.diskUsage > 80
                         ? "#f44336"
                         : health.diskUsage > 60
-                        ? "#ff9800"
-                        : "#4caf50",
+                          ? "#ff9800"
+                          : "#4caf50",
                   },
                 }}
               />
             </Stack>
 
             <Stack spacing={1}>
-              <Stack direction="row" justifyContent="space-between" alignItems="center">
+              <Stack
+                direction="row"
+                justifyContent="space-between"
+                alignItems="center"
+              >
                 <Typography variant="body2" color="text.secondary">
                   Memory Usage
                 </Typography>
@@ -263,15 +287,19 @@ export default function SystemHealthPanel() {
                       health.memoryUsage > 80
                         ? "#f44336"
                         : health.memoryUsage > 60
-                        ? "#ff9800"
-                        : "#4caf50",
+                          ? "#ff9800"
+                          : "#4caf50",
                   },
                 }}
               />
             </Stack>
 
             <Stack spacing={1}>
-              <Stack direction="row" justifyContent="space-between" alignItems="center">
+              <Stack
+                direction="row"
+                justifyContent="space-between"
+                alignItems="center"
+              >
                 <Typography variant="body2" color="text.secondary">
                   CPU Usage
                 </Typography>
@@ -290,8 +318,8 @@ export default function SystemHealthPanel() {
                       health.cpuUsage > 80
                         ? "#f44336"
                         : health.cpuUsage > 60
-                        ? "#ff9800"
-                        : "#4caf50",
+                          ? "#ff9800"
+                          : "#4caf50",
                   },
                 }}
               />
@@ -310,7 +338,10 @@ export default function SystemHealthPanel() {
             <Box sx={{ height: 300 }}>
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={health.performanceTrend}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                  <CartesianGrid
+                    strokeDasharray="3 3"
+                    stroke="rgba(255,255,255,0.1)"
+                  />
                   <XAxis
                     dataKey="time"
                     stroke="rgba(255,255,255,0.5)"
@@ -367,8 +398,8 @@ export default function SystemHealthPanel() {
                       incident.type === "error"
                         ? "#f44336"
                         : incident.type === "warning"
-                        ? "#ff9800"
-                        : "#2196f3"
+                          ? "#ff9800"
+                          : "#2196f3"
                     }`,
                   }}
                 >
@@ -381,8 +412,8 @@ export default function SystemHealthPanel() {
                           incident.type === "error"
                             ? "error"
                             : incident.type === "warning"
-                            ? "warning"
-                            : "info"
+                              ? "warning"
+                              : "info"
                         }
                       />
                       <Typography variant="caption" color="text.secondary">
@@ -417,7 +448,9 @@ export default function SystemHealthPanel() {
                   <Typography variant="body2" color="text.secondary">
                     Requests/Second
                   </Typography>
-                  <Typography variant="h6">{health.requestsPerSecond.toFixed(2)}</Typography>
+                  <Typography variant="h6">
+                    {health.requestsPerSecond.toFixed(2)}
+                  </Typography>
                 </Stack>
               </Grid>
             </Grid>

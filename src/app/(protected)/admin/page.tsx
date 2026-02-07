@@ -1,34 +1,32 @@
 "use client";
 
-import { useEffect } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import {
-  Box,
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  Chip,
-  Divider,
-  Grid,
-  Stack,
-  Typography,
-} from "@mui/material";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
+import CampaignIcon from "@mui/icons-material/Campaign";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
-import ShieldIcon from "@mui/icons-material/Shield";
-import CampaignIcon from "@mui/icons-material/Campaign";
 import SchoolIcon from "@mui/icons-material/School";
+import ShieldIcon from "@mui/icons-material/Shield";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import Chip from "@mui/material/Chip";
+import Divider from "@mui/material/Divider";
+import Grid from "@mui/material/Grid";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import AdminInsightsPanel from "@/components/AdminInsightsPanel";
+import AdminReportsPanel from "@/components/AdminReportsPanel";
+import AnnouncementsPanel from "@/components/AnnouncementsPanel";
+import { EngagementChart, StudentCountChart } from "@/components/charts";
+import EventsCalendarPanel from "@/components/EventsCalendarPanel";
+import SystemHealthPanel from "@/components/SystemHealthPanel";
 import { getDashboardPath } from "@/lib/navigation";
 import { useAuth } from "@/providers/AuthProvider";
-import AdminInsightsPanel from "@/components/AdminInsightsPanel";
-import SystemHealthPanel from "@/components/SystemHealthPanel";
-import AdminReportsPanel from "@/components/AdminReportsPanel";
-import { StudentCountChart, EngagementChart, PerformanceMeter } from "@/components/charts";
-import AnnouncementsPanel from "@/components/AnnouncementsPanel";
-import EventsCalendarPanel from "@/components/EventsCalendarPanel";
 
 const quickStats = [
   { label: "Active learners", value: "1,248", helper: "Last 7 days" },
@@ -69,10 +67,15 @@ export default function AdminPage() {
             <AdminPanelSettingsIcon fontSize="small" />
           </Box>
           <Typography variant="h3">Admin panel</Typography>
-          <Chip label="Secure workspace" size="small" icon={<ShieldIcon fontSize="small" />} />
+          <Chip
+            label="Secure workspace"
+            size="small"
+            icon={<ShieldIcon fontSize="small" />}
+          />
         </Stack>
         <Typography color="text.secondary">
-          Manage users, review platform health, and jump into content administration.
+          Manage users, review platform health, and jump into content
+          administration.
         </Typography>
       </Stack>
 
@@ -113,10 +116,7 @@ export default function AdminPage() {
           />
         </Grid>
         <Grid item xs={12} md={8}>
-          <EngagementChart
-            title="Weekly Platform Engagement"
-            showMinutes
-          />
+          <EngagementChart title="Weekly Platform Engagement" showMinutes />
         </Grid>
       </Grid>
 
@@ -149,11 +149,13 @@ export default function AdminPage() {
                   <Typography variant="h6">User management</Typography>
                 </Stack>
                 <Typography color="text.secondary">
-                  Review learner accounts, invite staff, and adjust role assignments.
+                  Review learner accounts, invite staff, and adjust role
+                  assignments.
                 </Typography>
                 <Divider />
                 <Typography variant="body2" color="text.secondary">
-                  Coming soon: bulk role updates, guardian linking, and audit logs.
+                  Coming soon: bulk role updates, guardian linking, and audit
+                  logs.
                 </Typography>
               </Stack>
             </CardContent>
@@ -173,7 +175,8 @@ export default function AdminPage() {
                   <Typography variant="h6">Content editor</Typography>
                 </Stack>
                 <Typography color="text.secondary">
-                  Curate modules, lessons, and quizzes aligned to the CAPS curriculum.
+                  Curate modules, lessons, and quizzes aligned to the CAPS
+                  curriculum.
                 </Typography>
                 <Divider />
                 <Typography variant="body2" color="text.secondary">
@@ -206,7 +209,11 @@ export default function AdminPage() {
               </Stack>
             </CardContent>
             <CardActions sx={{ px: 2, pb: 2 }}>
-              <Button component={Link} href="/admin/announcements-events" variant="contained">
+              <Button
+                component={Link}
+                href="/admin/announcements-events"
+                variant="contained"
+              >
                 Manage announcements
               </Button>
             </CardActions>
@@ -221,7 +228,8 @@ export default function AdminPage() {
                   <Typography variant="h6">Tutor management</Typography>
                 </Stack>
                 <Typography color="text.secondary">
-                  Manage tutor profiles, assignments, and monitor tutoring sessions.
+                  Manage tutor profiles, assignments, and monitor tutoring
+                  sessions.
                 </Typography>
                 <Divider />
                 <Typography variant="body2" color="text.secondary">

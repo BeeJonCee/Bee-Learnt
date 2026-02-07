@@ -1,28 +1,32 @@
 "use client";
 
-import { type FormEvent, useEffect, useMemo, useState } from "react";
+import Alert from "@mui/material/Alert";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Divider from "@mui/material/Divider";
+import Grid from "@mui/material/Grid";
+import Paper from "@mui/material/Paper";
+import Stack from "@mui/material/Stack";
+import SvgIcon from "@mui/material/SvgIcon";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 import { useRouter, useSearchParams } from "next/navigation";
-import {
-  Alert,
-  Box,
-  Button,
-  Divider,
-  Grid,
-  Paper,
-  Stack,
-  SvgIcon,
-  TextField,
-  Typography,
-} from "@mui/material";
-import { useAuth } from "@/providers/AuthProvider";
+import { type FormEvent, useEffect, useMemo, useState } from "react";
 import { getDashboardPath } from "@/lib/navigation";
+import { useAuth } from "@/providers/AuthProvider";
 
 export default function LoginPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user, login, sendEmailOtp, magicLinkLogin, socialLogin } = useAuth();
-  const nextPath = useMemo(() => searchParams.get("next") ?? "/dashboard", [searchParams]);
-  const initialEmail = useMemo(() => searchParams.get("email") ?? "", [searchParams]);
+  const nextPath = useMemo(
+    () => searchParams.get("next") ?? "/dashboard",
+    [searchParams],
+  );
+  const initialEmail = useMemo(
+    () => searchParams.get("email") ?? "",
+    [searchParams],
+  );
   const [step, setStep] = useState<"email" | "password">("email");
   const [email, setEmail] = useState(initialEmail);
   const [password, setPassword] = useState("");
@@ -30,7 +34,9 @@ export default function LoginPageContent() {
   const [notice, setNotice] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [magicLoading, setMagicLoading] = useState(false);
-  const [socialLoading, setSocialLoading] = useState<null | "google" | "facebook" | "apple">(null);
+  const [socialLoading, setSocialLoading] = useState<
+    null | "google" | "facebook" | "apple"
+  >(null);
 
   useEffect(() => {
     if (initialEmail && email !== initialEmail) {
@@ -41,7 +47,8 @@ export default function LoginPageContent() {
   // Redirect logged-in users to their role-specific dashboard
   useEffect(() => {
     if (user) {
-      const targetPath = nextPath === "/dashboard" ? getDashboardPath(user.role) : nextPath;
+      const targetPath =
+        nextPath === "/dashboard" ? getDashboardPath(user.role) : nextPath;
       router.replace(targetPath);
     }
   }, [user, router, nextPath]);
@@ -56,19 +63,20 @@ export default function LoginPageContent() {
       await login(email, password);
       // User will be redirected by the useEffect hook above
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Invalid email or password.";
+      const message =
+        err instanceof Error ? err.message : "Invalid email or password.";
       if (message.toLowerCase().includes("not verified")) {
         try {
           await sendEmailOtp(email);
           router.replace(
-            `/verify?email=${encodeURIComponent(email)}&next=${encodeURIComponent(nextPath)}&sent=1`
+            `/verify?email=${encodeURIComponent(email)}&next=${encodeURIComponent(nextPath)}&sent=1`,
           );
           return;
         } catch (sendErr) {
           setError(
             sendErr instanceof Error
               ? sendErr.message
-              : "Email not verified. Unable to send verification code."
+              : "Email not verified. Unable to send verification code.",
           );
           return;
         }
@@ -101,11 +109,15 @@ export default function LoginPageContent() {
     try {
       const callbackPath = `/verify?next=${encodeURIComponent(nextPath)}`;
       const callbackUrl =
-        typeof window === "undefined" ? callbackPath : `${window.location.origin}${callbackPath}`;
+        typeof window === "undefined"
+          ? callbackPath
+          : `${window.location.origin}${callbackPath}`;
       await magicLinkLogin(email, callbackUrl);
       setNotice("Magic link sent. Check your inbox to continue.");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Unable to send magic link.");
+      setError(
+        err instanceof Error ? err.message : "Unable to send magic link.",
+      );
     } finally {
       setMagicLoading(false);
     }
@@ -118,7 +130,9 @@ export default function LoginPageContent() {
     try {
       const callbackPath = `/verify?next=${encodeURIComponent(nextPath)}`;
       const callbackUrl =
-        typeof window === "undefined" ? callbackPath : `${window.location.origin}${callbackPath}`;
+        typeof window === "undefined"
+          ? callbackPath
+          : `${window.location.origin}${callbackPath}`;
       await socialLogin(provider, callbackUrl);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Social sign-in failed.");
@@ -145,7 +159,8 @@ export default function LoginPageContent() {
             Welcome back to BeeLearnt
           </Typography>
           <Typography color="text.secondary">
-            Sign in to continue your CAPS-aligned learning journey and track your progress.
+            Sign in to continue your CAPS-aligned learning journey and track
+            your progress.
           </Typography>
         </Stack>
       </Grid>
@@ -175,7 +190,13 @@ export default function LoginPageContent() {
 
             {step === "email" ? (
               <>
-                <Box component="form" onSubmit={(event) => { event.preventDefault(); handleContinue(); }}>
+                <Box
+                  component="form"
+                  onSubmit={(event) => {
+                    event.preventDefault();
+                    handleContinue();
+                  }}
+                >
                   <Stack spacing={2.5}>
                     <TextField
                       label="Email"
@@ -193,7 +214,9 @@ export default function LoginPageContent() {
                       disabled={magicLoading}
                       onClick={handleMagicLink}
                     >
-                      {magicLoading ? "Sending magic link..." : "Sign in with Magic Link"}
+                      {magicLoading
+                        ? "Sending magic link..."
+                        : "Sign in with Magic Link"}
                     </Button>
                   </Stack>
                 </Box>

@@ -1,16 +1,21 @@
 "use client";
 
-import { Box, Card, CardContent, IconButton, Stack, Typography } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import IconButton from "@mui/material/IconButton";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 import {
-  BarChart,
   Bar,
-  XAxis,
-  YAxis,
+  BarChart,
   CartesianGrid,
-  Tooltip,
   Legend,
   ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
 } from "recharts";
 
 interface EngagementChartProps {
@@ -26,10 +31,25 @@ interface EngagementChartProps {
 
 const defaultData = [
   { day: "Mon", lessonsCompleted: 12, quizzesAttempted: 8, minutesStudied: 45 },
-  { day: "Tue", lessonsCompleted: 15, quizzesAttempted: 10, minutesStudied: 60 },
-  { day: "Wed", lessonsCompleted: 18, quizzesAttempted: 12, minutesStudied: 75 },
+  {
+    day: "Tue",
+    lessonsCompleted: 15,
+    quizzesAttempted: 10,
+    minutesStudied: 60,
+  },
+  {
+    day: "Wed",
+    lessonsCompleted: 18,
+    quizzesAttempted: 12,
+    minutesStudied: 75,
+  },
   { day: "Thu", lessonsCompleted: 14, quizzesAttempted: 9, minutesStudied: 55 },
-  { day: "Fri", lessonsCompleted: 20, quizzesAttempted: 15, minutesStudied: 90 },
+  {
+    day: "Fri",
+    lessonsCompleted: 20,
+    quizzesAttempted: 15,
+    minutesStudied: 90,
+  },
   { day: "Sat", lessonsCompleted: 8, quizzesAttempted: 5, minutesStudied: 30 },
   { day: "Sun", lessonsCompleted: 6, quizzesAttempted: 4, minutesStudied: 25 },
 ];
@@ -44,7 +64,11 @@ export default function EngagementChart({
       <CardContent>
         <Stack spacing={2}>
           {/* Header */}
-          <Stack direction="row" justifyContent="space-between" alignItems="center">
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+          >
             <Typography variant="h6" fontWeight={600}>
               {title}
             </Typography>
@@ -88,7 +112,9 @@ export default function EngagementChart({
                   wrapperStyle={{ paddingTop: 8, paddingBottom: 16 }}
                   iconType="circle"
                   formatter={(value) => (
-                    <span style={{ color: "#B0B0B0", fontSize: 12 }}>{value}</span>
+                    <span style={{ color: "#B0B0B0", fontSize: 12 }}>
+                      {value}
+                    </span>
                   )}
                 />
                 <Bar

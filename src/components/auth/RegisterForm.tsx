@@ -1,20 +1,18 @@
 "use client";
 
+import Alert from "@mui/material/Alert";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import FormControl from "@mui/material/FormControl";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormLabel from "@mui/material/FormLabel";
+import Paper from "@mui/material/Paper";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 import { useState } from "react";
 import { useAuth } from "@/providers/AuthProvider";
-import {
-  Box,
-  Button,
-  FormControl,
-  FormControlLabel,
-  FormLabel,
-  Radio,
-  RadioGroup,
-  TextField,
-  Typography,
-  Alert,
-  Paper,
-} from "@mui/material";
 
 export default function RegisterForm() {
   const { register } = useAuth();
@@ -64,8 +62,12 @@ export default function RegisterForm() {
       });
 
       // Success - redirect will happen automatically through AuthProvider
-    } catch (err: any) {
-      setError(err?.message || "Registration failed. Please try again.");
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Registration failed. Please try again.",
+      );
     } finally {
       setLoading(false);
     }
@@ -76,7 +78,7 @@ export default function RegisterForm() {
       <Typography variant="h4" component="h1" gutterBottom>
         Create Your Account
       </Typography>
-      
+
       <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
         Join BeeLearnt to access personalized learning materials
       </Typography>
@@ -120,7 +122,9 @@ export default function RegisterForm() {
           name="password"
           type="password"
           value={formData.password}
-          onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+          onChange={(e) =>
+            setFormData({ ...formData, password: e.target.value })
+          }
           required
           margin="normal"
           helperText="Minimum 6 characters"
@@ -133,7 +137,9 @@ export default function RegisterForm() {
           name="confirmPassword"
           type="password"
           value={formData.confirmPassword}
-          onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+          onChange={(e) =>
+            setFormData({ ...formData, confirmPassword: e.target.value })
+          }
           required
           margin="normal"
         />
@@ -144,7 +150,12 @@ export default function RegisterForm() {
           <RadioGroup
             name="role"
             value={formData.role}
-            onChange={(e) => setFormData({ ...formData, role: e.target.value as "STUDENT" | "PARENT" })}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                role: e.target.value as "STUDENT" | "PARENT",
+              })
+            }
           >
             <FormControlLabel
               value="STUDENT"

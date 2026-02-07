@@ -72,25 +72,29 @@ const subjects: Subject[] = [
     id: 1,
     name: "Mathematics",
     grade: 10,
-    description: "Build confidence with algebra, functions, and graphs aligned to CAPS.",
+    description:
+      "Build confidence with algebra, functions, and graphs aligned to CAPS.",
   },
   {
     id: 2,
     name: "Physical Sciences",
     grade: 11,
-    description: "Master motion, forces, and chemical systems with practical examples.",
+    description:
+      "Master motion, forces, and chemical systems with practical examples.",
   },
   {
     id: 3,
     name: "Life Sciences",
     grade: 12,
-    description: "Explore cells, genetics, and modern biology with focused lessons.",
+    description:
+      "Explore cells, genetics, and modern biology with focused lessons.",
   },
   {
     id: 4,
     name: "Information Technology",
     grade: "10-12",
-    description: "CAPS-aligned computing, programming, and digital systems across Grades 10-12.",
+    description:
+      "CAPS-aligned computing, programming, and digital systems across Grades 10-12.",
   },
 ];
 
@@ -107,7 +111,8 @@ const modules: Module[] = [
     id: 102,
     subjectId: 1,
     title: "Functions and Graphs",
-    description: "Analyze linear functions and interpret graphs with confidence.",
+    description:
+      "Analyze linear functions and interpret graphs with confidence.",
     order: 2,
     grade: 10,
   },
@@ -155,7 +160,8 @@ const modules: Module[] = [
     id: 402,
     subjectId: 4,
     title: "Programming Foundations",
-    description: "Build problem-solving skills with pseudocode and control flow.",
+    description:
+      "Build problem-solving skills with pseudocode and control flow.",
     order: 2,
     grade: 10,
   },
@@ -198,7 +204,8 @@ const lessons: Lesson[] = [
     id: 1001,
     moduleId: 101,
     title: "Intro to Algebra",
-    content: "# Algebra introduction\n\nAlgebra uses symbols to represent unknown values. In CAPS, you will use algebra to model real problems and simplify expressions.\n\n## Goals\n- Understand variables and constants\n- Translate words into expressions\n- Simplify with basic rules\n\n## Key idea\nCombine like terms by adding their coefficients.",
+    content:
+      "# Algebra introduction\n\nAlgebra uses symbols to represent unknown values. In CAPS, you will use algebra to model real problems and simplify expressions.\n\n## Goals\n- Understand variables and constants\n- Translate words into expressions\n- Simplify with basic rules\n\n## Key idea\nCombine like terms by adding their coefficients.",
     type: "text",
     order: 1,
   },
@@ -206,7 +213,8 @@ const lessons: Lesson[] = [
     id: 1002,
     moduleId: 101,
     title: "Simplifying Expressions",
-    content: "# Simplifying expressions\n\nYou can simplify by collecting like terms and factoring common factors.\n\n## Example\n2x + 3x - x = 4x\n\n## Practice\nSimplify: 5a - 2a + 7.",
+    content:
+      "# Simplifying expressions\n\nYou can simplify by collecting like terms and factoring common factors.\n\n## Example\n2x + 3x - x = 4x\n\n## Practice\nSimplify: 5a - 2a + 7.",
     type: "video",
     videoUrl: "https://www.youtube.com/embed/6-yJXqkty6I",
     order: 2,
@@ -215,7 +223,8 @@ const lessons: Lesson[] = [
     id: 1003,
     moduleId: 102,
     title: "Linear Functions",
-    content: "# Linear functions\n\nA linear function has the form y = mx + c. The gradient tells you how steep the line is.\n\n## Goals\n- Interpret m and c\n- Plot straight lines\n- Compare gradients\n\n## Tip\nTwo points define a line. Use rise over run to find m.",
+    content:
+      "# Linear functions\n\nA linear function has the form y = mx + c. The gradient tells you how steep the line is.\n\n## Goals\n- Interpret m and c\n- Plot straight lines\n- Compare gradients\n\n## Tip\nTwo points define a line. Use rise over run to find m.",
     type: "text",
     order: 1,
   },
@@ -223,7 +232,8 @@ const lessons: Lesson[] = [
     id: 1004,
     moduleId: 102,
     title: "Graph Interpretation",
-    content: "# Graph interpretation\n\nReading graphs is about understanding trends, intercepts, and scales.\n\n## Focus\n- Intercepts\n- Slope\n- Domain and range\n\n## Practice\nDescribe what happens when the graph crosses the y-axis at 3.",
+    content:
+      "# Graph interpretation\n\nReading graphs is about understanding trends, intercepts, and scales.\n\n## Focus\n- Intercepts\n- Slope\n- Domain and range\n\n## Practice\nDescribe what happens when the graph crosses the y-axis at 3.",
     type: "text",
     order: 2,
   },
@@ -231,7 +241,8 @@ const lessons: Lesson[] = [
     id: 2001,
     moduleId: 201,
     title: "Vectors and Scalars",
-    content: "# Vectors and scalars\n\nScalars have magnitude only. Vectors have magnitude and direction.\n\n## Examples\n- Speed is a scalar\n- Velocity is a vector\n\n## Tip\nUse arrows to represent vectors.",
+    content:
+      "# Vectors and scalars\n\nScalars have magnitude only. Vectors have magnitude and direction.\n\n## Examples\n- Speed is a scalar\n- Velocity is a vector\n\n## Tip\nUse arrows to represent vectors.",
     type: "text",
     order: 1,
   },
@@ -239,7 +250,8 @@ const lessons: Lesson[] = [
     id: 2002,
     moduleId: 201,
     title: "Newton's Laws",
-    content: "# Newton's laws\n\nThese laws explain how forces affect motion.\n\n## Summary\n1. Inertia\n2. F = ma\n3. Action and reaction\n\n## Practice\nIdentify the forces on a sliding book.",
+    content:
+      "# Newton's laws\n\nThese laws explain how forces affect motion.\n\n## Summary\n1. Inertia\n2. F = ma\n3. Action and reaction\n\n## Practice\nIdentify the forces on a sliding book.",
     type: "video",
     videoUrl: "https://www.youtube.com/embed/kKKM8Y-u7ds",
     order: 2,
@@ -248,7 +260,8 @@ const lessons: Lesson[] = [
     id: 2003,
     moduleId: 202,
     title: "Atomic Structure",
-    content: "# Atomic structure\n\nAtoms consist of protons, neutrons, and electrons.\n\n## Goals\n- Identify particles\n- Use atomic number and mass number\n- Understand isotopes\n\n## Tip\nAtomic number equals number of protons.",
+    content:
+      "# Atomic structure\n\nAtoms consist of protons, neutrons, and electrons.\n\n## Goals\n- Identify particles\n- Use atomic number and mass number\n- Understand isotopes\n\n## Tip\nAtomic number equals number of protons.",
     type: "text",
     order: 1,
   },
@@ -256,7 +269,8 @@ const lessons: Lesson[] = [
     id: 2004,
     moduleId: 202,
     title: "Chemical Reactions",
-    content: "# Chemical reactions\n\nReactions involve breaking and forming bonds.\n\n## Types\n- Synthesis\n- Decomposition\n- Combustion\n\n## Practice\nClassify the reaction: 2H2 + O2 -> 2H2O.",
+    content:
+      "# Chemical reactions\n\nReactions involve breaking and forming bonds.\n\n## Types\n- Synthesis\n- Decomposition\n- Combustion\n\n## Practice\nClassify the reaction: 2H2 + O2 -> 2H2O.",
     type: "text",
     order: 2,
   },
@@ -264,7 +278,8 @@ const lessons: Lesson[] = [
     id: 3001,
     moduleId: 301,
     title: "Cell Structure",
-    content: "# Cell structure\n\nCells are the basic unit of life. Eukaryotic cells contain organelles.\n\n## Organelles\n- Nucleus\n- Mitochondria\n- Ribosomes\n\n## Practice\nExplain the role of the nucleus.",
+    content:
+      "# Cell structure\n\nCells are the basic unit of life. Eukaryotic cells contain organelles.\n\n## Organelles\n- Nucleus\n- Mitochondria\n- Ribosomes\n\n## Practice\nExplain the role of the nucleus.",
     type: "text",
     order: 1,
   },
@@ -272,7 +287,8 @@ const lessons: Lesson[] = [
     id: 3002,
     moduleId: 301,
     title: "Mitosis Overview",
-    content: "# Mitosis overview\n\nMitosis is cell division used for growth and repair.\n\n## Stages\n- Prophase\n- Metaphase\n- Anaphase\n- Telophase\n\n## Tip\nRemember PMAT to recall the order.",
+    content:
+      "# Mitosis overview\n\nMitosis is cell division used for growth and repair.\n\n## Stages\n- Prophase\n- Metaphase\n- Anaphase\n- Telophase\n\n## Tip\nRemember PMAT to recall the order.",
     type: "video",
     videoUrl: "https://www.youtube.com/embed/f-ldPgEfAHI",
     order: 2,
@@ -281,7 +297,8 @@ const lessons: Lesson[] = [
     id: 3003,
     moduleId: 302,
     title: "DNA Basics",
-    content: "# DNA basics\n\nDNA carries genetic information. It is made of nucleotides.\n\n## Components\n- Sugar\n- Phosphate\n- Base\n\n## Practice\nName the four DNA bases.",
+    content:
+      "# DNA basics\n\nDNA carries genetic information. It is made of nucleotides.\n\n## Components\n- Sugar\n- Phosphate\n- Base\n\n## Practice\nName the four DNA bases.",
     type: "text",
     order: 1,
   },
@@ -289,7 +306,8 @@ const lessons: Lesson[] = [
     id: 3004,
     moduleId: 302,
     title: "Punnett Squares",
-    content: "# Punnett squares\n\nPunnett squares help predict inheritance patterns.\n\n## Goals\n- Set up a square\n- Identify genotypes\n- Calculate ratios\n\n## Tip\nUse uppercase for dominant traits.",
+    content:
+      "# Punnett squares\n\nPunnett squares help predict inheritance patterns.\n\n## Goals\n- Set up a square\n- Identify genotypes\n- Calculate ratios\n\n## Tip\nUse uppercase for dominant traits.",
     type: "text",
     order: 2,
   },
@@ -297,7 +315,8 @@ const lessons: Lesson[] = [
     id: 4001,
     moduleId: 401,
     title: "Hardware Essentials",
-    content: "# Hardware essentials\n\nComputer systems use hardware components that work together to process data.\n\n## Focus\n- CPU, RAM, storage\n- Input and output devices\n- Motherboard and power supply\n\n## Practice\nList three devices that are considered input devices.",
+    content:
+      "# Hardware essentials\n\nComputer systems use hardware components that work together to process data.\n\n## Focus\n- CPU, RAM, storage\n- Input and output devices\n- Motherboard and power supply\n\n## Practice\nList three devices that are considered input devices.",
     type: "text",
     order: 1,
   },
@@ -305,7 +324,8 @@ const lessons: Lesson[] = [
     id: 4002,
     moduleId: 401,
     title: "Inside the CPU",
-    content: "# Inside the CPU\n\nThe CPU fetches, decodes, and executes instructions every cycle.\n\n## Concepts\n- Control unit\n- ALU\n- Registers\n\n## Tip\nClock speed affects how many cycles a CPU can complete each second.",
+    content:
+      "# Inside the CPU\n\nThe CPU fetches, decodes, and executes instructions every cycle.\n\n## Concepts\n- Control unit\n- ALU\n- Registers\n\n## Tip\nClock speed affects how many cycles a CPU can complete each second.",
     type: "video",
     videoUrl: "https://www.youtube.com/embed/1I5ZMmrOfnA",
     order: 2,
@@ -314,7 +334,8 @@ const lessons: Lesson[] = [
     id: 4003,
     moduleId: 402,
     title: "Algorithms and Pseudocode",
-    content: "# Algorithms and pseudocode\n\nAlgorithms describe the steps needed to solve a problem. Pseudocode helps plan logic before coding.\n\n## Goals\n- Break problems into steps\n- Use sequence, selection, and iteration\n- Communicate logic clearly\n\n## Practice\nWrite pseudocode to calculate an average.",
+    content:
+      "# Algorithms and pseudocode\n\nAlgorithms describe the steps needed to solve a problem. Pseudocode helps plan logic before coding.\n\n## Goals\n- Break problems into steps\n- Use sequence, selection, and iteration\n- Communicate logic clearly\n\n## Practice\nWrite pseudocode to calculate an average.",
     type: "text",
     order: 1,
   },
@@ -322,7 +343,8 @@ const lessons: Lesson[] = [
     id: 4004,
     moduleId: 402,
     title: "Control Flow Patterns",
-    content: "# Control flow patterns\n\nPrograms use conditions and loops to control behavior.\n\n## Patterns\n- If/else decisions\n- For and while loops\n- Nested conditions\n\n## Tip\nTest with small inputs before scaling up.",
+    content:
+      "# Control flow patterns\n\nPrograms use conditions and loops to control behavior.\n\n## Patterns\n- If/else decisions\n- For and while loops\n- Nested conditions\n\n## Tip\nTest with small inputs before scaling up.",
     type: "video",
     videoUrl: "https://www.youtube.com/embed/4c6dyf0b7yo",
     order: 2,
@@ -331,7 +353,8 @@ const lessons: Lesson[] = [
     id: 4005,
     moduleId: 403,
     title: "Network Models",
-    content: "# Network models\n\nNetwork layers help describe how data moves across devices.\n\n## Key ideas\n- OSI model layers\n- TCP/IP stack\n- Encapsulation\n\n## Practice\nMatch each OSI layer to its role.",
+    content:
+      "# Network models\n\nNetwork layers help describe how data moves across devices.\n\n## Key ideas\n- OSI model layers\n- TCP/IP stack\n- Encapsulation\n\n## Practice\nMatch each OSI layer to its role.",
     type: "text",
     order: 1,
   },
@@ -339,7 +362,8 @@ const lessons: Lesson[] = [
     id: 4006,
     moduleId: 403,
     title: "IP Addressing Basics",
-    content: "# IP addressing basics\n\nIP addresses identify devices on a network.\n\n## Focus\n- IPv4 format\n- Subnet masks\n- Public vs private IPs\n\n## Practice\nExplain why 192.168.1.10 is a private address.",
+    content:
+      "# IP addressing basics\n\nIP addresses identify devices on a network.\n\n## Focus\n- IPv4 format\n- Subnet masks\n- Public vs private IPs\n\n## Practice\nExplain why 192.168.1.10 is a private address.",
     type: "text",
     order: 2,
   },
@@ -347,7 +371,8 @@ const lessons: Lesson[] = [
     id: 4007,
     moduleId: 404,
     title: "Data Modeling",
-    content: "# Data modeling\n\nDatabases store data in related tables. Modeling helps plan the structure.\n\n## Goals\n- Identify entities\n- Define attributes\n- Use relationships\n\n## Practice\nCreate an entity list for a library system.",
+    content:
+      "# Data modeling\n\nDatabases store data in related tables. Modeling helps plan the structure.\n\n## Goals\n- Identify entities\n- Define attributes\n- Use relationships\n\n## Practice\nCreate an entity list for a library system.",
     type: "text",
     order: 1,
   },
@@ -355,7 +380,8 @@ const lessons: Lesson[] = [
     id: 4008,
     moduleId: 404,
     title: "SQL Queries",
-    content: "# SQL queries\n\nSQL is used to create, read, update, and delete data.\n\n## Focus\n- SELECT statements\n- WHERE filters\n- Sorting with ORDER BY\n\n## Practice\nWrite a query to list all learners in Grade 11.",
+    content:
+      "# SQL queries\n\nSQL is used to create, read, update, and delete data.\n\n## Focus\n- SELECT statements\n- WHERE filters\n- Sorting with ORDER BY\n\n## Practice\nWrite a query to list all learners in Grade 11.",
     type: "video",
     videoUrl: "https://www.youtube.com/embed/HXV3zeQKqGY",
     order: 2,
@@ -364,7 +390,8 @@ const lessons: Lesson[] = [
     id: 4009,
     moduleId: 405,
     title: "Systems Development Life Cycle",
-    content: "# Systems development life cycle\n\nThe SDLC guides teams from planning to maintenance.\n\n## Phases\n- Planning\n- Analysis\n- Design\n- Implementation\n- Testing\n- Maintenance\n\n## Tip\nDocument requirements early to reduce rework.",
+    content:
+      "# Systems development life cycle\n\nThe SDLC guides teams from planning to maintenance.\n\n## Phases\n- Planning\n- Analysis\n- Design\n- Implementation\n- Testing\n- Maintenance\n\n## Tip\nDocument requirements early to reduce rework.",
     type: "text",
     order: 1,
   },
@@ -372,7 +399,8 @@ const lessons: Lesson[] = [
     id: 4010,
     moduleId: 405,
     title: "Requirements and Use Cases",
-    content: "# Requirements and use cases\n\nUse cases describe how users interact with a system.\n\n## Goals\n- Capture user goals\n- Identify actors\n- Define success scenarios\n\n## Practice\nWrite a use case for submitting an assignment.",
+    content:
+      "# Requirements and use cases\n\nUse cases describe how users interact with a system.\n\n## Goals\n- Capture user goals\n- Identify actors\n- Define success scenarios\n\n## Practice\nWrite a use case for submitting an assignment.",
     type: "text",
     order: 2,
   },
@@ -380,7 +408,8 @@ const lessons: Lesson[] = [
     id: 4011,
     moduleId: 406,
     title: "Security Principles",
-    content: "# Security principles\n\nSecure systems protect confidentiality, integrity, and availability.\n\n## Focus\n- CIA triad\n- Access control\n- Common threats\n\n## Practice\nExplain why multi-factor authentication improves security.",
+    content:
+      "# Security principles\n\nSecure systems protect confidentiality, integrity, and availability.\n\n## Focus\n- CIA triad\n- Access control\n- Common threats\n\n## Practice\nExplain why multi-factor authentication improves security.",
     type: "text",
     order: 1,
   },
@@ -388,7 +417,8 @@ const lessons: Lesson[] = [
     id: 4012,
     moduleId: 406,
     title: "Digital Citizenship",
-    content: "# Digital citizenship\n\nResponsible computing keeps people safe and informed online.\n\n## Topics\n- Online privacy\n- Respectful communication\n- Managing digital footprints\n\n## Practice\nList two ways to protect your personal information online.",
+    content:
+      "# Digital citizenship\n\nResponsible computing keeps people safe and informed online.\n\n## Topics\n- Online privacy\n- Respectful communication\n- Managing digital footprints\n\n## Practice\nList two ways to protect your personal information online.",
     type: "text",
     order: 2,
   },
@@ -570,7 +600,12 @@ const questions: Question[] = [
     quizId: 5004,
     questionText: "What is the atomic number?",
     type: "multiple_choice",
-    options: ["Number of protons", "Number of neutrons", "Mass number", "Number of shells"],
+    options: [
+      "Number of protons",
+      "Number of neutrons",
+      "Mass number",
+      "Number of shells",
+    ],
     correctAnswer: "Number of protons",
   },
   {
@@ -601,7 +636,12 @@ const questions: Question[] = [
     quizId: 5005,
     questionText: "Mitochondria are responsible for:",
     type: "multiple_choice",
-    options: ["Photosynthesis", "Energy release", "Protein synthesis", "Storage"],
+    options: [
+      "Photosynthesis",
+      "Energy release",
+      "Protein synthesis",
+      "Storage",
+    ],
     correctAnswer: "Energy release",
   },
   {
@@ -616,7 +656,12 @@ const questions: Question[] = [
     quizId: 5006,
     questionText: "DNA stands for:",
     type: "multiple_choice",
-    options: ["Deoxyribonucleic acid", "Dioxyribonucleic acid", "Deoxyribose acid", "DNA acid"],
+    options: [
+      "Deoxyribonucleic acid",
+      "Dioxyribonucleic acid",
+      "Deoxyribose acid",
+      "DNA acid",
+    ],
     correctAnswer: "Deoxyribonucleic acid",
   },
   {
@@ -863,13 +908,17 @@ export function getAssignments(): Assignment[] {
 export function getAssignmentsByModuleId(moduleId: number): Assignment[] {
   return assignments
     .filter((assignment) => assignment.moduleId === moduleId)
-    .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime());
+    .sort(
+      (a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime(),
+    );
 }
 
 export function getAssignmentsByGrade(grade: number): Assignment[] {
   return assignments
     .filter((assignment) => assignment.grade === grade)
-    .sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime());
+    .sort(
+      (a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime(),
+    );
 }
 
 export function getAssignmentById(id: number): Assignment | undefined {

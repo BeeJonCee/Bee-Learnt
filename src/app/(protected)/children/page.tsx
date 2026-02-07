@@ -1,10 +1,18 @@
 "use client";
 
-import { Card, CardContent, Grid, Stack, Typography } from "@mui/material";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Grid from "@mui/material/Grid";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 import { useApi } from "@/hooks/useApi";
 
 export default function ChildrenPage() {
-  const { data: overview, loading, error } = useApi<
+  const {
+    data: overview,
+    loading,
+    error,
+  } = useApi<
     {
       studentId: string;
       studentName: string;
@@ -20,7 +28,9 @@ export default function ChildrenPage() {
         Track progress and support each learner with focused feedback.
       </Typography>
       {loading ? (
-        <Typography color="text.secondary">Loading learner summaries...</Typography>
+        <Typography color="text.secondary">
+          Loading learner summaries...
+        </Typography>
       ) : error ? (
         <Typography color="error">{error}</Typography>
       ) : (overview ?? []).length === 0 ? (

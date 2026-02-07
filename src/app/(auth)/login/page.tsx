@@ -5,7 +5,14 @@ import LoginPageContent from "./login-content";
 
 function LoginPageSkeleton() {
   return (
-    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh" }}>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh",
+      }}
+    >
       Loading...
     </div>
   );

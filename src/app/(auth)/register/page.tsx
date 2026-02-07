@@ -1,19 +1,17 @@
 ﻿"use client";
 
-import { type FormEvent, useState } from "react";
+import Alert from "@mui/material/Alert";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Grid from "@mui/material/Grid";
+import MenuItem from "@mui/material/MenuItem";
+import Paper from "@mui/material/Paper";
+import Stack from "@mui/material/Stack";
+import SvgIcon from "@mui/material/SvgIcon";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 import { useRouter } from "next/navigation";
-import {
-  Alert,
-  Box,
-  Button,
-  Grid,
-  MenuItem,
-  Paper,
-  Stack,
-  SvgIcon,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { type FormEvent, useState } from "react";
 import { getDashboardPath } from "@/lib/navigation";
 import { useAuth } from "@/providers/AuthProvider";
 
@@ -35,7 +33,9 @@ export default function RegisterPage() {
   const [success, setSuccess] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [magicLoading, setMagicLoading] = useState(false);
-  const [socialLoading, setSocialLoading] = useState<null | "google" | "facebook" | "apple">(null);
+  const [socialLoading, setSocialLoading] = useState<
+    null | "google" | "facebook" | "apple"
+  >(null);
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
@@ -54,9 +54,10 @@ export default function RegisterPage() {
       await sendEmailOtp(form.email);
       setSuccess("Verification code sent. Check your email to finish setup.");
 
-      const nextPath = form.role === "STUDENT" ? "/onboarding" : getDashboardPath(form.role);
+      const nextPath =
+        form.role === "STUDENT" ? "/onboarding" : getDashboardPath(form.role);
       router.replace(
-        `/verify?email=${encodeURIComponent(form.email)}&next=${encodeURIComponent(nextPath)}&sent=1`
+        `/verify?email=${encodeURIComponent(form.email)}&next=${encodeURIComponent(nextPath)}&sent=1`,
       );
     } catch (err) {
       setError(err instanceof Error ? err.message : "Registration failed.");
@@ -78,11 +79,15 @@ export default function RegisterPage() {
     try {
       const callbackPath = `/verify?next=${encodeURIComponent("/onboarding")}`;
       const callbackUrl =
-        typeof window === "undefined" ? callbackPath : `${window.location.origin}${callbackPath}`;
+        typeof window === "undefined"
+          ? callbackPath
+          : `${window.location.origin}${callbackPath}`;
       await magicLinkLogin(form.email, callbackUrl);
       setSuccess("Magic link sent. Check your inbox to continue.");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Unable to send magic link.");
+      setError(
+        err instanceof Error ? err.message : "Unable to send magic link.",
+      );
     } finally {
       setMagicLoading(false);
     }
@@ -95,7 +100,9 @@ export default function RegisterPage() {
     try {
       const callbackPath = `/verify?next=${encodeURIComponent("/onboarding")}`;
       const callbackUrl =
-        typeof window === "undefined" ? callbackPath : `${window.location.origin}${callbackPath}`;
+        typeof window === "undefined"
+          ? callbackPath
+          : `${window.location.origin}${callbackPath}`;
       await socialLogin(provider, callbackUrl);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Social sign-up failed.");
@@ -104,7 +111,12 @@ export default function RegisterPage() {
   };
 
   return (
-    <Grid container minHeight="100vh" alignItems="center" justifyContent="center">
+    <Grid
+      container
+      minHeight="100vh"
+      alignItems="center"
+      justifyContent="center"
+    >
       <Grid item xs={12} md={8} lg={5} xl={4} px={{ xs: 2, sm: 4 }}>
         <Paper sx={{ p: 4 }}>
           <Stack spacing={3}>
@@ -202,7 +214,10 @@ export default function RegisterPage() {
                   type="password"
                   value={form.password}
                   onChange={(event) =>
-                    setForm((prev) => ({ ...prev, password: event.target.value }))
+                    setForm((prev) => ({
+                      ...prev,
+                      password: event.target.value,
+                    }))
                   }
                   required
                 />
@@ -230,7 +245,9 @@ export default function RegisterPage() {
                   disabled={magicLoading}
                   onClick={handleMagicLink}
                 >
-                  {magicLoading ? "Sending magic link..." : "Continue with Magic Link"}
+                  {magicLoading
+                    ? "Sending magic link..."
+                    : "Continue with Magic Link"}
                 </Button>
               </Stack>
             </Box>

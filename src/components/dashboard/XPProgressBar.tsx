@@ -1,7 +1,10 @@
 "use client";
 
-import { Box, LinearProgress, Stack, Typography, Tooltip } from "@mui/material";
-import StarIcon from "@mui/icons-material/Star";
+import Box from "@mui/material/Box";
+import LinearProgress from "@mui/material/LinearProgress";
+import Stack from "@mui/material/Stack";
+import Tooltip from "@mui/material/Tooltip";
+import Typography from "@mui/material/Typography";
 import { useApi } from "@/hooks/useApi";
 import { tokens } from "@/theme/tokens";
 
@@ -51,7 +54,11 @@ export default function XPProgressBar() {
 
         {/* XP info */}
         <Box sx={{ flex: 1 }}>
-          <Stack direction="row" justifyContent="space-between" alignItems="center">
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+          >
             <Typography variant="subtitle2" fontWeight={600}>
               Level {points.level}
             </Typography>
@@ -76,7 +83,11 @@ export default function XPProgressBar() {
             }}
           />
 
-          <Stack direction="row" justifyContent="space-between" sx={{ mt: 0.5 }}>
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            sx={{ mt: 0.5 }}
+          >
             <Typography variant="caption" color="text.secondary">
               {points.xpToNextLevel} XP to Level {points.level + 1}
             </Typography>

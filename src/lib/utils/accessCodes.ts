@@ -1,4 +1,4 @@
-import crypto from "crypto";
+import crypto from "node:crypto";
 
 const DEFAULT_PREFIX = "BEE";
 
@@ -19,7 +19,10 @@ export function getDailyAccessCode(params: {
   const secret = process.env.DAILY_ACCESS_CODE_SECRET || "beelearn-demo-secret";
   const stamp = getDateStamp(date);
   const payload = `${moduleId}:${stamp}`;
-  const digest = crypto.createHmac("sha256", secret).update(payload).digest("hex");
+  const digest = crypto
+    .createHmac("sha256", secret)
+    .update(payload)
+    .digest("hex");
   const pin = digest.slice(0, 6).toUpperCase();
   return `${DEFAULT_PREFIX}-${grade}-${order}-${pin}`;
 }

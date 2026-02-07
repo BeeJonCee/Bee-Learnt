@@ -1,17 +1,15 @@
 "use client";
 
+import Alert from "@mui/material/Alert";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Chip from "@mui/material/Chip";
+import MenuItem from "@mui/material/MenuItem";
+import Stack from "@mui/material/Stack";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 import { useState } from "react";
-import {
-  Alert,
-  Button,
-  Card,
-  CardContent,
-  Chip,
-  MenuItem,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
 import { useApi } from "@/hooks/useApi";
 import { apiFetch } from "@/lib/utils/api";
 
@@ -49,7 +47,9 @@ export default function CollaborationPage() {
       await refetch();
       setMessage("Room created.");
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "Unable to create room.");
+      setMessage(
+        error instanceof Error ? error.message : "Unable to create room.",
+      );
     } finally {
       setSaving(false);
     }
@@ -60,12 +60,15 @@ export default function CollaborationPage() {
       <Stack spacing={1}>
         <Typography variant="h3">Collaboration hub</Typography>
         <Typography color="text.secondary">
-          Create group projects, discussions, or virtual classrooms with breakout rooms.
+          Create group projects, discussions, or virtual classrooms with
+          breakout rooms.
         </Typography>
       </Stack>
 
       {message && (
-        <Alert severity={message.includes("created") ? "success" : "error"}>{message}</Alert>
+        <Alert severity={message.includes("created") ? "success" : "error"}>
+          {message}
+        </Alert>
       )}
 
       <Card>
@@ -75,14 +78,23 @@ export default function CollaborationPage() {
             <TextField
               label="Room title"
               value={form.title}
-              onChange={(event) => setForm((prev) => ({ ...prev, title: event.target.value }))}
+              onChange={(event) =>
+                setForm((prev) => ({ ...prev, title: event.target.value }))
+              }
             />
             <TextField
               select
               label="Room type"
               value={form.type}
               onChange={(event) =>
-                setForm((prev) => ({ ...prev, type: event.target.value as "project" | "classroom" | "discussion" | "breakout" }))
+                setForm((prev) => ({
+                  ...prev,
+                  type: event.target.value as
+                    | "project"
+                    | "classroom"
+                    | "discussion"
+                    | "breakout",
+                }))
               }
             >
               <MenuItem value="project">Group project</MenuItem>
@@ -96,10 +108,17 @@ export default function CollaborationPage() {
               minRows={2}
               value={form.description}
               onChange={(event) =>
-                setForm((prev) => ({ ...prev, description: event.target.value }))
+                setForm((prev) => ({
+                  ...prev,
+                  description: event.target.value,
+                }))
               }
             />
-            <Button variant="contained" onClick={handleCreate} disabled={saving}>
+            <Button
+              variant="contained"
+              onClick={handleCreate}
+              disabled={saving}
+            >
               {saving ? "Creating..." : "Create room"}
             </Button>
           </Stack>

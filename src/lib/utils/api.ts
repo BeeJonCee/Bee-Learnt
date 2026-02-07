@@ -11,7 +11,10 @@ function getAuthToken() {
   return getStoredAuth()?.token ?? null;
 }
 
-export async function apiFetch<T>(input: RequestInfo, init: RequestInit = {}): Promise<T> {
+export async function apiFetch<T>(
+  input: RequestInfo,
+  init: RequestInit = {},
+): Promise<T> {
   const headers = new Headers(init.headers);
   if (!headers.has("Content-Type") && init.body) {
     headers.set("Content-Type", "application/json");
@@ -25,7 +28,9 @@ export async function apiFetch<T>(input: RequestInfo, init: RequestInit = {}): P
   }
 
   const url =
-    typeof input === "string" && input.startsWith("/") ? `${backendUrl}${input}` : input;
+    typeof input === "string" && input.startsWith("/")
+      ? `${backendUrl}${input}`
+      : input;
 
   const response = await fetch(url, { ...init, headers });
   if (!response.ok) {

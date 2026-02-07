@@ -8,7 +8,11 @@ type UseTimerOptions = {
   autoStart?: boolean;
 };
 
-export function useTimer({ durationSeconds, onExpire, autoStart = true }: UseTimerOptions) {
+export function useTimer({
+  durationSeconds,
+  onExpire,
+  autoStart = true,
+}: UseTimerOptions) {
   const [remaining, setRemaining] = useState(durationSeconds);
   const [isRunning, setIsRunning] = useState(autoStart);
   const onExpireRef = useRef(onExpire);

@@ -1,16 +1,21 @@
 "use client";
 
-import { Box, Card, CardContent, IconButton, Stack, Typography } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import IconButton from "@mui/material/IconButton";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 import {
-  LineChart,
+  CartesianGrid,
+  Legend,
   Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
 } from "recharts";
 
 interface TutoringStatsChartProps {
@@ -41,7 +46,11 @@ export default function TutoringStatsChart({
       <CardContent>
         <Stack spacing={2}>
           {/* Header */}
-          <Stack direction="row" justifyContent="space-between" alignItems="center">
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+          >
             <Typography variant="h6" fontWeight={600}>
               {title}
             </Typography>
@@ -84,7 +93,9 @@ export default function TutoringStatsChart({
                   wrapperStyle={{ paddingTop: 8, paddingBottom: 16 }}
                   iconType="circle"
                   formatter={(value) => (
-                    <span style={{ color: "#B0B0B0", fontSize: 12 }}>{value}</span>
+                    <span style={{ color: "#B0B0B0", fontSize: 12 }}>
+                      {value}
+                    </span>
                   )}
                 />
                 <Line

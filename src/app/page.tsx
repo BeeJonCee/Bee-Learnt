@@ -1,29 +1,27 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Chip,
-  CircularProgress,
-  Container,
-  Grid,
-  IconButton,
-  Stack,
-  Typography,
-} from "@mui/material";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
 import InsightsIcon from "@mui/icons-material/Insights";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import SchoolIcon from "@mui/icons-material/School";
-import { apiFetch } from "@/lib/utils/api";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Chip from "@mui/material/Chip";
+import CircularProgress from "@mui/material/CircularProgress";
+import Container from "@mui/material/Container";
+import Grid from "@mui/material/Grid";
+import IconButton from "@mui/material/IconButton";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useRef } from "react";
 import { getDashboardPath } from "@/lib/navigation";
+import { apiFetch } from "@/lib/utils/api";
 import { useAuth } from "@/providers/AuthProvider";
 import { useColorMode } from "@/providers/ThemeModeProvider";
 
@@ -36,17 +34,20 @@ type Highlight = {
 const highlights: Highlight[] = [
   {
     title: "Multi-subject curriculum",
-    description: "CAPS-aligned modules across multiple subjects and grade levels.",
+    description:
+      "CAPS-aligned modules across multiple subjects and grade levels.",
     icon: MenuBookIcon,
   },
   {
     title: "Progress intelligence",
-    description: "Track learner momentum, mastery, and focus areas across all subjects.",
+    description:
+      "Track learner momentum, mastery, and focus areas across all subjects.",
     icon: InsightsIcon,
   },
   {
     title: "Adaptive learning paths",
-    description: "Personalized guidance with AI support and parent-ready insights.",
+    description:
+      "Personalized guidance with AI support and parent-ready insights.",
     icon: SchoolIcon,
   },
 ];
@@ -87,7 +88,7 @@ export default function HomePage() {
         ...item,
         Icon: item.icon,
       })),
-    []
+    [],
   );
 
   if (loading || user) {
@@ -116,7 +117,11 @@ export default function HomePage() {
     >
       <Container maxWidth="lg">
         <Stack spacing={8}>
-          <Stack direction="row" alignItems="center" justifyContent="space-between">
+          <Stack
+            direction="row"
+            alignItems="center"
+            justifyContent="space-between"
+          >
             <Stack direction="row" spacing={1.5} alignItems="center">
               <Box
                 sx={{
@@ -140,13 +145,22 @@ export default function HomePage() {
               </Box>
             </Stack>
             <Stack direction="row" spacing={1} alignItems="center">
-              <Button component={Link} href="/login" variant="text" color="inherit">
+              <Button
+                component={Link}
+                href="/login"
+                variant="text"
+                color="inherit"
+              >
                 Sign in
               </Button>
               <Button component={Link} href="/register" variant="outlined">
                 Create account
               </Button>
-              <IconButton onClick={toggleMode} aria-label="Toggle theme" color="inherit">
+              <IconButton
+                onClick={toggleMode}
+                aria-label="Toggle theme"
+                color="inherit"
+              >
                 {mode === "dark" ? <Brightness7Icon /> : <Brightness4Icon />}
               </IconButton>
             </Stack>
@@ -155,16 +169,34 @@ export default function HomePage() {
           <Grid container spacing={4} alignItems="center">
             <Grid item xs={12} md={7}>
               <Stack spacing={3}>
-                <Chip label="Learning Platform" color="primary" sx={{ width: "fit-content" }} />
-                <Typography variant="h2">Personalized Learning at Scale</Typography>
+                <Chip
+                  label="Learning Platform"
+                  color="primary"
+                  sx={{ width: "fit-content" }}
+                />
+                <Typography variant="h2">
+                  Personalized Learning at Scale
+                </Typography>
                 <Typography color="text.secondary" variant="h6">
-                  Comprehensive platform for multiple subjects and grade levels. Track progress, adapt to individual needs, and empower learners with data-driven insights.
+                  Comprehensive platform for multiple subjects and grade levels.
+                  Track progress, adapt to individual needs, and empower
+                  learners with data-driven insights.
                 </Typography>
                 <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-                  <Button component={Link} href="/dashboard" variant="contained" size="large">
+                  <Button
+                    component={Link}
+                    href="/dashboard"
+                    variant="contained"
+                    size="large"
+                  >
                     Learner Dashboard
                   </Button>
-                  <Button component={Link} href="/admin" variant="outlined" size="large">
+                  <Button
+                    component={Link}
+                    href="/admin"
+                    variant="outlined"
+                    size="large"
+                  >
                     Admin Analytics
                   </Button>
                 </Stack>
@@ -205,34 +237,42 @@ export default function HomePage() {
                     <Stack spacing={1}>
                       <Typography variant="h5">Why BeeLearnt</Typography>
                       <Typography color="text.secondary">
-                        Supporting learners across all subjects and grade levels with intelligent feedback.
+                        Supporting learners across all subjects and grade levels
+                        with intelligent feedback.
                       </Typography>
                     </Stack>
                     <Stack spacing={2}>
-                      {highlightsWithIcons.map(({ title, description, Icon }) => (
-                        <Stack key={title} direction="row" spacing={2}>
-                          <Box
-                            sx={{
-                              width: 44,
-                              height: 44,
-                              borderRadius: 3,
-                              bgcolor: "rgba(255, 214, 0, 0.18)",
-                              display: "grid",
-                              placeItems: "center",
-                              color: "primary.main",
-                              flexShrink: 0,
-                            }}
-                          >
-                            <Icon fontSize="small" />
-                          </Box>
-                          <Stack spacing={0.5}>
-                            <Typography variant="subtitle1">{title}</Typography>
-                            <Typography color="text.secondary" variant="body2">
-                              {description}
-                            </Typography>
+                      {highlightsWithIcons.map(
+                        ({ title, description, Icon }) => (
+                          <Stack key={title} direction="row" spacing={2}>
+                            <Box
+                              sx={{
+                                width: 44,
+                                height: 44,
+                                borderRadius: 3,
+                                bgcolor: "rgba(255, 214, 0, 0.18)",
+                                display: "grid",
+                                placeItems: "center",
+                                color: "primary.main",
+                                flexShrink: 0,
+                              }}
+                            >
+                              <Icon fontSize="small" />
+                            </Box>
+                            <Stack spacing={0.5}>
+                              <Typography variant="subtitle1">
+                                {title}
+                              </Typography>
+                              <Typography
+                                color="text.secondary"
+                                variant="body2"
+                              >
+                                {description}
+                              </Typography>
+                            </Stack>
                           </Stack>
-                        </Stack>
-                      ))}
+                        ),
+                      )}
                     </Stack>
                   </Stack>
                 </CardContent>
@@ -242,9 +282,13 @@ export default function HomePage() {
 
           <Stack spacing={2} alignItems="center" textAlign="center">
             <AutoAwesomeIcon sx={{ fontSize: 40, color: "primary.main" }} />
-            <Typography variant="h4">Empower learners across all disciplines</Typography>
+            <Typography variant="h4">
+              Empower learners across all disciplines
+            </Typography>
             <Typography color="text.secondary" sx={{ maxWidth: 720 }}>
-              BeeLearnt combines comprehensive curriculum with adaptive AI support and real-time analytics, helping educators and families keep every learner progressing.
+              BeeLearnt combines comprehensive curriculum with adaptive AI
+              support and real-time analytics, helping educators and families
+              keep every learner progressing.
             </Typography>
           </Stack>
         </Stack>

@@ -1,9 +1,10 @@
 "use client";
 
-import { useMemo } from "react";
-import { Box, Typography } from "@mui/material";
+import Box from "@mui/material/Box";
 import { useTheme } from "@mui/material/styles";
+import Typography from "@mui/material/Typography";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { useMemo } from "react";
 
 type HexModule = {
   id: number;
@@ -23,7 +24,10 @@ const gradeColors: Record<number, { fill: string; stroke: string }> = {
   12: { fill: "rgba(249, 115, 22, 0.28)", stroke: "rgba(249, 115, 22, 0.9)" },
 };
 
-export default function HexModulePicker({ modules, onPick }: HexModulePickerProps) {
+export default function HexModulePicker({
+  modules,
+  onPick,
+}: HexModulePickerProps) {
   const theme = useTheme();
   const isLg = useMediaQuery(theme.breakpoints.up("lg"));
   const isMd = useMediaQuery(theme.breakpoints.up("md"));
@@ -88,18 +92,21 @@ export default function HexModulePicker({ modules, onPick }: HexModulePickerProp
             fill: "rgba(255,255,255,0.08)",
             stroke: "rgba(255,255,255,0.3)",
           };
-          const lines = module.title.split(" ").reduce<string[]>((acc, word) => {
-            if (acc.length === 0) return [word];
-            const next = `${acc[acc.length - 1]} ${word}`;
-            if (next.length > 16) {
-              acc.push(word);
-            } else {
-              acc[acc.length - 1] = next;
-            }
-            return acc;
-          }, []);
+          const lines = module.title
+            .split(" ")
+            .reduce<string[]>((acc, word) => {
+              if (acc.length === 0) return [word];
+              const next = `${acc[acc.length - 1]} ${word}`;
+              if (next.length > 16) {
+                acc.push(word);
+              } else {
+                acc[acc.length - 1] = next;
+              }
+              return acc;
+            }, []);
 
           return (
+            // biome-ignore lint/a11y/noStaticElementInteractions: SVG interactive element
             <g
               key={module.id}
               transform={`translate(${x},${y})`}

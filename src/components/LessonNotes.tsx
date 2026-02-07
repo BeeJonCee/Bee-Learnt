@@ -1,15 +1,13 @@
 ﻿"use client";
 
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Stack from "@mui/material/Stack";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 import { useState } from "react";
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
 import { useApi } from "@/hooks/useApi";
 import { enqueueOfflineAction } from "@/lib/offline/queue";
 import { apiFetch } from "@/lib/utils/api";
@@ -27,7 +25,7 @@ type LessonNotesProps = {
 
 export default function LessonNotes({ lessonId }: LessonNotesProps) {
   const { data, setData } = useApi<LessonNote[]>(
-    lessonId ? `/api/notes?lessonId=${lessonId}` : null
+    lessonId ? `/api/notes?lessonId=${lessonId}` : null,
   );
   const [note, setNote] = useState("");
   const [saving, setSaving] = useState(false);
@@ -111,7 +109,9 @@ export default function LessonNotes({ lessonId }: LessonNotesProps) {
                     {item.content}
                   </Typography>
                   <Typography variant="caption" color="text.secondary">
-                    {item.pending ? "Pending sync" : new Date(item.createdAt).toLocaleDateString()}
+                    {item.pending
+                      ? "Pending sync"
+                      : new Date(item.createdAt).toLocaleDateString()}
                   </Typography>
                 </Box>
               ))}

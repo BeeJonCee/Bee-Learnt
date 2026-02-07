@@ -1,13 +1,13 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { apiFetch } from "@/lib/utils/api";
 import type { Layout } from "react-grid-layout";
 import {
-  STUDENT_WIDGETS,
   generateDefaultLayout,
+  STUDENT_WIDGETS,
   type WidgetConfig,
 } from "@/components/dashboard/WidgetRegistry";
+import { apiFetch } from "@/lib/utils/api";
 
 export interface WidgetSettings {
   [widgetId: string]: {
@@ -33,9 +33,11 @@ function getDefaultWidgetSettings(widgets: WidgetConfig[]): WidgetSettings {
 }
 
 export function useDashboardLayout() {
-  const [layout, setLayout] = useState<Layout[]>(() => generateDefaultLayout(STUDENT_WIDGETS));
+  const [layout, setLayout] = useState<Layout[]>(() =>
+    generateDefaultLayout(STUDENT_WIDGETS),
+  );
   const [widgetSettings, setWidgetSettings] = useState<WidgetSettings>(() =>
-    getDefaultWidgetSettings(STUDENT_WIDGETS)
+    getDefaultWidgetSettings(STUDENT_WIDGETS),
   );
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -82,7 +84,7 @@ export function useDashboardLayout() {
       try {
         localStorage.setItem(
           LOCAL_STORAGE_KEY,
-          JSON.stringify({ layout: newLayout, widgetSettings: newSettings })
+          JSON.stringify({ layout: newLayout, widgetSettings: newSettings }),
         );
       } catch {
         // localStorage might be full or unavailable
@@ -103,7 +105,7 @@ export function useDashboardLayout() {
         setIsSaving(false);
       }
     },
-    []
+    [],
   );
 
   // Handle layout change from drag/drop
@@ -112,7 +114,7 @@ export function useDashboardLayout() {
       setLayout(newLayout);
       savePreferences(newLayout, widgetSettings);
     },
-    [widgetSettings, savePreferences]
+    [widgetSettings, savePreferences],
   );
 
   // Toggle widget visibility
@@ -130,7 +132,7 @@ export function useDashboardLayout() {
         return newSettings;
       });
     },
-    [layout, savePreferences]
+    [layout, savePreferences],
   );
 
   // Toggle widget collapsed state
@@ -148,7 +150,7 @@ export function useDashboardLayout() {
         return newSettings;
       });
     },
-    [layout, savePreferences]
+    [layout, savePreferences],
   );
 
   // Remove widget (hide it)
@@ -166,7 +168,7 @@ export function useDashboardLayout() {
         return newSettings;
       });
     },
-    [layout, savePreferences]
+    [layout, savePreferences],
   );
 
   // Reset to default layout
@@ -180,11 +182,11 @@ export function useDashboardLayout() {
 
   // Get visible widgets with their layouts
   const visibleWidgets = STUDENT_WIDGETS.filter(
-    (widget) => widgetSettings[widget.id]?.visible !== false
+    (widget) => widgetSettings[widget.id]?.visible !== false,
   );
 
   const visibleLayout = layout.filter((item) =>
-    visibleWidgets.some((widget) => widget.id === item.i)
+    visibleWidgets.some((widget) => widget.id === item.i),
   );
 
   return {

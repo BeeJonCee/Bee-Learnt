@@ -1,16 +1,14 @@
 "use client";
 
-import { useMemo } from "react";
+import Alert from "@mui/material/Alert";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Chip from "@mui/material/Chip";
+import Divider from "@mui/material/Divider";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 import { useParams } from "next/navigation";
-import {
-  Alert,
-  Card,
-  CardContent,
-  Chip,
-  Divider,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { useMemo } from "react";
 import { useApi } from "@/hooks/useApi";
 
 type AttemptReviewPayload = {
@@ -59,7 +57,8 @@ type AttemptReviewPayload = {
 function formatValue(value: unknown) {
   if (value === null || value === undefined) return "—";
   if (typeof value === "string") return value;
-  if (typeof value === "number" || typeof value === "boolean") return String(value);
+  if (typeof value === "number" || typeof value === "boolean")
+    return String(value);
   try {
     return JSON.stringify(value);
   } catch {
@@ -72,7 +71,7 @@ export default function AttemptResultsPage() {
   const attemptId = params?.attemptId ?? "";
 
   const { data, loading, error } = useApi<AttemptReviewPayload>(
-    attemptId ? `/api/attempts/${encodeURIComponent(attemptId)}/review` : null
+    attemptId ? `/api/attempts/${encodeURIComponent(attemptId)}/review` : null,
   );
 
   const scoreLabel = useMemo(() => {
@@ -99,11 +98,25 @@ export default function AttemptResultsPage() {
             <CardContent>
               <Stack spacing={1.5}>
                 <Typography variant="h4">{data.assessment.title}</Typography>
-                <Stack direction="row" spacing={1} flexWrap="wrap" alignItems="center">
-                  <Chip size="small" variant="outlined" label={data.attempt.status.replaceAll("_", " ")} />
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  flexWrap="wrap"
+                  alignItems="center"
+                >
+                  <Chip
+                    size="small"
+                    variant="outlined"
+                    label={data.attempt.status.replaceAll("_", " ")}
+                  />
                   <Chip size="small" color="primary" label={scoreLabel} />
                   {typeof data.attempt.percentage === "number" ? (
-                    <Chip size="small" color="primary" variant="outlined" label={`${data.attempt.percentage}%`} />
+                    <Chip
+                      size="small"
+                      color="primary"
+                      variant="outlined"
+                      label={`${data.attempt.percentage}%`}
+                    />
                   ) : null}
                 </Stack>
               </Stack>
@@ -115,7 +128,9 @@ export default function AttemptResultsPage() {
               <CardContent>
                 <Stack spacing={2}>
                   <Stack spacing={0.5}>
-                    <Typography variant="h6">{section.title ?? `Section ${section.order}`}</Typography>
+                    <Typography variant="h6">
+                      {section.title ?? `Section ${section.order}`}
+                    </Typography>
                     {section.instructions ? (
                       <Typography variant="body2" color="text.secondary">
                         {section.instructions}
@@ -130,9 +145,22 @@ export default function AttemptResultsPage() {
                       <Card key={q.assessmentQuestionId} variant="outlined">
                         <CardContent>
                           <Stack spacing={1}>
-                            <Stack direction="row" spacing={1} flexWrap="wrap" alignItems="center">
-                              <Chip size="small" variant="outlined" label={`Q${q.order}`} />
-                              <Chip size="small" variant="outlined" label={`${q.points} pts`} />
+                            <Stack
+                              direction="row"
+                              spacing={1}
+                              flexWrap="wrap"
+                              alignItems="center"
+                            >
+                              <Chip
+                                size="small"
+                                variant="outlined"
+                                label={`Q${q.order}`}
+                              />
+                              <Chip
+                                size="small"
+                                variant="outlined"
+                                label={`${q.points} pts`}
+                              />
                               {typeof q.isCorrect === "boolean" ? (
                                 <Chip
                                   size="small"
@@ -142,20 +170,28 @@ export default function AttemptResultsPage() {
                               ) : null}
                             </Stack>
 
-                            <Typography variant="subtitle1">{q.questionText}</Typography>
+                            <Typography variant="subtitle1">
+                              {q.questionText}
+                            </Typography>
 
                             <Typography variant="body2" color="text.secondary">
                               Your answer: {formatValue(q.answer)}
                             </Typography>
 
                             {q.correctAnswer !== undefined ? (
-                              <Typography variant="body2" color="text.secondary">
+                              <Typography
+                                variant="body2"
+                                color="text.secondary"
+                              >
                                 Correct answer: {formatValue(q.correctAnswer)}
                               </Typography>
                             ) : null}
 
                             {q.explanation ? (
-                              <Typography variant="body2" color="text.secondary">
+                              <Typography
+                                variant="body2"
+                                color="text.secondary"
+                              >
                                 Explanation: {q.explanation}
                               </Typography>
                             ) : null}
@@ -173,4 +209,3 @@ export default function AttemptResultsPage() {
     </Stack>
   );
 }
-

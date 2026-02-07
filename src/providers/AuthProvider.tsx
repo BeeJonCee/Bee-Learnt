@@ -1,8 +1,8 @@
 "use client";
 
 import {
-  type ReactNode,
   createContext,
+  type ReactNode,
   useCallback,
   useContext,
   useEffect,
@@ -10,16 +10,28 @@ import {
   useState,
 } from "react";
 import type { AuthUser } from "@/lib/auth/storage";
-import { clearStoredAuth, getStoredAuth, setStoredAuth } from "@/lib/auth/storage";
+import {
+  clearStoredAuth,
+  getStoredAuth,
+  setStoredAuth,
+} from "@/lib/auth/storage";
 
 type AuthContextValue = {
   user: AuthUser | null;
   token: string | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  register: (payload: { name: string; email: string; password: string; role: "STUDENT" | "PARENT" }) => Promise<void>;
+  register: (payload: {
+    name: string;
+    email: string;
+    password: string;
+    role: "STUDENT" | "PARENT";
+  }) => Promise<void>;
   magicLinkLogin: (email: string, callbackURL?: string) => Promise<void>;
-  socialLogin: (provider: "google" | "facebook" | "apple", callbackURL?: string) => Promise<void>;
+  socialLogin: (
+    provider: "google" | "facebook" | "apple",
+    callbackURL?: string,
+  ) => Promise<void>;
   sendEmailOtp: (email: string) => Promise<void>;
   verifyEmailOtp: (email: string, code: string) => Promise<void>;
   logout: () => void;
@@ -32,8 +44,13 @@ const backendUrl =
   process.env.NEXT_PUBLIC_API_URL ??
   "http://localhost:4000";
 
-async function backendFetch<T>(path: string, init: RequestInit = {}): Promise<T> {
-  const url = path.startsWith("http") ? path : `${backendUrl}${path.startsWith("/") ? "" : "/"}${path}`;
+async function backendFetch<T>(
+  path: string,
+  init: RequestInit = {},
+): Promise<T> {
+  const url = path.startsWith("http")
+    ? path
+    : `${backendUrl}${path.startsWith("/") ? "" : "/"}${path}`;
   const headers = new Headers(init.headers);
   if (!headers.has("Content-Type") && init.body) {
     headers.set("Content-Type", "application/json");
@@ -115,10 +132,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const login = useCallback(async (email: string, password: string) => {
-    const result = await backendFetch<{ token: string; user: AuthUser }>("/api/auth/login", {
-      method: "POST",
-      body: JSON.stringify({ email, password }),
-    });
+    const result = await backendFetch<{ token: string; user: AuthUser }>(
+      "/api/auth/login",
+      {
+        method: "POST",
+        body: JSON.stringify({ email, password }),
+      },
+    );
 
     setStoredAuth({ token: result.token, user: result.user });
     setUser(result.user);
@@ -126,13 +146,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const register = useCallback(
-    async (payload: { name: string; email: string; password: string; role: "STUDENT" | "PARENT" }) => {
+    async (payload: {
+      name: string;
+      email: string;
+      password: string;
+      role: "STUDENT" | "PARENT";
+    }) => {
       await backendFetch("/api/auth/register", {
         method: "POST",
         body: JSON.stringify(payload),
       });
     },
-    []
+    [],
   );
 
   const sendEmailOtp = useCallback(async (email: string) => {
@@ -149,15 +174,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
-  const magicLinkLogin = useCallback(async (_email: string, _callbackURL?: string) => {
-    throw new Error("Magic link login is not enabled in this deployment.");
-  }, []);
+  const magicLinkLogin = useCallback(
+    async (_email: string, _callbackURL?: string) => {
+      throw new Error("Magic link login is not enabled in this deployment.");
+    },
+    [],
+  );
 
   const socialLogin = useCallback(
-    async (_provider: "google" | "facebook" | "apple", _callbackURL?: string) => {
+    async (
+      _provider: "google" | "facebook" | "apple",
+      _callbackURL?: string,
+    ) => {
       throw new Error("Social login is not enabled in this deployment.");
     },
-    []
+    [],
   );
 
   const logout = useCallback(() => {
@@ -179,7 +210,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       verifyEmailOtp,
       logout,
     }),
-    [user, token, loading, login, register, magicLinkLogin, socialLogin, sendEmailOtp, verifyEmailOtp, logout]
+    [
+      user,
+      token,
+      loading,
+      login,
+      register,
+      magicLinkLogin,
+      socialLogin,
+      sendEmailOtp,
+      verifyEmailOtp,
+      logout,
+    ],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

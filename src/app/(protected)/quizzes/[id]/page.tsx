@@ -1,22 +1,20 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import Link from "next/link";
-import { useParams } from "next/navigation";
-import {
-  Alert,
-  Box,
-  Button,
-  Card,
-  CardContent,
-  LinearProgress,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import RestartAltIcon from "@mui/icons-material/RestartAlt";
+import Alert from "@mui/material/Alert";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import LinearProgress from "@mui/material/LinearProgress";
+import Stack from "@mui/material/Stack";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import Link from "next/link";
+import { useParams } from "next/navigation";
+import { useMemo, useState } from "react";
 import { useApi } from "@/hooks/useApi";
 import { apiFetch } from "@/lib/utils/api";
 
@@ -42,7 +40,7 @@ export default function QuizPage() {
   const quiz = quizPayload?.quiz;
   const questions = quizPayload?.questions ?? [];
   const { data: moduleData } = useApi<{ id: number }>(
-    quiz ? `/api/modules/${quiz.moduleId}` : null
+    quiz ? `/api/modules/${quiz.moduleId}` : null,
   );
   const moduleHref = moduleData ? `/modules/${moduleData.id}` : "/subjects";
 
@@ -60,7 +58,9 @@ export default function QuizPage() {
       { isCorrect: boolean; hint: string; explanation: string | null }
     >
   >({});
-  const [checkingQuestionId, setCheckingQuestionId] = useState<number | null>(null);
+  const [checkingQuestionId, setCheckingQuestionId] = useState<number | null>(
+    null,
+  );
 
   const progress = useMemo(() => {
     if (questions.length === 0) return 0;
@@ -141,7 +141,9 @@ export default function QuizPage() {
       <Card sx={{ maxWidth: 520, mx: "auto" }}>
         <CardContent>
           <Stack spacing={3} textAlign="center">
-            <CheckCircleIcon sx={{ fontSize: 64, color: "primary.main", mx: "auto" }} />
+            <CheckCircleIcon
+              sx={{ fontSize: 64, color: "primary.main", mx: "auto" }}
+            />
             <Typography variant="h4">Quiz completed</Typography>
             <Typography variant="h2" sx={{ color: "primary.main" }}>
               {Math.round((result.score / result.maxScore) * 100)}%
@@ -153,7 +155,12 @@ export default function QuizPage() {
               </Typography>
             )}
             <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
-              <Button component={Link} href={moduleHref} variant="contained" fullWidth>
+              <Button
+                component={Link}
+                href={moduleHref}
+                variant="contained"
+                fullWidth
+              >
                 Back to module
               </Button>
               <Button
@@ -181,7 +188,11 @@ export default function QuizPage() {
         <Typography color="text.secondary">{quiz.description}</Typography>
       </Box>
 
-      <LinearProgress variant="determinate" value={progress} sx={{ height: 8 }} />
+      <LinearProgress
+        variant="determinate"
+        value={progress}
+        sx={{ height: 8 }}
+      />
 
       <Card>
         <CardContent>
@@ -196,7 +207,9 @@ export default function QuizPage() {
                 question.options?.map((option) => (
                   <Button
                     key={option}
-                    variant={answers[question.id] === option ? "contained" : "outlined"}
+                    variant={
+                      answers[question.id] === option ? "contained" : "outlined"
+                    }
                     onClick={() =>
                       setAnswers((prev) => ({
                         ...prev,
@@ -264,9 +277,13 @@ export default function QuizPage() {
                       setCheckingQuestionId(null);
                     }
                   }}
-                  disabled={!answers[question.id] || checkingQuestionId === question.id}
+                  disabled={
+                    !answers[question.id] || checkingQuestionId === question.id
+                  }
                 >
-                  {checkingQuestionId === question.id ? "Checking..." : "Check answer"}
+                  {checkingQuestionId === question.id
+                    ? "Checking..."
+                    : "Check answer"}
                 </Button>
                 <Button
                   variant="contained"

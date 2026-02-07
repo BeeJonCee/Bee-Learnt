@@ -1,7 +1,14 @@
 "use client";
 
+import Alert from "@mui/material/Alert";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Divider from "@mui/material/Divider";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 import Link from "next/link";
-import { Alert, Box, Button, Card, CardContent, Divider, Stack, Typography } from "@mui/material";
 import { useAuth } from "@/providers/AuthProvider";
 
 export default function AccountPage() {
@@ -53,12 +60,17 @@ export default function AccountPage() {
 
       {!token && (
         <Alert severity="warning">
-          No active session token found. If you just verified your email, sign in again.
+          No active session token found. If you just verified your email, sign
+          in again.
         </Alert>
       )}
 
       <Box display="flex" gap={2} flexWrap="wrap">
-        <Button component={Link} href="/settings/accessibility" variant="outlined">
+        <Button
+          component={Link}
+          href="/settings/accessibility"
+          variant="outlined"
+        >
           Accessibility settings
         </Button>
         <Button
@@ -74,4 +86,3 @@ export default function AccountPage() {
     </Stack>
   );
 }
-

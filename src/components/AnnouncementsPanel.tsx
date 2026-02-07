@@ -1,9 +1,15 @@
 "use client";
 
-import { Box, Button, Card, CardContent, Chip, IconButton, Stack, Typography } from "@mui/material";
-import { alpha } from "@mui/material/styles";
 import CampaignIcon from "@mui/icons-material/Campaign";
 import PushPinIcon from "@mui/icons-material/PushPin";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Chip from "@mui/material/Chip";
+import Stack from "@mui/material/Stack";
+import { alpha } from "@mui/material/styles";
+import Typography from "@mui/material/Typography";
 import { useApi } from "@/hooks/useApi";
 
 type Announcement = {
@@ -25,11 +31,11 @@ const audienceLabel: Record<string, string> = {
 
 // Color palette for announcements - creates a colorful, alternating pattern
 const ANNOUNCEMENT_COLORS = [
-  { bg: "#5BC0EB", light: alpha("#5BC0EB", 0.08) },  // Sky Blue
-  { bg: "#9333EA", light: alpha("#9333EA", 0.08) },  // Purple
-  { bg: "#FFD600", light: alpha("#FFD600", 0.08) },  // Yellow
-  { bg: "#22C55E", light: alpha("#22C55E", 0.08) },  // Green
-  { bg: "#F97316", light: alpha("#F97316", 0.08) },  // Orange
+  { bg: "#5BC0EB", light: alpha("#5BC0EB", 0.08) }, // Sky Blue
+  { bg: "#9333EA", light: alpha("#9333EA", 0.08) }, // Purple
+  { bg: "#FFD600", light: alpha("#FFD600", 0.08) }, // Yellow
+  { bg: "#22C55E", light: alpha("#22C55E", 0.08) }, // Green
+  { bg: "#F97316", light: alpha("#F97316", 0.08) }, // Orange
 ];
 
 const formatDate = (value: string) => {
@@ -55,14 +61,20 @@ const getRelativeTime = (value: string) => {
 };
 
 export default function AnnouncementsPanel() {
-  const { data, loading, error } = useApi<Announcement[]>("/api/announcements?limit=4");
+  const { data, loading, error } = useApi<Announcement[]>(
+    "/api/announcements?limit=4",
+  );
   const announcements = data ?? [];
 
   return (
     <Card>
       <CardContent>
         <Stack spacing={2.5}>
-          <Stack direction="row" alignItems="center" justifyContent="space-between">
+          <Stack
+            direction="row"
+            alignItems="center"
+            justifyContent="space-between"
+          >
             <Stack direction="row" spacing={1.5} alignItems="center">
               <CampaignIcon color="primary" />
               <Typography variant="h6">Announcements</Typography>
@@ -73,15 +85,20 @@ export default function AnnouncementsPanel() {
           </Stack>
 
           {loading ? (
-            <Typography color="text.secondary">Loading announcements...</Typography>
+            <Typography color="text.secondary">
+              Loading announcements...
+            </Typography>
           ) : error ? (
             <Typography color="error">{error}</Typography>
           ) : announcements.length === 0 ? (
-            <Typography color="text.secondary">No announcements yet.</Typography>
+            <Typography color="text.secondary">
+              No announcements yet.
+            </Typography>
           ) : (
             <Stack spacing={1.5}>
               {announcements.map((announcement, index) => {
-                const colorSet = ANNOUNCEMENT_COLORS[index % ANNOUNCEMENT_COLORS.length];
+                const colorSet =
+                  ANNOUNCEMENT_COLORS[index % ANNOUNCEMENT_COLORS.length];
                 return (
                   <Box
                     key={announcement.id}
@@ -99,11 +116,20 @@ export default function AnnouncementsPanel() {
                     }}
                   >
                     <Stack spacing={1}>
-                      <Stack direction="row" spacing={1} alignItems="flex-start" justifyContent="space-between">
+                      <Stack
+                        direction="row"
+                        spacing={1}
+                        alignItems="flex-start"
+                        justifyContent="space-between"
+                      >
                         <Typography variant="subtitle2" fontWeight={600}>
                           {announcement.title}
                         </Typography>
-                        <Stack direction="row" spacing={0.5} alignItems="center">
+                        <Stack
+                          direction="row"
+                          spacing={0.5}
+                          alignItems="center"
+                        >
                           {announcement.pinned && (
                             <PushPinIcon
                               sx={{

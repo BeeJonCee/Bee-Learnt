@@ -1,18 +1,16 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import {
-  Box,
-  Drawer,
-  Fab,
-  IconButton,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import CloseIcon from "@mui/icons-material/Close";
 import SendIcon from "@mui/icons-material/Send";
+import Box from "@mui/material/Box";
+import Drawer from "@mui/material/Drawer";
+import Fab from "@mui/material/Fab";
+import IconButton from "@mui/material/IconButton";
+import Stack from "@mui/material/Stack";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import { useMemo, useState } from "react";
 import { useAuth } from "@/providers/AuthProvider";
 
 type Message = {
@@ -117,7 +115,8 @@ export default function AiTutorWidget() {
               <Box
                 key={`${message.role}-${index}`}
                 sx={{
-                  alignSelf: message.role === "user" ? "flex-end" : "flex-start",
+                  alignSelf:
+                    message.role === "user" ? "flex-end" : "flex-start",
                   maxWidth: "85%",
                   px: 2,
                   py: 1.5,

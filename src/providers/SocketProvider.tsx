@@ -1,8 +1,8 @@
 "use client";
 
 import {
-  type ReactNode,
   createContext,
+  type ReactNode,
   useCallback,
   useContext,
   useEffect,
@@ -149,10 +149,21 @@ export function SocketProvider({ children }: { children: ReactNode }) {
       stopTyping,
       markNotificationRead,
     }),
-    [socket, isConnected, joinRoom, leaveRoom, sendMessage, startTyping, stopTyping, markNotificationRead]
+    [
+      socket,
+      isConnected,
+      joinRoom,
+      leaveRoom,
+      sendMessage,
+      startTyping,
+      stopTyping,
+      markNotificationRead,
+    ],
   );
 
-  return <SocketContext.Provider value={value}>{children}</SocketContext.Provider>;
+  return (
+    <SocketContext.Provider value={value}>{children}</SocketContext.Provider>
+  );
 }
 
 export function useSocket() {

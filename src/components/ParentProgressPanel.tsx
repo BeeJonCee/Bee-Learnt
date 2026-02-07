@@ -1,31 +1,29 @@
 "use client";
 
-import { useMemo } from "react";
-import {
-  Card,
-  CardContent,
-  Stack,
-  Typography,
-  Box,
-  Grid,
-  Chip,
-  LinearProgress,
-} from "@mui/material";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  LineChart,
-  Line,
-} from "recharts";
+import AssignmentIcon from "@mui/icons-material/Assignment";
 import SchoolIcon from "@mui/icons-material/School";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
-import AssignmentIcon from "@mui/icons-material/Assignment";
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Chip from "@mui/material/Chip";
+import Grid from "@mui/material/Grid";
+import LinearProgress from "@mui/material/LinearProgress";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import { useMemo } from "react";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Legend,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 import { useApi } from "@/hooks/useApi";
 
 type ChildProgress = {
@@ -42,20 +40,26 @@ type ParentInsights = {
   averageQuizScore: number;
   totalLessonsCompleted: number;
   totalAssignmentsSubmitted: number;
-  learningTrend: { date: string; averageScore: number; lessonsCompleted: number }[];
+  learningTrend: {
+    date: string;
+    averageScore: number;
+    lessonsCompleted: number;
+  }[];
 };
 
 export default function ParentProgressPanel() {
-  const { data: insights, loading, error } = useApi<ParentInsights>(
-    "/api/parent/insights"
-  );
+  const {
+    data: insights,
+    loading,
+    error,
+  } = useApi<ParentInsights>("/api/parent/insights");
 
   const chartData = useMemo(() => {
     if (!insights?.children) return [];
     return insights.children.map((child) => ({
       name: child.studentName.split(" ")[0], // First name only for space
       "Quiz Avg": Math.round(child.quizAverage),
-      "Lessons": child.completedLessons,
+      Lessons: child.completedLessons,
     }));
   }, [insights?.children]);
 
@@ -68,7 +72,9 @@ export default function ParentProgressPanel() {
     return (
       <Card>
         <CardContent>
-          <Typography color="text.secondary">Loading progress data...</Typography>
+          <Typography color="text.secondary">
+            Loading progress data...
+          </Typography>
         </CardContent>
       </Card>
     );
@@ -162,9 +168,7 @@ export default function ParentProgressPanel() {
                 <Typography variant="caption" color="text.secondary">
                   Children
                 </Typography>
-                <Typography variant="h5">
-                  {insights.children.length}
-                </Typography>
+                <Typography variant="h5">{insights.children.length}</Typography>
                 <Typography variant="caption" color="text.secondary">
                   Being monitored
                 </Typography>
@@ -188,7 +192,10 @@ export default function ParentProgressPanel() {
               <Box sx={{ height: 300 }}>
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={chartData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      stroke="rgba(255,255,255,0.1)"
+                    />
                     <XAxis dataKey="name" stroke="rgba(255,255,255,0.5)" />
                     <YAxis stroke="rgba(255,255,255,0.5)" />
                     <Tooltip
@@ -199,8 +206,16 @@ export default function ParentProgressPanel() {
                       }}
                     />
                     <Legend />
-                    <Bar dataKey="Quiz Avg" fill="#8884d8" name="Quiz Average (%)" />
-                    <Bar dataKey="Lessons" fill="#82ca9d" name="Lessons Completed" />
+                    <Bar
+                      dataKey="Quiz Avg"
+                      fill="#8884d8"
+                      name="Quiz Average (%)"
+                    />
+                    <Bar
+                      dataKey="Lessons"
+                      fill="#82ca9d"
+                      name="Lessons Completed"
+                    />
                   </BarChart>
                 </ResponsiveContainer>
               </Box>
@@ -223,7 +238,10 @@ export default function ParentProgressPanel() {
               <Box sx={{ height: 300 }}>
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={trendData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      stroke="rgba(255,255,255,0.1)"
+                    />
                     <XAxis
                       dataKey="date"
                       stroke="rgba(255,255,255,0.5)"
@@ -274,7 +292,9 @@ export default function ParentProgressPanel() {
                   alignItems="center"
                   justifyContent="space-between"
                 >
-                  <Typography variant="subtitle2">{child.studentName}</Typography>
+                  <Typography variant="subtitle2">
+                    {child.studentName}
+                  </Typography>
                   <Chip
                     label={`${Math.round(child.quizAverage)}%`}
                     size="small"
@@ -282,8 +302,8 @@ export default function ParentProgressPanel() {
                       child.quizAverage >= 80
                         ? "success"
                         : child.quizAverage >= 60
-                        ? "warning"
-                        : "error"
+                          ? "warning"
+                          : "error"
                     }
                   />
                 </Stack>

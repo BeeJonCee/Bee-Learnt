@@ -2,14 +2,14 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
+  type Assignment,
   getAssignments,
   getAssignmentsByModuleId,
-  type Assignment,
 } from "@/lib/demo-data";
 import {
+  type AssignmentProgress,
   getAssignmentProgress,
   upsertAssignmentProgress,
-  type AssignmentProgress,
 } from "@/lib/demo-storage";
 
 export type AssignmentWithStatus = Assignment & {
@@ -26,7 +26,9 @@ function getDaysUntil(date: string) {
 }
 
 export function useDemoAssignments(userId?: string | null) {
-  const [progress, setProgress] = useState<Record<number, AssignmentProgress>>({});
+  const [progress, setProgress] = useState<Record<number, AssignmentProgress>>(
+    {},
+  );
 
   useEffect(() => {
     if (!userId) {
@@ -52,7 +54,7 @@ export function useDemoAssignments(userId?: string | null) {
         };
       });
     },
-    [userId]
+    [userId],
   );
 
   const assignments = useMemo<AssignmentWithStatus[]>(() => {
@@ -72,12 +74,14 @@ export function useDemoAssignments(userId?: string | null) {
         completedAt: progress[assignment.id]?.completedAt ?? null,
       }));
     },
-    [progress]
+    [progress],
   );
 
   const summary = useMemo(() => {
     const total = assignments.length;
-    const completed = assignments.filter((assignment) => assignment.completed).length;
+    const completed = assignments.filter(
+      (assignment) => assignment.completed,
+    ).length;
     const pending = total - completed;
     const dueSoon = assignments.filter((assignment) => {
       if (assignment.completed) return false;

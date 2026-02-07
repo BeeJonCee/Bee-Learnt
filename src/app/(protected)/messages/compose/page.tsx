@@ -1,16 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import Alert from "@mui/material/Alert";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Stack from "@mui/material/Stack";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 import { useRouter } from "next/navigation";
-import {
-  Alert,
-  Button,
-  Card,
-  CardContent,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { useState } from "react";
 import { apiFetch } from "@/lib/utils/api";
 
 export default function ComposeMessagePage() {

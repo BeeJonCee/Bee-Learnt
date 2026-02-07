@@ -1,20 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import Alert from "@mui/material/Alert";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Chip from "@mui/material/Chip";
+import Divider from "@mui/material/Divider";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 import { useParams } from "next/navigation";
-import {
-  Alert,
-  Button,
-  Card,
-  CardContent,
-  Chip,
-  Divider,
-  List,
-  ListItem,
-  ListItemText,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { useState } from "react";
 import { useApi } from "@/hooks/useApi";
 import { apiFetch } from "@/lib/utils/api";
 
@@ -73,11 +71,15 @@ export default function AdminNscPaperDetailPage() {
   const [importResult, setImportResult] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
 
-  const { data: paper, loading, error } = useApi<NscPaperDetail>(
-    Number.isFinite(paperId) ? `/api/nsc-papers/${paperId}` : null
+  const {
+    data: paper,
+    loading,
+    error,
+  } = useApi<NscPaperDetail>(
+    Number.isFinite(paperId) ? `/api/nsc-papers/${paperId}` : null,
   );
   const { data: questions, refetch: refetchQuestions } = useApi<NscQuestion[]>(
-    Number.isFinite(paperId) ? `/api/nsc-papers/${paperId}/questions` : null
+    Number.isFinite(paperId) ? `/api/nsc-papers/${paperId}/questions` : null,
   );
 
   const handleImportToBank = async () => {
@@ -85,10 +87,14 @@ export default function AdminNscPaperDetailPage() {
     setImportResult(null);
     setImporting(true);
     try {
-      const result = await apiFetch<{ message: string; imported: number; skipped: number }>(
-        `/api/nsc-papers/${paperId}/import-to-bank`,
-        { method: "POST", body: JSON.stringify({}) }
-      );
+      const result = await apiFetch<{
+        message: string;
+        imported: number;
+        skipped: number;
+      }>(`/api/nsc-papers/${paperId}/import-to-bank`, {
+        method: "POST",
+        body: JSON.stringify({}),
+      });
       setImportResult(result.message);
       refetchQuestions();
     } catch (err) {
@@ -129,7 +135,11 @@ export default function AdminNscPaperDetailPage() {
                     label={paper.isProcessed ? "Processed" : "Unprocessed"}
                   />
                   {paper.totalMarks && (
-                    <Chip size="small" variant="outlined" label={`${paper.totalMarks} marks`} />
+                    <Chip
+                      size="small"
+                      variant="outlined"
+                      label={`${paper.totalMarks} marks`}
+                    />
                   )}
                   {paper.durationMinutes && (
                     <Chip
@@ -195,12 +205,26 @@ export default function AdminNscPaperDetailPage() {
                 <Stack spacing={1}>
                   {questions.map((q) => (
                     <Card key={q.id} variant="outlined">
-                      <CardContent sx={{ py: 1.5, "&:last-child": { pb: 1.5 } }}>
+                      <CardContent
+                        sx={{ py: 1.5, "&:last-child": { pb: 1.5 } }}
+                      >
                         <Stack direction="row" spacing={1} alignItems="center">
-                          <Chip size="small" variant="outlined" label={`Q${q.questionNumber}`} />
-                          <Chip size="small" variant="outlined" label={`${q.marks} marks`} />
+                          <Chip
+                            size="small"
+                            variant="outlined"
+                            label={`Q${q.questionNumber}`}
+                          />
+                          <Chip
+                            size="small"
+                            variant="outlined"
+                            label={`${q.marks} marks`}
+                          />
                           {q.sectionLabel && (
-                            <Chip size="small" variant="outlined" label={q.sectionLabel} />
+                            <Chip
+                              size="small"
+                              variant="outlined"
+                              label={q.sectionLabel}
+                            />
                           )}
                         </Stack>
                         <Typography variant="body2" sx={{ mt: 0.5 }} noWrap>

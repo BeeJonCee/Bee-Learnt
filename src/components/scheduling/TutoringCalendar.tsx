@@ -1,8 +1,14 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { Box, Button, Card, CardContent, Chip, Stack, Typography } from "@mui/material";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Chip from "@mui/material/Chip";
+import Stack from "@mui/material/Stack";
 import { alpha } from "@mui/material/styles";
+import Typography from "@mui/material/Typography";
+import { useMemo, useState } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 
@@ -14,7 +20,13 @@ export type TutoringSession = {
   description?: string;
   scheduledStart: string;
   scheduledEnd: string;
-  status: "scheduled" | "in_progress" | "completed" | "cancelled" | "no_show" | string;
+  status:
+    | "scheduled"
+    | "in_progress"
+    | "completed"
+    | "cancelled"
+    | "no_show"
+    | string;
   studentId: string;
   studentName?: string;
   subjectId?: number;
@@ -40,7 +52,10 @@ const toLocalDateKey = (date: Date) =>
 const formatTime = (value: string) => {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return "";
-  return date.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
+  return date.toLocaleTimeString(undefined, {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 };
 
 export default function TutoringCalendar({
@@ -50,8 +65,11 @@ export default function TutoringCalendar({
   userRole,
 }: TutoringCalendarProps) {
   const [value, setValue] = useState<CalendarValue>(new Date());
-  const selectedDate = Array.isArray(value) ? value[0] : value ?? new Date();
-  const selectedKey = useMemo(() => toLocalDateKey(selectedDate), [selectedDate]);
+  const selectedDate = Array.isArray(value) ? value[0] : (value ?? new Date());
+  const selectedKey = useMemo(
+    () => toLocalDateKey(selectedDate),
+    [selectedDate],
+  );
 
   const sessionsByDay = useMemo(() => {
     const map = new Map<string, TutoringSession[]>();
@@ -66,7 +84,8 @@ export default function TutoringCalendar({
     for (const [, list] of map) {
       list.sort(
         (a, b) =>
-          new Date(a.scheduledStart).getTime() - new Date(b.scheduledStart).getTime()
+          new Date(a.scheduledStart).getTime() -
+          new Date(b.scheduledStart).getTime(),
       );
     }
     return map;
@@ -74,16 +93,22 @@ export default function TutoringCalendar({
 
   const selectedSessions = useMemo(
     () => sessionsByDay.get(selectedKey) ?? [],
-    [sessionsByDay, selectedKey]
+    [sessionsByDay, selectedKey],
   );
 
-  const canCreate = Boolean(onCreateSession) && (userRole === "TUTOR" || userRole === "ADMIN");
+  const canCreate =
+    Boolean(onCreateSession) && (userRole === "TUTOR" || userRole === "ADMIN");
 
   return (
     <Card>
       <CardContent>
         <Stack spacing={2}>
-          <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={2}>
+          <Stack
+            direction="row"
+            alignItems="center"
+            justifyContent="space-between"
+            spacing={2}
+          >
             <Stack spacing={0.5}>
               <Typography variant="h6">Calendar</Typography>
               <Typography variant="body2" color="text.secondary">
@@ -107,7 +132,14 @@ export default function TutoringCalendar({
             )}
           </Stack>
 
-          <Box sx={{ border: "1px solid", borderColor: "divider", borderRadius: 2, p: 1.5 }}>
+          <Box
+            sx={{
+              border: "1px solid",
+              borderColor: "divider",
+              borderRadius: 2,
+              p: 1.5,
+            }}
+          >
             <Calendar
               value={value}
               onChange={(newValue) => {
@@ -146,7 +178,9 @@ export default function TutoringCalendar({
             </Typography>
 
             {selectedSessions.length === 0 ? (
-              <Typography color="text.secondary">No sessions scheduled for this day.</Typography>
+              <Typography color="text.secondary">
+                No sessions scheduled for this day.
+              </Typography>
             ) : (
               <Stack spacing={1}>
                 {selectedSessions.map((session) => {
@@ -167,7 +201,8 @@ export default function TutoringCalendar({
                       onClick={() => onSessionClick?.(session)}
                       onKeyDown={(e) => {
                         if (!onSessionClick) return;
-                        if (e.key === "Enter" || e.key === " ") onSessionClick(session);
+                        if (e.key === "Enter" || e.key === " ")
+                          onSessionClick(session);
                       }}
                       sx={{
                         p: 1.5,
@@ -177,24 +212,52 @@ export default function TutoringCalendar({
                         cursor: onSessionClick ? "pointer" : "default",
                         bgcolor: alpha("#fff", 0.02),
                         "&:hover": onSessionClick
-                          ? { borderColor: alpha("#FFD600", 0.6), bgcolor: alpha("#FFD600", 0.04) }
+                          ? {
+                              borderColor: alpha("#FFD600", 0.6),
+                              bgcolor: alpha("#FFD600", 0.04),
+                            }
                           : undefined,
                       }}
                     >
-                      <Stack direction="row" spacing={1} alignItems="flex-start" justifyContent="space-between">
+                      <Stack
+                        direction="row"
+                        spacing={1}
+                        alignItems="flex-start"
+                        justifyContent="space-between"
+                      >
                         <Stack spacing={0.25}>
-                          <Typography variant="subtitle2">{session.title}</Typography>
+                          <Typography variant="subtitle2">
+                            {session.title}
+                          </Typography>
                           <Typography variant="caption" color="text.secondary">
-                            {formatTime(session.scheduledStart)} - {formatTime(session.scheduledEnd)}
-                            {session.studentName ? ` · ${session.studentName}` : ""}
+                            {formatTime(session.scheduledStart)} -{" "}
+                            {formatTime(session.scheduledEnd)}
+                            {session.studentName
+                              ? ` · ${session.studentName}`
+                              : ""}
                           </Typography>
                           {(session.subjectName || session.moduleTitle) && (
-                            <Typography variant="caption" color="text.secondary">
-                              {[session.subjectName, session.moduleTitle].filter(Boolean).join(" · ")}
+                            <Typography
+                              variant="caption"
+                              color="text.secondary"
+                            >
+                              {[session.subjectName, session.moduleTitle]
+                                .filter(Boolean)
+                                .join(" · ")}
                             </Typography>
                           )}
                         </Stack>
-                        <Chip size="small" label={session.status} color={statusColor as any} />
+                        <Chip
+                          size="small"
+                          label={session.status}
+                          color={
+                            statusColor as
+                              | "info"
+                              | "success"
+                              | "error"
+                              | "default"
+                          }
+                        />
                       </Stack>
                     </Box>
                   );

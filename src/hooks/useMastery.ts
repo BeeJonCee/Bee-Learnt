@@ -26,7 +26,9 @@ type WeakTopicsResponse = { userId: string; weakTopics: WeakTopic[] };
 type OverallResponse = { userId: string; overallMastery: number };
 
 export function useMastery(options?: { subjectId?: number }) {
-  const subjectParam = options?.subjectId ? `?subjectId=${options.subjectId}` : "";
+  const subjectParam = options?.subjectId
+    ? `?subjectId=${options.subjectId}`
+    : "";
 
   const {
     data: masteryData,
@@ -35,20 +37,15 @@ export function useMastery(options?: { subjectId?: number }) {
     refetch: refetchMastery,
   } = useApi<MasteryResponse>(`/api/progress/mastery${subjectParam}`);
 
-  const {
-    data: weakData,
-    loading: weakLoading,
-  } = useApi<WeakTopicsResponse>("/api/progress/mastery/weak?limit=5");
+  const { data: weakData, loading: weakLoading } = useApi<WeakTopicsResponse>(
+    "/api/progress/mastery/weak?limit=5",
+  );
 
-  const {
-    data: strongData,
-    loading: strongLoading,
-  } = useApi<WeakTopicsResponse>("/api/progress/mastery/strong?limit=5");
+  const { data: strongData, loading: strongLoading } =
+    useApi<WeakTopicsResponse>("/api/progress/mastery/strong?limit=5");
 
-  const {
-    data: overallData,
-    loading: overallLoading,
-  } = useApi<OverallResponse>("/api/progress/mastery/overall");
+  const { data: overallData, loading: overallLoading } =
+    useApi<OverallResponse>("/api/progress/mastery/overall");
 
   return {
     mastery: masteryData?.mastery ?? [],

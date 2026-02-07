@@ -73,7 +73,8 @@ export const tokens = {
       dark: "rgba(0, 0, 0, 0.7)",
     },
     gradient: {
-      light: "radial-gradient(500px circle at 20% 10%, rgba(91, 192, 235, 0.08), transparent 60%)",
+      light:
+        "radial-gradient(500px circle at 20% 10%, rgba(91, 192, 235, 0.08), transparent 60%)",
       dark: "radial-gradient(500px circle at 20% 10%, rgba(246, 201, 69, 0.12), transparent 60%)",
     },
   },
@@ -201,7 +202,7 @@ export const tokens = {
  */
 export function getThemedColor<T extends { light: string; dark: string }>(
   colorObj: T,
-  mode: "light" | "dark"
+  mode: "light" | "dark",
 ): string {
   return colorObj[mode];
 }

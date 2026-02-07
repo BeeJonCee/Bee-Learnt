@@ -1,26 +1,19 @@
 "use client";
 
+import Box from "@mui/material/Box";
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import Stack from "@mui/material/Stack";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 import { type ChangeEvent, useCallback } from "react";
-import {
-  Box,
-  Checkbox,
-  FormControlLabel,
-  Radio,
-  RadioGroup,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
 
 type QuestionOption = {
   id: string;
   text: string;
   imageUrl?: string;
-};
-
-type MatchPair = {
-  left: string;
-  right: string;
 };
 
 export type QuestionData = {
@@ -46,17 +39,18 @@ function parseOptions(raw: unknown): QuestionOption[] {
     return raw.map((item, i) => {
       if (typeof item === "string") return { id: String(i), text: item };
       if (item && typeof item === "object" && "text" in item) {
+        const obj = item as Record<string, unknown>;
         return {
-          id: (item as any).id ?? String(i),
-          text: String((item as any).text),
-          imageUrl: (item as any).imageUrl,
+          id: String(obj.id ?? i),
+          text: String(obj.text),
+          imageUrl: obj.imageUrl as string | undefined,
         };
       }
       return { id: String(i), text: String(item) };
     });
   }
   if (typeof raw === "object" && raw !== null && "options" in raw) {
-    return parseOptions((raw as any).options);
+    return parseOptions((raw as Record<string, unknown>).options);
   }
   return [];
 }
@@ -65,15 +59,19 @@ function parseMatchPairs(raw: unknown): { left: string[]; right: string[] } {
   if (!raw) return { left: [], right: [] };
   if (Array.isArray(raw)) {
     return {
-      left: raw.map((p: any) => p.left ?? p.premise ?? ""),
-      right: raw.map((p: any) => p.right ?? p.response ?? ""),
+      left: raw.map((p: Record<string, unknown>) =>
+        String(p.left ?? p.premise ?? ""),
+      ),
+      right: raw.map((p: Record<string, unknown>) =>
+        String(p.right ?? p.response ?? ""),
+      ),
     };
   }
   if (typeof raw === "object" && raw !== null) {
-    const obj = raw as any;
+    const obj = raw as Record<string, unknown>;
     if (obj.pairs) return parseMatchPairs(obj.pairs);
     if (obj.left && obj.right) {
-      return { left: obj.left, right: obj.right };
+      return { left: obj.left as string[], right: obj.right as string[] };
     }
   }
   return { left: [], right: [] };
@@ -85,12 +83,17 @@ function parseOrderItems(raw: unknown): string[] {
     return raw.map((item) => (typeof item === "string" ? item : String(item)));
   }
   if (typeof raw === "object" && raw !== null && "items" in raw) {
-    return parseOrderItems((raw as any).items);
+    return parseOrderItems((raw as Record<string, unknown>).items);
   }
   return [];
 }
 
-export default function QuestionRenderer({ question, answer, onChange, disabled }: Props) {
+export default function QuestionRenderer({
+  question,
+  answer,
+  onChange,
+  disabled,
+}: Props) {
   const options = parseOptions(question.options);
   const qId = question.assessmentQuestionId;
 
@@ -98,7 +101,7 @@ export default function QuestionRenderer({ question, answer, onChange, disabled 
     (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       onChange(qId, e.target.value);
     },
-    [qId, onChange]
+    [qId, onChange],
   );
 
   const renderByType = () => {
@@ -120,7 +123,7 @@ export default function QuestionRenderer({ question, answer, onChange, disabled 
           </RadioGroup>
         );
 
-      case "multi_select":
+      case "multi_select": {
         const selected: string[] = Array.isArray(answer) ? answer : [];
         return (
           <Stack>
@@ -144,6 +147,7 @@ export default function QuestionRenderer({ question, answer, onChange, disabled 
             ))}
           </Stack>
         );
+      }
 
       case "true_false":
         return (
@@ -226,8 +230,13 @@ export default function QuestionRenderer({ question, answer, onChange, disabled 
             <Typography variant="body2" color="text.secondary">
               Match each item on the left with the correct option on the right.
             </Typography>
-            {left.map((leftItem, i) => (
-              <Stack key={i} direction="row" spacing={2} alignItems="center">
+            {left.map((leftItem) => (
+              <Stack
+                key={leftItem}
+                direction="row"
+                spacing={2}
+                alignItems="center"
+              >
                 <Typography variant="body2" sx={{ minWidth: 120 }}>
                   {leftItem}
                 </Typography>
@@ -244,8 +253,8 @@ export default function QuestionRenderer({ question, answer, onChange, disabled 
                   SelectProps={{ native: true }}
                 >
                   <option value="">Select...</option>
-                  {right.map((r, j) => (
-                    <option key={j} value={r}>
+                  {right.map((r) => (
+                    <option key={r} value={r}>
                       {r}
                     </option>
                   ))}
@@ -262,9 +271,11 @@ export default function QuestionRenderer({ question, answer, onChange, disabled 
         return (
           <Stack spacing={1}>
             <Typography variant="body2" color="text.secondary">
-              Arrange the items in the correct order (enter numbers 1-{items.length} to reorder).
+              Arrange the items in the correct order (enter numbers 1-
+              {items.length} to reorder).
             </Typography>
             {ordered.map((item, i) => (
+              // biome-ignore lint/suspicious/noArrayIndexKey: ordering items may have duplicates
               <Stack key={i} direction="row" spacing={1} alignItems="center">
                 <TextField
                   size="small"

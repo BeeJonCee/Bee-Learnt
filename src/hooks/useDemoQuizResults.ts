@@ -3,8 +3,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   getQuizResults,
-  saveQuizResult,
   type QuizResult,
+  saveQuizResult,
 } from "@/lib/demo-storage";
 
 export function useDemoQuizResults(userId?: string | null) {
@@ -24,7 +24,7 @@ export function useDemoQuizResults(userId?: string | null) {
         [result.quizId]: result,
       }));
     },
-    [userId]
+    [userId],
   );
 
   const stats = useMemo(() => {
@@ -33,7 +33,7 @@ export function useDemoQuizResults(userId?: string | null) {
       return { totalAttempts: 0, averageScore: 0 };
     }
     const averageScore = Math.round(
-      entries.reduce((total, entry) => total + entry.score, 0) / entries.length
+      entries.reduce((total, entry) => total + entry.score, 0) / entries.length,
     );
     return {
       totalAttempts: entries.length,

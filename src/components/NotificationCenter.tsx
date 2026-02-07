@@ -1,28 +1,25 @@
 "use client";
 
-import { useState } from "react";
-import {
-  Badge,
-  Box,
-  Divider,
-  IconButton,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Popover,
-  Tooltip,
-  Typography,
-} from "@mui/material";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
+import AnnouncementIcon from "@mui/icons-material/Announcement";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
-import AnnouncementIcon from "@mui/icons-material/Announcement";
-import TrendingUpIcon from "@mui/icons-material/TrendingUp";
+import NotificationsIcon from "@mui/icons-material/Notifications";
+import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import SchoolIcon from "@mui/icons-material/School";
-import { useNotifications, type Notification } from "@/hooks/useSocket";
+import TrendingUpIcon from "@mui/icons-material/TrendingUp";
+import Badge from "@mui/material/Badge";
+import Box from "@mui/material/Box";
+import Divider from "@mui/material/Divider";
+import IconButton from "@mui/material/IconButton";
+import List from "@mui/material/List";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import Popover from "@mui/material/Popover";
+import Tooltip from "@mui/material/Tooltip";
+import Typography from "@mui/material/Typography";
+import { useState } from "react";
+import { type Notification, useNotifications } from "@/hooks/useSocket";
 import { formatDistanceToNow } from "@/lib/utils/date";
 
 const NOTIFICATION_ICONS: Record<string, typeof CheckCircleIcon> = {
@@ -43,7 +40,8 @@ const NOTIFICATION_COLORS: Record<string, string> = {
 
 export default function NotificationCenter() {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-  const { notifications, unreadCount, markAsRead, clearAll } = useNotifications();
+  const { notifications, unreadCount, markAsRead, clearAll } =
+    useNotifications();
 
   const handleOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -134,7 +132,10 @@ export default function NotificationCenter() {
             <Typography
               variant="caption"
               color="primary"
-              sx={{ cursor: "pointer", "&:hover": { textDecoration: "underline" } }}
+              sx={{
+                cursor: "pointer",
+                "&:hover": { textDecoration: "underline" },
+              }}
               onClick={clearAll}
             >
               Clear all
@@ -166,9 +167,11 @@ export default function NotificationCenter() {
             <List disablePadding>
               {notifications.map((notification, index) => {
                 const Icon =
-                  NOTIFICATION_ICONS[notification.type] || NOTIFICATION_ICONS.default;
+                  NOTIFICATION_ICONS[notification.type] ||
+                  NOTIFICATION_ICONS.default;
                 const color =
-                  NOTIFICATION_COLORS[notification.type] || NOTIFICATION_COLORS.default;
+                  NOTIFICATION_COLORS[notification.type] ||
+                  NOTIFICATION_COLORS.default;
 
                 return (
                   <Box key={notification.id}>
@@ -214,7 +217,8 @@ export default function NotificationCenter() {
                         }
                         primaryTypographyProps={{
                           variant: "body2",
-                          fontWeight: notification.readAt === undefined ? 600 : 400,
+                          fontWeight:
+                            notification.readAt === undefined ? 600 : 400,
                         }}
                       />
                     </ListItemButton>

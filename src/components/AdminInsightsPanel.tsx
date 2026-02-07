@@ -1,14 +1,12 @@
 "use client";
 
-import {
-  Box,
-  Card,
-  CardContent,
-  Divider,
-  Grid,
-  Stack,
-  Typography,
-} from "@mui/material";
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Divider from "@mui/material/Divider";
+import Grid from "@mui/material/Grid";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 import {
   Bar,
   BarChart,
@@ -31,20 +29,29 @@ type AdminInsights = {
     total: number;
   };
   activity: { day: string; quizAttempts: number; assignments: number }[];
-  attendance: { day: string; present: number; absent: number; late: number; excused: number }[];
+  attendance: {
+    day: string;
+    present: number;
+    absent: number;
+    late: number;
+    excused: number;
+  }[];
 };
 
-const formatDay = (value: any) => new Date(value).toLocaleDateString(undefined, {
-  weekday: "short",
-  month: "short",
-  day: "numeric",
-});
+const formatDay = (value: string | number | Date) =>
+  new Date(value).toLocaleDateString(undefined, {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+  });
 
 export default function AdminInsightsPanel() {
   const { data, loading, error } = useApi<AdminInsights>("/api/admin/insights");
 
   if (loading) {
-    return <Typography color="text.secondary">Loading admin insights...</Typography>;
+    return (
+      <Typography color="text.secondary">Loading admin insights...</Typography>
+    );
   }
 
   if (error) {
@@ -52,7 +59,9 @@ export default function AdminInsightsPanel() {
   }
 
   if (!data) {
-    return <Typography color="text.secondary">No insights available.</Typography>;
+    return (
+      <Typography color="text.secondary">No insights available.</Typography>
+    );
   }
 
   return (
@@ -91,14 +100,27 @@ export default function AdminInsightsPanel() {
                 <Divider />
                 <Box sx={{ width: "100%", height: 320 }}>
                   <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={data.activity} margin={{ left: 8, right: 8 }}>
+                    <LineChart
+                      data={data.activity}
+                      margin={{ left: 8, right: 8 }}
+                    >
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="day" tickFormatter={formatDay} />
                       <YAxis allowDecimals={false} />
                       <Tooltip labelFormatter={formatDay} />
                       <Legend />
-                      <Line type="monotone" dataKey="quizAttempts" stroke="#5bc0eb" strokeWidth={3} />
-                      <Line type="monotone" dataKey="assignments" stroke="#f6c945" strokeWidth={3} />
+                      <Line
+                        type="monotone"
+                        dataKey="quizAttempts"
+                        stroke="#5bc0eb"
+                        strokeWidth={3}
+                      />
+                      <Line
+                        type="monotone"
+                        dataKey="assignments"
+                        stroke="#f6c945"
+                        strokeWidth={3}
+                      />
                     </LineChart>
                   </ResponsiveContainer>
                 </Box>
@@ -117,7 +139,10 @@ export default function AdminInsightsPanel() {
                 <Divider />
                 <Box sx={{ width: "100%", height: 320 }}>
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={data.attendance} margin={{ left: 8, right: 8 }}>
+                    <BarChart
+                      data={data.attendance}
+                      margin={{ left: 8, right: 8 }}
+                    >
                       <CartesianGrid strokeDasharray="3 3" />
                       <XAxis dataKey="day" tickFormatter={formatDay} />
                       <YAxis allowDecimals={false} />

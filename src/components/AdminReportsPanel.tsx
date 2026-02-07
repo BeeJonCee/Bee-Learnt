@@ -1,51 +1,40 @@
 "use client";
 
+import AssignmentIcon from "@mui/icons-material/Assignment";
+import FileDownloadIcon from "@mui/icons-material/FileDownload";
+import PeopleIcon from "@mui/icons-material/People";
+import TrendingUpIcon from "@mui/icons-material/TrendingUp";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Chip from "@mui/material/Chip";
+import CircularProgress from "@mui/material/CircularProgress";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import Grid from "@mui/material/Grid";
+import MenuItem from "@mui/material/MenuItem";
+import Stack from "@mui/material/Stack";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 import { useMemo, useState } from "react";
 import {
-  Card,
-  CardContent,
-  Stack,
-  Typography,
-  Box,
-  Grid,
-  Chip,
-  Button,
-  TextField,
-  MenuItem,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  CircularProgress,
-} from "@mui/material";
-import {
-  BarChart,
   Bar,
-  PieChart,
-  Pie,
+  BarChart,
+  CartesianGrid,
   Cell,
+  Legend,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
 } from "recharts";
-import FileDownloadIcon from "@mui/icons-material/FileDownload";
-import AssignmentIcon from "@mui/icons-material/Assignment";
-import TrendingUpIcon from "@mui/icons-material/TrendingUp";
-import PeopleIcon from "@mui/icons-material/People";
 import { useApi } from "@/hooks/useApi";
 import { apiFetch } from "@/lib/utils/api";
-
-type AdminReport = {
-  id: string;
-  title: string;
-  description: string;
-  generatedAt: string;
-  type: "user_engagement" | "content_performance" | "system_health" | "custom";
-  downloadUrl?: string;
-};
 
 type ReportStats = {
   totalUsers: number;
@@ -70,18 +59,19 @@ const REPORT_TYPES = [
 const COLORS = ["#8884d8", "#82ca9d", "#ffc658", "#ff7c7c", "#8dd1e1"];
 
 export default function AdminReportsPanel() {
-  const [selectedReportType, setSelectedReportType] = useState<string>("user_engagement");
+  const [selectedReportType, setSelectedReportType] =
+    useState<string>("user_engagement");
   const [dateRange, setDateRange] = useState<string>("7d");
   const [isGenerating, setIsGenerating] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
 
   const { data: stats, loading: statsLoading } = useApi<ReportStats>(
-    `/api/admin/reports/stats?range=${dateRange}`
+    `/api/admin/reports/stats?range=${dateRange}`,
   );
 
   const topModulesData = useMemo(
     () => stats?.topModules.slice(0, 5) ?? [],
-    [stats?.topModules]
+    [stats?.topModules],
   );
 
   const engagementData = useMemo(
@@ -91,12 +81,12 @@ export default function AdminReportsPanel() {
         active: item.activeUsers,
         total: item.totalUsers,
       })) ?? [],
-    [stats?.engagementByRole]
+    [stats?.engagementByRole],
   );
 
   const userGrowthData = useMemo(
     () => stats?.userGrowth ?? [],
-    [stats?.userGrowth]
+    [stats?.userGrowth],
   );
 
   const handleGenerateReport = async () => {
@@ -111,7 +101,7 @@ export default function AdminReportsPanel() {
             dateRange,
             format: "pdf",
           }),
-        }
+        },
       );
 
       if (response.downloadUrl) {
@@ -153,7 +143,9 @@ export default function AdminReportsPanel() {
                     Total Users
                   </Typography>
                 </Stack>
-                <Typography variant="h5">{stats.totalUsers.toLocaleString()}</Typography>
+                <Typography variant="h5">
+                  {stats.totalUsers.toLocaleString()}
+                </Typography>
                 <Stack direction="row" spacing={1}>
                   <Chip
                     label={`${stats.activeToday} today`}
@@ -197,7 +189,9 @@ export default function AdminReportsPanel() {
                     Avg Quiz Score
                   </Typography>
                 </Stack>
-                <Typography variant="h5">{Math.round(stats.avgQuizScore)}%</Typography>
+                <Typography variant="h5">
+                  {Math.round(stats.avgQuizScore)}%
+                </Typography>
                 <Typography variant="caption" color="text.secondary">
                   {stats.totalQuizAttempts.toLocaleString()} attempts
                 </Typography>
@@ -216,7 +210,9 @@ export default function AdminReportsPanel() {
                     Module Completion
                   </Typography>
                 </Stack>
-                <Typography variant="h5">{Math.round(stats.moduleCompletionRate)}%</Typography>
+                <Typography variant="h5">
+                  {Math.round(stats.moduleCompletionRate)}%
+                </Typography>
                 <Typography variant="caption" color="text.secondary">
                   Across all grades
                 </Typography>
@@ -240,7 +236,10 @@ export default function AdminReportsPanel() {
               <Box sx={{ height: 300 }}>
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={topModulesData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      stroke="rgba(255,255,255,0.1)"
+                    />
                     <XAxis dataKey="name" stroke="rgba(255,255,255,0.5)" />
                     <YAxis stroke="rgba(255,255,255,0.5)" />
                     <Tooltip
@@ -250,7 +249,11 @@ export default function AdminReportsPanel() {
                         borderRadius: "8px",
                       }}
                     />
-                    <Bar dataKey="completions" fill="#8884d8" name="Completions" />
+                    <Bar
+                      dataKey="completions"
+                      fill="#8884d8"
+                      name="Completions"
+                    />
                   </BarChart>
                 </ResponsiveContainer>
               </Box>
@@ -275,7 +278,10 @@ export default function AdminReportsPanel() {
                   <Box sx={{ height: 300 }}>
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart data={userGrowthData}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                        <CartesianGrid
+                          strokeDasharray="3 3"
+                          stroke="rgba(255,255,255,0.1)"
+                        />
                         <XAxis
                           dataKey="date"
                           stroke="rgba(255,255,255,0.5)"
@@ -290,8 +296,16 @@ export default function AdminReportsPanel() {
                           }}
                         />
                         <Legend />
-                        <Bar dataKey="newUsers" fill="#82ca9d" name="New Users" />
-                        <Bar dataKey="cumulativeUsers" fill="#8884d8" name="Total Users" />
+                        <Bar
+                          dataKey="newUsers"
+                          fill="#82ca9d"
+                          name="New Users"
+                        />
+                        <Bar
+                          dataKey="cumulativeUsers"
+                          fill="#8884d8"
+                          name="Total Users"
+                        />
                       </BarChart>
                     </ResponsiveContainer>
                   </Box>
@@ -320,13 +334,18 @@ export default function AdminReportsPanel() {
                           cx="50%"
                           cy="50%"
                           labelLine={false}
-                          label={(props: any) => `${props.name}: ${props.active}`}
+                          label={(props: { name: string; active: number }) =>
+                            `${props.name}: ${props.active}`
+                          }
                           outerRadius={80}
                           fill="#8884d8"
                           dataKey="active"
                         >
-                          {engagementData.map((_, index) => (
-                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                          {engagementData.map((entry, index) => (
+                            <Cell
+                              key={entry.name}
+                              fill={COLORS[index % COLORS.length]}
+                            />
                           ))}
                         </Pie>
                         <Tooltip
@@ -355,7 +374,8 @@ export default function AdminReportsPanel() {
               <Typography variant="h6">Generate Report</Typography>
             </Stack>
             <Typography color="text.secondary" variant="body2">
-              Create comprehensive reports for administrators, parents, and stakeholders.
+              Create comprehensive reports for administrators, parents, and
+              stakeholders.
             </Typography>
           </Stack>
         </CardContent>
@@ -379,7 +399,10 @@ export default function AdminReportsPanel() {
       </Card>
 
       {/* Report Generation Dialog */}
-      <Dialog open={showDialog} onClose={() => !isGenerating && setShowDialog(false)}>
+      <Dialog
+        open={showDialog}
+        onClose={() => !isGenerating && setShowDialog(false)}
+      >
         <DialogTitle>Generate Report</DialogTitle>
         <DialogContent sx={{ minWidth: 400, py: 2 }}>
           <Stack spacing={2}>
@@ -416,7 +439,11 @@ export default function AdminReportsPanel() {
           <Button onClick={() => setShowDialog(false)} disabled={isGenerating}>
             Cancel
           </Button>
-          <Button onClick={handleGenerateReport} variant="contained" disabled={isGenerating}>
+          <Button
+            onClick={handleGenerateReport}
+            variant="contained"
+            disabled={isGenerating}
+          >
             {isGenerating ? "Generating..." : "Generate"}
           </Button>
         </DialogActions>

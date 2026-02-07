@@ -1,9 +1,13 @@
 "use client";
 
-import { useEffect } from "react";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Button, Card, CardContent, Stack, Typography } from "@mui/material";
+import { useEffect } from "react";
 import { getDashboardPath } from "@/lib/navigation";
 import { useAuth } from "@/providers/AuthProvider";
 
@@ -27,18 +31,24 @@ export default function AdminContentPage() {
       <Stack spacing={1}>
         <Typography variant="h3">Content editor</Typography>
         <Typography color="text.secondary">
-          Organize modules, lessons, and quizzes aligned with the CAPS curriculum.
+          Organize modules, lessons, and quizzes aligned with the CAPS
+          curriculum.
         </Typography>
       </Stack>
       <Card>
         <CardContent>
           <Typography color="text.secondary">
-            Content workflows are being finalized. Soon you'll be able to draft, review,
-            and publish lessons from this workspace.
+            Content workflows are being finalized. Soon you'll be able to draft,
+            review, and publish lessons from this workspace.
           </Typography>
         </CardContent>
       </Card>
-      <Button component={Link} href="/admin" variant="outlined" sx={{ width: "fit-content" }}>
+      <Button
+        component={Link}
+        href="/admin"
+        variant="outlined"
+        sx={{ width: "fit-content" }}
+      >
         Back to admin panel
       </Button>
     </Stack>

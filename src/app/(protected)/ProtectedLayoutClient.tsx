@@ -1,8 +1,9 @@
 "use client";
 
-import { type ReactNode, useEffect } from "react";
+import Box from "@mui/material/Box";
+import CircularProgress from "@mui/material/CircularProgress";
 import { usePathname, useRouter } from "next/navigation";
-import { Box, CircularProgress } from "@mui/material";
+import { type ReactNode, useEffect } from "react";
 import AppShell from "@/components/layout/AppShell";
 import { getDashboardPath } from "@/lib/navigation";
 import { useAuth } from "@/providers/AuthProvider";
@@ -33,13 +34,20 @@ const roleGuards: RoleGuard[] = [
   { prefix: "/collaboration", roles: ["STUDENT", "PARENT"] },
 ];
 
-const isAllowedForRole = (pathname: string, role: "ADMIN" | "PARENT" | "STUDENT" | "TUTOR") => {
+const isAllowedForRole = (
+  pathname: string,
+  role: "ADMIN" | "PARENT" | "STUDENT" | "TUTOR",
+) => {
   const guard = roleGuards.find((entry) => pathname.startsWith(entry.prefix));
   if (!guard) return true;
   return guard.roles.includes(role);
 };
 
-export default function ProtectedLayoutClient({ children }: { children: ReactNode }) {
+export default function ProtectedLayoutClient({
+  children,
+}: {
+  children: ReactNode;
+}) {
   const { user, loading } = useAuth();
   const router = useRouter();
   const pathname = usePathname() ?? "";

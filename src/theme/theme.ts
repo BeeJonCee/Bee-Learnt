@@ -49,7 +49,9 @@ export function getTheme(mode: PaletteMode) {
       },
       text: {
         primary: isDark ? brand.offWhite : tokens.text.primary.light,
-        secondary: isDark ? tokens.text.secondary.dark : tokens.text.secondary.light,
+        secondary: isDark
+          ? tokens.text.secondary.dark
+          : tokens.text.secondary.light,
       },
       divider: isDark ? brand.accent : "#E5E7EB",
       success: {
@@ -83,34 +85,42 @@ export function getTheme(mode: PaletteMode) {
       borderRadius: 16,
     },
     typography: {
-      fontFamily: 'var(--font-body), "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+      fontFamily:
+        'var(--font-body), "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
       h1: {
-        fontFamily: 'var(--font-display), "Plus Jakarta Sans", "Inter", sans-serif',
+        fontFamily:
+          'var(--font-display), "Plus Jakarta Sans", "Inter", sans-serif',
         fontWeight: 700,
         letterSpacing: "-0.02em",
       },
       h2: {
-        fontFamily: 'var(--font-display), "Plus Jakarta Sans", "Inter", sans-serif',
+        fontFamily:
+          'var(--font-display), "Plus Jakarta Sans", "Inter", sans-serif',
         fontWeight: 700,
       },
       h3: {
-        fontFamily: 'var(--font-display), "Plus Jakarta Sans", "Inter", sans-serif',
+        fontFamily:
+          'var(--font-display), "Plus Jakarta Sans", "Inter", sans-serif',
         fontWeight: 700,
       },
       h4: {
-        fontFamily: 'var(--font-display), "Plus Jakarta Sans", "Inter", sans-serif',
+        fontFamily:
+          'var(--font-display), "Plus Jakarta Sans", "Inter", sans-serif',
         fontWeight: 700,
       },
       h5: {
-        fontFamily: 'var(--font-display), "Plus Jakarta Sans", "Inter", sans-serif',
+        fontFamily:
+          'var(--font-display), "Plus Jakarta Sans", "Inter", sans-serif',
         fontWeight: 600,
       },
       h6: {
-        fontFamily: 'var(--font-display), "Plus Jakarta Sans", "Inter", sans-serif',
+        fontFamily:
+          'var(--font-display), "Plus Jakarta Sans", "Inter", sans-serif',
         fontWeight: 600,
       },
       button: {
-        fontFamily: 'var(--font-body), "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+        fontFamily:
+          'var(--font-body), "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
         fontWeight: 600,
         textTransform: "none",
       },
@@ -138,7 +148,7 @@ export function getTheme(mode: PaletteMode) {
             backgroundImage: isDark
               ? `linear-gradient(135deg, ${alpha("#1f1f1f", 0.95)} 0%, ${alpha(
                   "#161616",
-                  0.98
+                  0.98,
                 )} 100%)`
               : "none",
             border: `1px solid ${alpha(isDark ? brand.white : "#000", isDark ? 0.06 : 0.08)}`,

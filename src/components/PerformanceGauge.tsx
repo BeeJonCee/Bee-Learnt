@@ -1,7 +1,10 @@
 "use client";
 
-import { Card, CardContent, Stack, Typography } from "@mui/material";
-import { ResponsiveContainer, PieChart, Pie } from "recharts";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import { Pie, PieChart, ResponsiveContainer } from "recharts";
 
 type Props = {
   score: number;
@@ -9,8 +12,14 @@ type Props = {
   label?: string;
 };
 
-export default function PerformanceGauge({ score, maxScore = 100, label }: Props) {
-  const safeScore = Number.isFinite(score) ? Math.max(0, Math.min(score, maxScore)) : 0;
+export default function PerformanceGauge({
+  score,
+  maxScore = 100,
+  label,
+}: Props) {
+  const safeScore = Number.isFinite(score)
+    ? Math.max(0, Math.min(score, maxScore))
+    : 0;
   const percent = Math.round((safeScore / maxScore) * 100);
   const data = [
     { name: "Score", value: percent, fill: "#5bc0eb" },

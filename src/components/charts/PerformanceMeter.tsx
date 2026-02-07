@@ -1,9 +1,14 @@
 "use client";
 
-import { Box, Card, CardContent, IconButton, Stack, Typography } from "@mui/material";
-import { alpha } from "@mui/material/styles";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import IconButton from "@mui/material/IconButton";
+import Stack from "@mui/material/Stack";
+import { alpha } from "@mui/material/styles";
+import Typography from "@mui/material/Typography";
+import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
 
 interface PerformanceMeterProps {
   score: number;
@@ -42,7 +47,11 @@ export default function PerformanceMeter({
       <CardContent>
         <Stack spacing={1}>
           {/* Header */}
-          <Stack direction="row" justifyContent="space-between" alignItems="center">
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+          >
             <Typography variant="h6" fontWeight={600}>
               {title}
             </Typography>

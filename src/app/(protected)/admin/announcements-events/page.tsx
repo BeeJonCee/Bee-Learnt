@@ -1,18 +1,16 @@
 "use client";
 
+import Alert from "@mui/material/Alert";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Divider from "@mui/material/Divider";
+import Grid from "@mui/material/Grid";
+import MenuItem from "@mui/material/MenuItem";
+import Stack from "@mui/material/Stack";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 import { useMemo, useState } from "react";
-import {
-  Alert,
-  Button,
-  Card,
-  CardContent,
-  Divider,
-  Grid,
-  MenuItem,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
 import { useApi } from "@/hooks/useApi";
 import { apiFetch } from "@/lib/utils/api";
 
@@ -59,20 +57,25 @@ export default function AdminAnnouncementsEventsPage() {
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const { data: announcements, refetch: refetchAnnouncements } = useApi<Announcement[]>(
-    "/api/announcements?limit=10"
-  );
+  const { data: announcements, refetch: refetchAnnouncements } = useApi<
+    Announcement[]
+  >("/api/announcements?limit=10");
   const { data: events, refetch: refetchEvents } = useApi<EventItem[]>(
-    "/api/events?limit=10"
+    "/api/events?limit=10",
   );
 
   const canSaveAnnouncement = useMemo(
-    () => announcement.title.trim().length > 2 && announcement.body.trim().length > 9,
-    [announcement]
+    () =>
+      announcement.title.trim().length > 2 &&
+      announcement.body.trim().length > 9,
+    [announcement],
   );
   const canSaveEvent = useMemo(
-    () => event.title.trim().length > 2 && event.description.trim().length > 4 && event.startAt,
-    [event]
+    () =>
+      event.title.trim().length > 2 &&
+      event.description.trim().length > 4 &&
+      event.startAt,
+    [event],
   );
 
   const resetNotice = () => {
@@ -91,7 +94,9 @@ export default function AdminAnnouncementsEventsPage() {
       setAnnouncement({ title: "", body: "", audience: "ALL", pinned: false });
       refetchAnnouncements();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to create announcement");
+      setError(
+        err instanceof Error ? err.message : "Failed to create announcement",
+      );
     }
   };
 
@@ -145,14 +150,20 @@ export default function AdminAnnouncementsEventsPage() {
                   label="Title"
                   value={announcement.title}
                   onChange={(event) =>
-                    setAnnouncement((prev) => ({ ...prev, title: event.target.value }))
+                    setAnnouncement((prev) => ({
+                      ...prev,
+                      title: event.target.value,
+                    }))
                   }
                 />
                 <TextField
                   label="Message"
                   value={announcement.body}
                   onChange={(event) =>
-                    setAnnouncement((prev) => ({ ...prev, body: event.target.value }))
+                    setAnnouncement((prev) => ({
+                      ...prev,
+                      body: event.target.value,
+                    }))
                   }
                   minRows={3}
                   multiline
@@ -166,7 +177,8 @@ export default function AdminAnnouncementsEventsPage() {
                       onChange={(event) =>
                         setAnnouncement((prev) => ({
                           ...prev,
-                          audience: event.target.value as AnnouncementPayload["audience"],
+                          audience: event.target
+                            .value as AnnouncementPayload["audience"],
                         }))
                       }
                     >
@@ -214,14 +226,20 @@ export default function AdminAnnouncementsEventsPage() {
                   label="Title"
                   value={event.title}
                   onChange={(eventValue) =>
-                    setEvent((prev) => ({ ...prev, title: eventValue.target.value }))
+                    setEvent((prev) => ({
+                      ...prev,
+                      title: eventValue.target.value,
+                    }))
                   }
                 />
                 <TextField
                   label="Description"
                   value={event.description}
                   onChange={(eventValue) =>
-                    setEvent((prev) => ({ ...prev, description: eventValue.target.value }))
+                    setEvent((prev) => ({
+                      ...prev,
+                      description: eventValue.target.value,
+                    }))
                   }
                   minRows={3}
                   multiline
@@ -235,7 +253,8 @@ export default function AdminAnnouncementsEventsPage() {
                       onChange={(eventValue) =>
                         setEvent((prev) => ({
                           ...prev,
-                          audience: eventValue.target.value as EventPayload["audience"],
+                          audience: eventValue.target
+                            .value as EventPayload["audience"],
                         }))
                       }
                     >
@@ -270,7 +289,10 @@ export default function AdminAnnouncementsEventsPage() {
                       label="Start"
                       value={event.startAt}
                       onChange={(eventValue) =>
-                        setEvent((prev) => ({ ...prev, startAt: eventValue.target.value }))
+                        setEvent((prev) => ({
+                          ...prev,
+                          startAt: eventValue.target.value,
+                        }))
                       }
                       InputLabelProps={{ shrink: true }}
                     />
@@ -281,7 +303,10 @@ export default function AdminAnnouncementsEventsPage() {
                       label="End"
                       value={event.endAt ?? ""}
                       onChange={(eventValue) =>
-                        setEvent((prev) => ({ ...prev, endAt: eventValue.target.value }))
+                        setEvent((prev) => ({
+                          ...prev,
+                          endAt: eventValue.target.value,
+                        }))
                       }
                       InputLabelProps={{ shrink: true }}
                     />
@@ -291,10 +316,17 @@ export default function AdminAnnouncementsEventsPage() {
                   label="Location"
                   value={event.location ?? ""}
                   onChange={(eventValue) =>
-                    setEvent((prev) => ({ ...prev, location: eventValue.target.value }))
+                    setEvent((prev) => ({
+                      ...prev,
+                      location: eventValue.target.value,
+                    }))
                   }
                 />
-                <Button variant="contained" onClick={handleCreateEvent} disabled={!canSaveEvent}>
+                <Button
+                  variant="contained"
+                  onClick={handleCreateEvent}
+                  disabled={!canSaveEvent}
+                >
                   Publish event
                 </Button>
               </Stack>
@@ -311,11 +343,15 @@ export default function AdminAnnouncementsEventsPage() {
               <Divider sx={{ my: 1.5 }} />
               <Stack spacing={1.5}>
                 {(announcements ?? []).length === 0 ? (
-                  <Typography color="text.secondary">No announcements yet.</Typography>
+                  <Typography color="text.secondary">
+                    No announcements yet.
+                  </Typography>
                 ) : (
                   (announcements ?? []).map((announcement) => (
                     <Stack key={announcement.id} spacing={0.5}>
-                      <Typography fontWeight={600}>{announcement.title}</Typography>
+                      <Typography fontWeight={600}>
+                        {announcement.title}
+                      </Typography>
                       <Typography variant="body2" color="text.secondary">
                         {announcement.body}
                       </Typography>
@@ -337,7 +373,9 @@ export default function AdminAnnouncementsEventsPage() {
                 ) : (
                   (events ?? []).map((eventItem) => (
                     <Stack key={eventItem.id} spacing={0.5}>
-                      <Typography fontWeight={600}>{eventItem.title}</Typography>
+                      <Typography fontWeight={600}>
+                        {eventItem.title}
+                      </Typography>
                       <Typography variant="body2" color="text.secondary">
                         {eventItem.description}
                       </Typography>

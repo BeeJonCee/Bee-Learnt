@@ -1,22 +1,20 @@
 "use client";
 
-import Link from "next/link";
-import {
-  Box,
-  Card,
-  CardActionArea,
-  CardContent,
-  Chip,
-  Grid,
-  Stack,
-  Typography,
-  Alert,
-} from "@mui/material";
-import FunctionsIcon from "@mui/icons-material/Functions";
-import ScienceIcon from "@mui/icons-material/Science";
 import BiotechIcon from "@mui/icons-material/Biotech";
 import ComputerIcon from "@mui/icons-material/Computer";
+import FunctionsIcon from "@mui/icons-material/Functions";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
+import ScienceIcon from "@mui/icons-material/Science";
+import Alert from "@mui/material/Alert";
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import CardActionArea from "@mui/material/CardActionArea";
+import CardContent from "@mui/material/CardContent";
+import Chip from "@mui/material/Chip";
+import Grid from "@mui/material/Grid";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import Link from "next/link";
 import { useApi } from "@/hooks/useApi";
 
 type Subject = {
@@ -79,7 +77,10 @@ export default function SubjectsPage() {
             return (
               <Grid item xs={12} md={6} lg={4} key={subject.id}>
                 <Card>
-                  <CardActionArea component={Link} href={`/subjects/${subject.id}`}>
+                  <CardActionArea
+                    component={Link}
+                    href={`/subjects/${subject.id}`}
+                  >
                     <Box
                       sx={{
                         height: 180,

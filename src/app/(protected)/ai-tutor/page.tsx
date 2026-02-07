@@ -1,17 +1,15 @@
 "use client";
 
-import { useState } from "react";
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
-import SendIcon from "@mui/icons-material/Send";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
+import SendIcon from "@mui/icons-material/Send";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Stack from "@mui/material/Stack";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import { useState } from "react";
 import { apiFetch } from "@/lib/utils/api";
 
 type Message = { role: "user" | "assistant"; content: string };
@@ -30,7 +28,10 @@ export default function AiTutorPage() {
   const handleSend = async () => {
     if (!input.trim()) return;
     const nextMessage = input.trim();
-    const nextMessages: Message[] = [...messages, { role: "user", content: nextMessage }];
+    const nextMessages: Message[] = [
+      ...messages,
+      { role: "user", content: nextMessage },
+    ];
     setMessages(nextMessages);
     setInput("");
     setLoading(true);
@@ -41,7 +42,10 @@ export default function AiTutorPage() {
           messages: nextMessages.slice(-8),
         }),
       });
-      setMessages((prev) => [...prev, { role: "assistant", content: response.message }]);
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: response.message },
+      ]);
     } catch {
       setMessages((prev) => [
         ...prev,
@@ -60,7 +64,8 @@ export default function AiTutorPage() {
       <Stack spacing={1}>
         <Typography variant="h3">AI Tutor</Typography>
         <Typography color="text.secondary">
-          Chat with BeeLearnt to explore concepts or generate practice questions.
+          Chat with BeeLearnt to explore concepts or generate practice
+          questions.
         </Typography>
       </Stack>
 
@@ -71,7 +76,8 @@ export default function AiTutorPage() {
               <Box
                 key={`${message.role}-${index}`}
                 sx={{
-                  alignSelf: message.role === "user" ? "flex-end" : "flex-start",
+                  alignSelf:
+                    message.role === "user" ? "flex-end" : "flex-start",
                   px: 2,
                   py: 1.5,
                   borderRadius: 2,
@@ -88,8 +94,8 @@ export default function AiTutorPage() {
                     <AutoAwesomeIcon sx={{ fontSize: 18 }} />
                   )}
                   <Typography variant="body2">{message.content}</Typography>
-                  </Stack>
-                </Box>
+                </Stack>
+              </Box>
             ))}
             {loading && (
               <Box

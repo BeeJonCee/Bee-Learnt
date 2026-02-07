@@ -1,28 +1,25 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import {
-  Card,
-  CardContent,
-  Stack,
-  Typography,
-  Box,
-  Grid,
-  Chip,
-  Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
-  MenuItem,
-  LinearProgress,
-} from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import DeleteIcon from "@mui/icons-material/Delete";
 import TimerIcon from "@mui/icons-material/Timer";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
-import DeleteIcon from "@mui/icons-material/Delete";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Chip from "@mui/material/Chip";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import Grid from "@mui/material/Grid";
+import LinearProgress from "@mui/material/LinearProgress";
+import MenuItem from "@mui/material/MenuItem";
+import Stack from "@mui/material/Stack";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import { useMemo, useState } from "react";
 import { useApi } from "@/hooks/useApi";
 import { apiFetch } from "@/lib/utils/api";
 
@@ -48,9 +45,8 @@ export default function StudyGoalsPanel() {
     priority: "medium" as "low" | "medium" | "high",
   });
 
-  const { data: goals, refetch: refetchGoals } = useApi<StudyGoal[]>(
-    "/api/student/goals"
-  );
+  const { data: goals, refetch: refetchGoals } =
+    useApi<StudyGoal[]>("/api/student/goals");
 
   const goalStats = useMemo(() => {
     if (!goals) return { total: 0, completed: 0, active: 0, hoursSpent: 0 };
@@ -178,7 +174,10 @@ export default function StudyGoalsPanel() {
                   </Typography>
                 </Stack>
                 <Typography variant="h5">
-                  {goalStats.total > 0 ? Math.round((goalStats.completed / goalStats.total) * 100) : 0}%
+                  {goalStats.total > 0
+                    ? Math.round((goalStats.completed / goalStats.total) * 100)
+                    : 0}
+                  %
                 </Typography>
               </Stack>
             </CardContent>
@@ -190,7 +189,12 @@ export default function StudyGoalsPanel() {
       <Card>
         <CardContent>
           <Stack spacing={2}>
-            <Stack direction="row" spacing={1} alignItems="center" justifyContent="space-between">
+            <Stack
+              direction="row"
+              spacing={1}
+              alignItems="center"
+              justifyContent="space-between"
+            >
               <Typography variant="h6">Active Goals</Typography>
               <Button
                 size="small"
@@ -210,7 +214,8 @@ export default function StudyGoalsPanel() {
               <Stack spacing={2}>
                 {activeGoals.map((goal) => {
                   const daysLeft = Math.ceil(
-                    (new Date(goal.deadline).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
+                    (new Date(goal.deadline).getTime() - Date.now()) /
+                      (1000 * 60 * 60 * 24),
                   );
                   const progress = (goal.currentHours / goal.targetHours) * 100;
 
@@ -224,13 +229,20 @@ export default function StudyGoalsPanel() {
                       }}
                       spacing={1.5}
                     >
-                      <Stack direction="row" alignItems="flex-start" justifyContent="space-between">
+                      <Stack
+                        direction="row"
+                        alignItems="flex-start"
+                        justifyContent="space-between"
+                      >
                         <Stack spacing={0.5} flex={1}>
                           <Typography variant="subtitle2" fontWeight={600}>
                             {goal.title}
                           </Typography>
                           {goal.description && (
-                            <Typography variant="caption" color="text.secondary">
+                            <Typography
+                              variant="caption"
+                              color="text.secondary"
+                            >
                               {goal.description}
                             </Typography>
                           )}
@@ -243,8 +255,8 @@ export default function StudyGoalsPanel() {
                               goal.priority === "high"
                                 ? "error"
                                 : goal.priority === "medium"
-                                ? "warning"
-                                : "default"
+                                  ? "warning"
+                                  : "default"
                             }
                           />
                           <Button
@@ -265,7 +277,11 @@ export default function StudyGoalsPanel() {
                       </Stack>
 
                       <Stack spacing={1}>
-                        <Stack direction="row" justifyContent="space-between" alignItems="center">
+                        <Stack
+                          direction="row"
+                          justifyContent="space-between"
+                          alignItems="center"
+                        >
                           <Typography variant="caption" color="text.secondary">
                             Progress
                           </Typography>
@@ -323,7 +339,8 @@ export default function StudyGoalsPanel() {
                     <Stack flex={1}>
                       <Typography variant="subtitle2">{goal.title}</Typography>
                       <Typography variant="caption" color="text.secondary">
-                        Completed {goal.currentHours} of {goal.targetHours} hours
+                        Completed {goal.currentHours} of {goal.targetHours}{" "}
+                        hours
                       </Typography>
                     </Stack>
                   </Stack>
@@ -344,7 +361,9 @@ export default function StudyGoalsPanel() {
               label="Goal Title"
               placeholder="e.g., Complete Mathematics Module"
               value={newGoal.title}
-              onChange={(e) => setNewGoal({ ...newGoal, title: e.target.value })}
+              onChange={(e) =>
+                setNewGoal({ ...newGoal, title: e.target.value })
+              }
               size="small"
             />
             <TextField
@@ -352,7 +371,9 @@ export default function StudyGoalsPanel() {
               label="Description"
               placeholder="Add details about your goal"
               value={newGoal.description}
-              onChange={(e) => setNewGoal({ ...newGoal, description: e.target.value })}
+              onChange={(e) =>
+                setNewGoal({ ...newGoal, description: e.target.value })
+              }
               multiline
               rows={2}
               size="small"
@@ -362,7 +383,9 @@ export default function StudyGoalsPanel() {
               type="number"
               label="Target Hours"
               value={newGoal.targetHours}
-              onChange={(e) => setNewGoal({ ...newGoal, targetHours: Number(e.target.value) })}
+              onChange={(e) =>
+                setNewGoal({ ...newGoal, targetHours: Number(e.target.value) })
+              }
               inputProps={{ min: 1, max: 1000 }}
               size="small"
             />
@@ -371,7 +394,9 @@ export default function StudyGoalsPanel() {
               type="date"
               label="Deadline"
               value={newGoal.deadline}
-              onChange={(e) => setNewGoal({ ...newGoal, deadline: e.target.value })}
+              onChange={(e) =>
+                setNewGoal({ ...newGoal, deadline: e.target.value })
+              }
               InputLabelProps={{ shrink: true }}
               size="small"
             />

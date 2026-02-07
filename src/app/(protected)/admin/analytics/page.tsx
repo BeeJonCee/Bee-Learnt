@@ -1,13 +1,11 @@
 "use client";
 
-import {
-  Alert,
-  Card,
-  CardContent,
-  Grid,
-  Stack,
-  Typography,
-} from "@mui/material";
+import Alert from "@mui/material/Alert";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Grid from "@mui/material/Grid";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 import { useApi } from "@/hooks/useApi";
 
 type PlatformStats = {
@@ -54,7 +52,9 @@ function StatCard({
 }
 
 export default function AdminAnalyticsPage() {
-  const { data, loading, error } = useApi<PlatformStats>("/api/analytics/platform");
+  const { data, loading, error } = useApi<PlatformStats>(
+    "/api/analytics/platform",
+  );
 
   return (
     <Stack spacing={4}>
@@ -79,7 +79,10 @@ export default function AdminAnalyticsPage() {
           <Typography variant="h6">Users</Typography>
           <Grid container spacing={3}>
             <Grid item xs={6} md={3}>
-              <StatCard label="Students" value={data.users.byRole.STUDENT ?? 0} />
+              <StatCard
+                label="Students"
+                value={data.users.byRole.STUDENT ?? 0}
+              />
             </Grid>
             <Grid item xs={6} md={3}>
               <StatCard label="Tutors" value={data.users.byRole.TUTOR ?? 0} />
@@ -100,10 +103,16 @@ export default function AdminAnalyticsPage() {
           <Typography variant="h6">Assessments</Typography>
           <Grid container spacing={3}>
             <Grid item xs={6} md={4}>
-              <StatCard label="Total Attempts" value={data.assessments.totalAttempts} />
+              <StatCard
+                label="Total Attempts"
+                value={data.assessments.totalAttempts}
+              />
             </Grid>
             <Grid item xs={6} md={4}>
-              <StatCard label="Completed" value={data.assessments.completedAttempts} />
+              <StatCard
+                label="Completed"
+                value={data.assessments.completedAttempts}
+              />
             </Grid>
             <Grid item xs={12} md={4}>
               <StatCard
@@ -120,7 +129,10 @@ export default function AdminAnalyticsPage() {
               <StatCard label="Total Questions" value={data.questions.total} />
             </Grid>
             <Grid item xs={6}>
-              <StatCard label="Active Questions" value={data.questions.active} />
+              <StatCard
+                label="Active Questions"
+                value={data.questions.active}
+              />
             </Grid>
           </Grid>
 
@@ -128,7 +140,10 @@ export default function AdminAnalyticsPage() {
           <Typography variant="h6">Study Activity (30 days)</Typography>
           <Grid container spacing={3}>
             <Grid item xs={6}>
-              <StatCard label="Study Sessions" value={data.study.sessionsLast30Days} />
+              <StatCard
+                label="Study Sessions"
+                value={data.study.sessionsLast30Days}
+              />
             </Grid>
             <Grid item xs={6}>
               <StatCard

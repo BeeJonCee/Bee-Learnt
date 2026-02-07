@@ -41,7 +41,9 @@ function writeStore<T>(key: string, value: T) {
   window.localStorage.setItem(key, JSON.stringify(value));
 }
 
-export function getLessonProgress(userId: string): Record<number, LessonProgress> {
+export function getLessonProgress(
+  userId: string,
+): Record<number, LessonProgress> {
   const store = readStore<ProgressStore>(PROGRESS_KEY, {});
   return store[userId] ?? {};
 }
@@ -49,7 +51,7 @@ export function getLessonProgress(userId: string): Record<number, LessonProgress
 export function upsertLessonProgress(
   userId: string,
   lessonId: number,
-  updates: Partial<LessonProgress>
+  updates: Partial<LessonProgress>,
 ): LessonProgress {
   const store = readStore<ProgressStore>(PROGRESS_KEY, {});
   const current = store[userId] ?? {};
@@ -93,7 +95,7 @@ export function saveQuizResult(userId: string, result: QuizResult) {
 }
 
 export function getAssignmentProgress(
-  userId: string
+  userId: string,
 ): Record<number, AssignmentProgress> {
   const store = readStore<AssignmentStore>(ASSIGNMENT_KEY, {});
   return store[userId] ?? {};
@@ -102,7 +104,7 @@ export function getAssignmentProgress(
 export function upsertAssignmentProgress(
   userId: string,
   assignmentId: number,
-  updates: Partial<AssignmentProgress>
+  updates: Partial<AssignmentProgress>,
 ): AssignmentProgress {
   const store = readStore<AssignmentStore>(ASSIGNMENT_KEY, {});
   const current = store[userId] ?? {};

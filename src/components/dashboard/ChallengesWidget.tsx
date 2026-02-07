@@ -1,17 +1,14 @@
 "use client";
 
-import {
-  Box,
-  Card,
-  CardContent,
-  Chip,
-  LinearProgress,
-  Stack,
-  Typography,
-} from "@mui/material";
-import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import TimerIcon from "@mui/icons-material/Timer";
+import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Chip from "@mui/material/Chip";
+import LinearProgress from "@mui/material/LinearProgress";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 import { useApi } from "@/hooks/useApi";
 import { tokens } from "@/theme/tokens";
 
@@ -40,7 +37,8 @@ const TYPE_LABELS = {
 };
 
 export default function ChallengesWidget() {
-  const { data: challenges, loading } = useApi<ChallengeData[]>("/api/challenges");
+  const { data: challenges, loading } =
+    useApi<ChallengeData[]>("/api/challenges");
 
   if (loading) {
     return (
@@ -50,8 +48,10 @@ export default function ChallengesWidget() {
     );
   }
 
-  const activeChallenges = challenges?.filter((c) => c.status === "active") ?? [];
-  const completedCount = challenges?.filter((c) => c.status === "completed").length ?? 0;
+  const activeChallenges =
+    challenges?.filter((c) => c.status === "active") ?? [];
+  const completedCount =
+    challenges?.filter((c) => c.status === "completed").length ?? 0;
 
   if (activeChallenges.length === 0) {
     return (
@@ -72,7 +72,12 @@ export default function ChallengesWidget() {
   return (
     <Box sx={{ p: 2 }}>
       {/* Header stats */}
-      <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 2 }}>
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        alignItems="center"
+        sx={{ mb: 2 }}
+      >
         <Typography variant="subtitle2" fontWeight={600}>
           Active Challenges
         </Typography>
@@ -92,7 +97,7 @@ export default function ChallengesWidget() {
         {activeChallenges.slice(0, 4).map((challenge) => {
           const progress = Math.min(
             100,
-            Math.round((challenge.currentValue / challenge.targetValue) * 100)
+            Math.round((challenge.currentValue / challenge.targetValue) * 100),
           );
 
           return (
@@ -105,7 +110,11 @@ export default function ChallengesWidget() {
               }}
             >
               <CardContent sx={{ p: 1.5, "&:last-child": { pb: 1.5 } }}>
-                <Stack direction="row" justifyContent="space-between" alignItems="flex-start">
+                <Stack
+                  direction="row"
+                  justifyContent="space-between"
+                  alignItems="flex-start"
+                >
                   <Box sx={{ flex: 1 }}>
                     <Stack direction="row" alignItems="center" spacing={1}>
                       <Chip
@@ -137,7 +146,11 @@ export default function ChallengesWidget() {
 
                     {/* Progress */}
                     <Box sx={{ mt: 1 }}>
-                      <Stack direction="row" justifyContent="space-between" sx={{ mb: 0.5 }}>
+                      <Stack
+                        direction="row"
+                        justifyContent="space-between"
+                        sx={{ mb: 0.5 }}
+                      >
                         <Typography variant="caption" color="text.secondary">
                           {challenge.currentValue} / {challenge.targetValue}
                         </Typography>

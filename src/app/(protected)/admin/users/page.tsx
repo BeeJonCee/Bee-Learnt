@@ -1,26 +1,24 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import Alert from "@mui/material/Alert";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Checkbox from "@mui/material/Checkbox";
+import Divider from "@mui/material/Divider";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import {
-  Alert,
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Checkbox,
-  Divider,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { useEffect, useMemo, useState } from "react";
+import { useApi } from "@/hooks/useApi";
 import { getDashboardPath } from "@/lib/navigation";
 import { apiFetch } from "@/lib/utils/api";
-import { useApi } from "@/hooks/useApi";
 import { useAuth } from "@/providers/AuthProvider";
 
 type AdminUser = {
@@ -54,11 +52,13 @@ type UserModulesResponse = {
 export default function AdminUsersPage() {
   const { user } = useAuth();
   const router = useRouter();
-  const { data: students } = useApi<AdminUser[]>("/api/admin/users?role=STUDENT");
+  const { data: students } = useApi<AdminUser[]>(
+    "/api/admin/users?role=STUDENT",
+  );
   const { data: modules } = useApi<AdminModule[]>("/api/admin/modules");
   const [selectedUserId, setSelectedUserId] = useState<string>("");
   const { data: userModules } = useApi<UserModulesResponse>(
-    selectedUserId ? `/api/admin/users/${selectedUserId}/modules` : null
+    selectedUserId ? `/api/admin/users/${selectedUserId}/modules` : null,
   );
   const [selectedModuleIds, setSelectedModuleIds] = useState<number[]>([]);
   const [saving, setSaving] = useState(false);
@@ -82,7 +82,10 @@ export default function AdminUsersPage() {
 
   const groupedModules = useMemo(() => {
     const list = modules ?? [];
-    const groups = new Map<number, { subjectName: string; items: AdminModule[] }>();
+    const groups = new Map<
+      number,
+      { subjectName: string; items: AdminModule[] }
+    >();
     for (const module of list) {
       const entry = groups.get(module.subjectId) ?? {
         subjectName: module.subjectName,
@@ -102,15 +105,17 @@ export default function AdminUsersPage() {
     return null;
   }
 
-  const selectedUser = (students ?? []).find((student) => student.id === selectedUserId);
+  const selectedUser = (students ?? []).find(
+    (student) => student.id === selectedUserId,
+  );
 
   return (
     <Stack spacing={3}>
       <Stack spacing={1}>
         <Typography variant="h3">User management</Typography>
         <Typography color="text.secondary">
-          Assign modules to learners so they can access subjects, assignments, search,
-          collaboration, and AI tutor experiences.
+          Assign modules to learners so they can access subjects, assignments,
+          search, collaboration, and AI tutor experiences.
         </Typography>
       </Stack>
 
@@ -163,10 +168,14 @@ export default function AdminUsersPage() {
                   <Card key={group.subjectId} variant="outlined">
                     <CardContent>
                       <Stack spacing={1.5}>
-                        <Typography variant="subtitle1">{group.subjectName}</Typography>
+                        <Typography variant="subtitle1">
+                          {group.subjectName}
+                        </Typography>
                         <Stack spacing={1}>
                           {group.modules.map((module) => {
-                            const checked = selectedModuleIds.includes(module.id);
+                            const checked = selectedModuleIds.includes(
+                              module.id,
+                            );
                             return (
                               <Stack
                                 key={module.id}
@@ -175,14 +184,20 @@ export default function AdminUsersPage() {
                                 justifyContent="space-between"
                                 spacing={2}
                               >
-                                <Box display="flex" alignItems="center" gap={1.5}>
+                                <Box
+                                  display="flex"
+                                  alignItems="center"
+                                  gap={1.5}
+                                >
                                   <Checkbox
                                     checked={checked}
                                     onChange={() => {
                                       setSelectedModuleIds((prev) =>
                                         prev.includes(module.id)
-                                          ? prev.filter((id) => id !== module.id)
-                                          : [...prev, module.id]
+                                          ? prev.filter(
+                                              (id) => id !== module.id,
+                                            )
+                                          : [...prev, module.id],
                                       );
                                     }}
                                   />
@@ -208,13 +223,22 @@ export default function AdminUsersPage() {
                     setNotice(null);
                     setError(null);
                     try {
-                      await apiFetch(`/api/admin/users/${selectedUserId}/modules`, {
-                        method: "POST",
-                        body: JSON.stringify({ moduleIds: selectedModuleIds }),
-                      });
+                      await apiFetch(
+                        `/api/admin/users/${selectedUserId}/modules`,
+                        {
+                          method: "POST",
+                          body: JSON.stringify({
+                            moduleIds: selectedModuleIds,
+                          }),
+                        },
+                      );
                       setNotice("Module assignments saved.");
                     } catch (err) {
-                      setError(err instanceof Error ? err.message : "Unable to save assignments.");
+                      setError(
+                        err instanceof Error
+                          ? err.message
+                          : "Unable to save assignments.",
+                      );
                     } finally {
                       setSaving(false);
                     }
@@ -229,7 +253,12 @@ export default function AdminUsersPage() {
         </CardContent>
       </Card>
 
-      <Button component={Link} href="/admin" variant="outlined" sx={{ width: "fit-content" }}>
+      <Button
+        component={Link}
+        href="/admin"
+        variant="outlined"
+        sx={{ width: "fit-content" }}
+      >
         Back to admin panel
       </Button>
     </Stack>

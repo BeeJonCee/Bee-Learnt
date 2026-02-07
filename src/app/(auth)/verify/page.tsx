@@ -5,7 +5,14 @@ import VerifyPageContent from "./verify-content";
 
 function VerifyPageSkeleton() {
   return (
-    <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh" }}>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh",
+      }}
+    >
       Loading...
     </div>
   );

@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect } from "react";
-import { Alert, Snackbar, Typography, Box } from "@mui/material";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
-import { useBadgeAwards, type BadgeAwarded } from "@/hooks/useSocket";
+import Alert from "@mui/material/Alert";
+import Box from "@mui/material/Box";
+import Snackbar from "@mui/material/Snackbar";
+import Typography from "@mui/material/Typography";
+import { useBadgeAwards } from "@/hooks/useSocket";
 
 interface NotificationToastProps {
   autoHideDuration?: number;
@@ -53,7 +55,10 @@ export default function NotificationToast({
             You earned the <strong>{lastBadge.badgeName}</strong> badge
           </Typography>
           {lastBadge.description && (
-            <Typography variant="caption" sx={{ opacity: 0.8, display: "block", mt: 0.5 }}>
+            <Typography
+              variant="caption"
+              sx={{ opacity: 0.8, display: "block", mt: 0.5 }}
+            >
               {lastBadge.description}
             </Typography>
           )}

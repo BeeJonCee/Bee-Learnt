@@ -1,22 +1,20 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import {
-  Box,
-  FormControl,
-  Grid,
-  InputLabel,
-  MenuItem,
-  Select,
-  Stack,
-  Tab,
-  Tabs,
-  Typography,
-} from "@mui/material";
 import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
-import TaskAltIcon from "@mui/icons-material/TaskAlt";
 import EventIcon from "@mui/icons-material/Event";
+import TaskAltIcon from "@mui/icons-material/TaskAlt";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
+import Box from "@mui/material/Box";
+import FormControl from "@mui/material/FormControl";
+import Grid from "@mui/material/Grid";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import Stack from "@mui/material/Stack";
+import Tab from "@mui/material/Tab";
+import Tabs from "@mui/material/Tabs";
+import Typography from "@mui/material/Typography";
+import { useMemo, useState } from "react";
 import AssignmentList from "@/components/AssignmentList";
 import StatCard from "@/components/StatCard";
 import { useApi } from "@/hooks/useApi";
@@ -50,21 +48,24 @@ type Module = {
 };
 
 export default function AssignmentsPage() {
-  const { data: assignments, setData } = useApi<Assignment[]>("/api/assignments");
+  const { data: assignments, setData } =
+    useApi<Assignment[]>("/api/assignments");
   const { data: modules } = useApi<Module[]>("/api/modules");
   const [status, setStatus] = useState<StatusFilter>("all");
   const [grade, setGrade] = useState<GradeFilter>("all");
 
   const moduleById = useMemo(() => {
     const map = new Map<number, string>();
-    (modules ?? []).forEach((module) => map.set(module.id, module.title));
+    for (const module of modules ?? []) {
+      map.set(module.id, module.title);
+    }
     return map;
   }, [modules]);
 
   const summary = useMemo(() => {
     const list = assignments ?? [];
     const completed = list.filter((assignment) =>
-      ["submitted", "graded"].includes(assignment.status)
+      ["submitted", "graded"].includes(assignment.status),
     );
     const now = new Date();
     const dueSoon = list.filter((assignment) => {
@@ -100,12 +101,14 @@ export default function AssignmentsPage() {
         return true;
       })
       .sort(
-        (a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime()
+        (a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime(),
       );
   }, [assignments, grade, moduleById, status]);
 
   const handleToggle = async (assignmentId: number) => {
-    const current = assignments?.find((assignment) => assignment.id === assignmentId);
+    const current = assignments?.find(
+      (assignment) => assignment.id === assignmentId,
+    );
     if (!current) return;
     const isCompleted = ["submitted", "graded"].includes(current.status);
     const nextStatus = isCompleted ? "todo" : "submitted";
@@ -114,8 +117,8 @@ export default function AssignmentsPage() {
       (prev ?? []).map((assignment) =>
         assignment.id === assignmentId
           ? { ...assignment, status: nextStatus }
-          : assignment
-      )
+          : assignment,
+      ),
     );
 
     try {
@@ -126,8 +129,8 @@ export default function AssignmentsPage() {
     } catch {
       setData((prev) =>
         (prev ?? []).map((assignment) =>
-          assignment.id === assignmentId ? current : assignment
-        )
+          assignment.id === assignmentId ? current : assignment,
+        ),
       );
     }
   };

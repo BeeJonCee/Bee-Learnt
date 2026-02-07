@@ -1,17 +1,15 @@
 "use client";
 
+import Alert from "@mui/material/Alert";
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import CardActionArea from "@mui/material/CardActionArea";
+import CardContent from "@mui/material/CardContent";
+import Chip from "@mui/material/Chip";
+import Grid from "@mui/material/Grid";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 import Link from "next/link";
-import {
-  Alert,
-  Box,
-  Card,
-  CardActionArea,
-  CardContent,
-  Chip,
-  Grid,
-  Stack,
-  Typography,
-} from "@mui/material";
 import { useApi } from "@/hooks/useApi";
 
 type NscPaper = {
@@ -41,7 +39,9 @@ const sessionLabels: Record<string, string> = {
 };
 
 export default function AdminNscPapersPage() {
-  const { data, loading, error } = useApi<PaperListResponse>("/api/nsc-papers?limit=100");
+  const { data, loading, error } = useApi<PaperListResponse>(
+    "/api/nsc-papers?limit=100",
+  );
   const papers = data?.papers ?? [];
 
   return (
@@ -86,15 +86,30 @@ export default function AdminNscPapersPage() {
                   >
                     <CardContent>
                       <Stack spacing={1}>
-                        <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+                        <Stack
+                          direction="row"
+                          spacing={1}
+                          flexWrap="wrap"
+                          useFlexGap
+                        >
                           {paper.subjectName && (
-                            <Chip size="small" color="primary" label={paper.subjectName} />
+                            <Chip
+                              size="small"
+                              color="primary"
+                              label={paper.subjectName}
+                            />
                           )}
-                          <Chip size="small" variant="outlined" label={String(paper.year)} />
                           <Chip
                             size="small"
                             variant="outlined"
-                            label={sessionLabels[paper.session] ?? paper.session}
+                            label={String(paper.year)}
+                          />
+                          <Chip
+                            size="small"
+                            variant="outlined"
+                            label={
+                              sessionLabels[paper.session] ?? paper.session
+                            }
                           />
                           <Chip
                             size="small"
@@ -105,12 +120,15 @@ export default function AdminNscPapersPage() {
                             size="small"
                             color={paper.isProcessed ? "success" : "default"}
                             variant="outlined"
-                            label={paper.isProcessed ? "Processed" : "Unprocessed"}
+                            label={
+                              paper.isProcessed ? "Processed" : "Unprocessed"
+                            }
                           />
                         </Stack>
                         <Typography variant="subtitle2">
-                          {paper.subjectName ?? "Subject"} P{paper.paperNumber} —{" "}
-                          {sessionLabels[paper.session] ?? paper.session} {paper.year}
+                          {paper.subjectName ?? "Subject"} P{paper.paperNumber}{" "}
+                          — {sessionLabels[paper.session] ?? paper.session}{" "}
+                          {paper.year}
                         </Typography>
                       </Stack>
                     </CardContent>

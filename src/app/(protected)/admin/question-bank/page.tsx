@@ -1,26 +1,23 @@
 "use client";
 
+import Alert from "@mui/material/Alert";
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Chip from "@mui/material/Chip";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import Stack from "@mui/material/Stack";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Typography from "@mui/material/Typography";
 import { useState } from "react";
-import {
-  Alert,
-  Box,
-  Card,
-  CardContent,
-  Chip,
-  FormControl,
-  Grid,
-  InputLabel,
-  MenuItem,
-  Select,
-  Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography,
-} from "@mui/material";
 import { useApi } from "@/hooks/useApi";
 
 type QuestionBankItem = {
@@ -63,7 +60,7 @@ export default function AdminQuestionBankPage() {
   const query = queryParts.join("&");
 
   const { data, loading, error } = useApi<QBListResponse>(
-    `/api/question-bank?${query}`
+    `/api/question-bank?${query}`,
   );
   const items = data?.items ?? [];
 

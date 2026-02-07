@@ -1,14 +1,12 @@
 "use client";
 
-import { useMemo } from "react";
-import {
-  Card,
-  CardContent,
-  Checkbox,
-  Stack,
-  Typography,
-} from "@mui/material";
 import ChecklistIcon from "@mui/icons-material/Checklist";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Checkbox from "@mui/material/Checkbox";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import { useMemo } from "react";
 import { useApi } from "@/hooks/useApi";
 import { apiFetch } from "@/lib/utils/api";
 
@@ -26,7 +24,7 @@ type ModuleChecklistProps = {
 
 export default function ModuleChecklist({ moduleId }: ModuleChecklistProps) {
   const { data, loading, error, setData } = useApi<ChecklistItem[]>(
-    moduleId ? `/api/checklists?moduleId=${moduleId}` : null
+    moduleId ? `/api/checklists?moduleId=${moduleId}` : null,
   );
 
   const items = useMemo(() => data ?? [], [data]);
@@ -35,8 +33,8 @@ export default function ModuleChecklist({ moduleId }: ModuleChecklistProps) {
     const nextCompleted = !item.completed;
     setData((prev) =>
       (prev ?? []).map((entry) =>
-        entry.id === item.id ? { ...entry, completed: nextCompleted } : entry
-      )
+        entry.id === item.id ? { ...entry, completed: nextCompleted } : entry,
+      ),
     );
 
     try {
@@ -47,8 +45,10 @@ export default function ModuleChecklist({ moduleId }: ModuleChecklistProps) {
     } catch {
       setData((prev) =>
         (prev ?? []).map((entry) =>
-          entry.id === item.id ? { ...entry, completed: item.completed } : entry
-        )
+          entry.id === item.id
+            ? { ...entry, completed: item.completed }
+            : entry,
+        ),
       );
     }
   };
@@ -80,7 +80,12 @@ export default function ModuleChecklist({ moduleId }: ModuleChecklistProps) {
           ) : (
             <Stack spacing={1}>
               {items.map((item) => (
-                <Stack direction="row" spacing={1} alignItems="center" key={item.id}>
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  alignItems="center"
+                  key={item.id}
+                >
                   <Checkbox
                     checked={item.completed}
                     onChange={() => handleToggle(item)}

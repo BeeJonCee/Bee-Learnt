@@ -1,8 +1,10 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
-import { Box, IconButton, TextField } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
+import Box from "@mui/material/Box";
+import IconButton from "@mui/material/IconButton";
+import TextField from "@mui/material/TextField";
+import { useCallback, useRef, useState } from "react";
 
 interface MessageInputProps {
   onSend: (content: string) => void;
@@ -44,7 +46,7 @@ export default function MessageInput({
         handleSend();
       }
     },
-    [handleSend]
+    [handleSend],
   );
 
   const handleChange = useCallback(
@@ -65,7 +67,7 @@ export default function MessageInput({
         typingTimeoutRef.current = null;
       }, 2000);
     },
-    [onTyping, onStopTyping]
+    [onTyping, onStopTyping],
   );
 
   return (

@@ -1,9 +1,17 @@
 "use client";
 
-import { type ReactNode, createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import CssBaseline from "@mui/material/CssBaseline";
-import { ThemeProvider } from "@mui/material/styles";
 import type { PaletteMode } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/material/styles";
+import {
+  createContext,
+  type ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { getTheme } from "@/theme/theme";
 
 type ColorModeContextValue = {
@@ -12,7 +20,9 @@ type ColorModeContextValue = {
   setMode: (mode: PaletteMode) => void;
 };
 
-const ColorModeContext = createContext<ColorModeContextValue | undefined>(undefined);
+const ColorModeContext = createContext<ColorModeContextValue | undefined>(
+  undefined,
+);
 
 const STORAGE_KEY = "beelearn-theme";
 
@@ -20,7 +30,10 @@ export function ThemeModeProvider({ children }: { children: ReactNode }) {
   const [mode, setModeState] = useState<PaletteMode>("dark");
 
   useEffect(() => {
-    const stored = typeof window !== "undefined" ? window.localStorage.getItem(STORAGE_KEY) : null;
+    const stored =
+      typeof window !== "undefined"
+        ? window.localStorage.getItem(STORAGE_KEY)
+        : null;
     if (stored === "light" || stored === "dark") {
       setModeState(stored);
     }
@@ -45,7 +58,7 @@ export function ThemeModeProvider({ children }: { children: ReactNode }) {
       toggleMode,
       setMode,
     }),
-    [mode, toggleMode, setMode]
+    [mode, toggleMode, setMode],
   );
 
   return (

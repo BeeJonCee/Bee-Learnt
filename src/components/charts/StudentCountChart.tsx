@@ -1,12 +1,17 @@
 "use client";
 
-import { Box, Card, CardContent, IconButton, Stack, Typography } from "@mui/material";
-import { alpha } from "@mui/material/styles";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import IconButton from "@mui/material/IconButton";
+import Stack from "@mui/material/Stack";
+import { alpha } from "@mui/material/styles";
+import Typography from "@mui/material/Typography";
 import {
-  RadialBarChart,
   RadialBar,
+  RadialBarChart,
   ResponsiveContainer,
   Tooltip,
 } from "recharts";
@@ -28,7 +33,10 @@ const COLORS = {
   total: "rgba(255, 255, 255, 0.2)",
 };
 
-export default function StudentCountChart({ data, title = "Students" }: StudentCountChartProps) {
+export default function StudentCountChart({
+  data,
+  title = "Students",
+}: StudentCountChartProps) {
   const total = data?.total ?? 0;
   const grades = data?.grades ?? [];
 
@@ -47,7 +55,11 @@ export default function StudentCountChart({ data, title = "Students" }: StudentC
       <CardContent>
         <Stack spacing={2}>
           {/* Header */}
-          <Stack direction="row" justifyContent="space-between" alignItems="center">
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+          >
             <Typography variant="h6" fontWeight={600}>
               {title}
             </Typography>
@@ -67,11 +79,7 @@ export default function StudentCountChart({ data, title = "Students" }: StudentC
                 barSize={18}
                 data={chartData}
               >
-                <RadialBar
-                  background
-                  dataKey="count"
-                  cornerRadius={10}
-                />
+                <RadialBar background dataKey="count" cornerRadius={10} />
                 <Tooltip
                   contentStyle={{
                     backgroundColor: "#1A1A1A",
@@ -79,7 +87,10 @@ export default function StudentCountChart({ data, title = "Students" }: StudentC
                     borderRadius: 12,
                     color: "#E0E0E0",
                   }}
-                  formatter={(value: number | undefined) => [`${value ?? 0} students`, ""]}
+                  formatter={(value: number | undefined) => [
+                    `${value ?? 0} students`,
+                    "",
+                  ]}
                 />
               </RadialBarChart>
             </ResponsiveContainer>
@@ -103,7 +114,12 @@ export default function StudentCountChart({ data, title = "Students" }: StudentC
           </Box>
 
           {/* Legend */}
-          <Stack direction="row" spacing={3} justifyContent="center" flexWrap="wrap">
+          <Stack
+            direction="row"
+            spacing={3}
+            justifyContent="center"
+            flexWrap="wrap"
+          >
             {grades.map((g, index) => (
               <Stack key={g.grade} alignItems="center" spacing={0.5}>
                 <Box

@@ -1,22 +1,20 @@
 "use client";
 
-import { useParams, useRouter } from "next/navigation";
-import {
-  Alert,
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Chip,
-  Divider,
-  List,
-  ListItem,
-  ListItemText,
-  Stack,
-  Typography,
-} from "@mui/material";
 import DownloadIcon from "@mui/icons-material/Download";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import Alert from "@mui/material/Alert";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Chip from "@mui/material/Chip";
+import Divider from "@mui/material/Divider";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import { useParams, useRouter } from "next/navigation";
 import { useApi } from "@/hooks/useApi";
 
 type PaperDocument = {
@@ -78,7 +76,7 @@ export default function NscPaperDetailPage() {
   const paperId = Number(params?.id);
 
   const { data, loading, error } = useApi<NscPaperDetail>(
-    Number.isFinite(paperId) ? `/api/nsc-papers/${paperId}` : null
+    Number.isFinite(paperId) ? `/api/nsc-papers/${paperId}` : null,
   );
 
   const title = data
@@ -94,7 +92,9 @@ export default function NscPaperDetailPage() {
       {loading || !data ? (
         <Card>
           <CardContent>
-            <Typography color="text.secondary">Loading paper details...</Typography>
+            <Typography color="text.secondary">
+              Loading paper details...
+            </Typography>
           </CardContent>
         </Card>
       ) : (
@@ -102,11 +102,24 @@ export default function NscPaperDetailPage() {
           <Card>
             <CardContent>
               <Stack spacing={2}>
-                <Stack direction="row" spacing={1} flexWrap="wrap" alignItems="center">
+                <Stack
+                  direction="row"
+                  spacing={1}
+                  flexWrap="wrap"
+                  alignItems="center"
+                >
                   {data.subjectName && (
-                    <Chip size="small" color="primary" label={data.subjectName} />
+                    <Chip
+                      size="small"
+                      color="primary"
+                      label={data.subjectName}
+                    />
                   )}
-                  <Chip size="small" variant="outlined" label={String(data.year)} />
+                  <Chip
+                    size="small"
+                    variant="outlined"
+                    label={String(data.year)}
+                  />
                   <Chip
                     size="small"
                     variant="outlined"
@@ -118,7 +131,11 @@ export default function NscPaperDetailPage() {
                     label={`Paper ${data.paperNumber}`}
                   />
                   {data.grade && (
-                    <Chip size="small" variant="outlined" label={`Grade ${data.grade}`} />
+                    <Chip
+                      size="small"
+                      variant="outlined"
+                      label={`Grade ${data.grade}`}
+                    />
                   )}
                 </Stack>
 
@@ -149,7 +166,9 @@ export default function NscPaperDetailPage() {
                     <Button
                       variant="contained"
                       startIcon={<PlayArrowIcon />}
-                      onClick={() => router.push(`/nsc-papers/practice/${data.id}`)}
+                      onClick={() =>
+                        router.push(`/nsc-papers/practice/${data.id}`)
+                      }
                     >
                       Practice this paper
                     </Button>

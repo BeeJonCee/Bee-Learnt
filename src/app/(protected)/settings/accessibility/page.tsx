@@ -1,20 +1,18 @@
 "use client";
 
+import Alert from "@mui/material/Alert";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Slider from "@mui/material/Slider";
+import Stack from "@mui/material/Stack";
+import Switch from "@mui/material/Switch";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 import { useEffect, useState } from "react";
-import {
-  Alert,
-  Box,
-  Button,
-  Card,
-  CardContent,
-  FormControlLabel,
-  MenuItem,
-  Slider,
-  Stack,
-  Switch,
-  TextField,
-  Typography,
-} from "@mui/material";
 import { useApi } from "@/hooks/useApi";
 import { apiFetch } from "@/lib/utils/api";
 
@@ -61,7 +59,9 @@ export default function AccessibilitySettingsPage() {
       });
       setMessage("Accessibility settings saved.");
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "Unable to save settings.");
+      setMessage(
+        error instanceof Error ? error.message : "Unable to save settings.",
+      );
     } finally {
       setSaving(false);
     }
@@ -72,12 +72,15 @@ export default function AccessibilitySettingsPage() {
       <Stack spacing={1}>
         <Typography variant="h3">Accessibility</Typography>
         <Typography color="text.secondary">
-          Customize your learning experience with narration, text scaling, and language options.
+          Customize your learning experience with narration, text scaling, and
+          language options.
         </Typography>
       </Stack>
 
       {message && (
-        <Alert severity={message.includes("saved") ? "success" : "error"}>{message}</Alert>
+        <Alert severity={message.includes("saved") ? "success" : "error"}>
+          {message}
+        </Alert>
       )}
 
       <Card>
@@ -165,7 +168,11 @@ export default function AccessibilitySettingsPage() {
               label="Auto-translate lesson content"
             />
 
-            <Button variant="contained" onClick={handleSave} disabled={saving || loading}>
+            <Button
+              variant="contained"
+              onClick={handleSave}
+              disabled={saving || loading}
+            >
               {saving ? "Saving..." : "Save settings"}
             </Button>
           </Stack>

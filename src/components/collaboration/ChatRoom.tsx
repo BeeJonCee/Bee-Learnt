@@ -1,13 +1,16 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { Box, Divider, Paper, Typography } from "@mui/material";
-import MessageList from "./MessageList";
-import MessageInput from "./MessageInput";
-import TypingIndicator from "./TypingIndicator";
-import MemberList from "./MemberList";
-import { useChatRoom, type ChatMessage } from "@/hooks/useSocket";
+import Box from "@mui/material/Box";
+import Divider from "@mui/material/Divider";
+import Paper from "@mui/material/Paper";
+import Typography from "@mui/material/Typography";
+import { useEffect } from "react";
 import { useApi } from "@/hooks/useApi";
+import { type ChatMessage, useChatRoom } from "@/hooks/useSocket";
+import MemberList from "./MemberList";
+import MessageInput from "./MessageInput";
+import MessageList from "./MessageList";
+import TypingIndicator from "./TypingIndicator";
 
 interface Room {
   id: number;
@@ -21,10 +24,13 @@ interface ChatRoomProps {
   showMembers?: boolean;
 }
 
-export default function ChatRoom({ roomId, showMembers = true }: ChatRoomProps) {
+export default function ChatRoom({
+  roomId,
+  showMembers = true,
+}: ChatRoomProps) {
   const { data: room } = useApi<Room>(`/api/collaboration/rooms/${roomId}`);
   const { data: initialMessages } = useApi<ChatMessage[]>(
-    `/api/collaboration/rooms/${roomId}/messages`
+    `/api/collaboration/rooms/${roomId}/messages`,
   );
 
   const {
@@ -41,14 +47,14 @@ export default function ChatRoom({ roomId, showMembers = true }: ChatRoomProps) 
   const allMessages = [
     ...(initialMessages ?? []),
     ...realtimeMessages.filter(
-      (rm) => !initialMessages?.some((im) => im.id === rm.id)
+      (rm) => !initialMessages?.some((im) => im.id === rm.id),
     ),
   ];
 
   // Clear real-time messages when room changes
   useEffect(() => {
     clearMessages();
-  }, [roomId, clearMessages]);
+  }, [clearMessages]);
 
   return (
     <Paper

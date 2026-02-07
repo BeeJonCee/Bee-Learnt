@@ -1,37 +1,36 @@
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import {
-  Alert,
-  Avatar,
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Chip,
-  Grid,
-  Rating,
-  Stack,
-  Typography,
-  alpha,
-} from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import GroupsIcon from "@mui/icons-material/Groups";
 import SchoolIcon from "@mui/icons-material/School";
 import StarIcon from "@mui/icons-material/Star";
-import TimerIcon from "@mui/icons-material/Timer";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
-import { getDashboardPath } from "@/lib/navigation";
-import { useAuth } from "@/providers/AuthProvider";
-import { useApi } from "@/hooks/useApi";
+import Avatar from "@mui/material/Avatar";
+import alpha from "@mui/material/alpha";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Chip from "@mui/material/Chip";
+import Grid from "@mui/material/Grid";
+import Rating from "@mui/material/Rating";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
+import AnnouncementsPanel from "@/components/AnnouncementsPanel";
+import { PerformanceMeter, TutoringStatsChart } from "@/components/charts";
 import StatCard from "@/components/StatCard";
 import TutoringCalendar from "@/components/scheduling/TutoringCalendar";
-import { EngagementChart, TutoringStatsChart, PerformanceMeter } from "@/components/charts";
-import DataTable, { type Column, type ActionItem } from "@/components/ui/DataTable";
-import AnnouncementsPanel from "@/components/AnnouncementsPanel";
+import DataTable, {
+  type ActionItem,
+  type Column,
+} from "@/components/ui/DataTable";
+import { useApi } from "@/hooks/useApi";
+import { getDashboardPath } from "@/lib/navigation";
+import { useAuth } from "@/providers/AuthProvider";
 
 interface TutorProfile {
   id: number;
@@ -94,10 +93,15 @@ interface TutorAnalytics {
 export default function TutorDashboardPage() {
   const { user } = useAuth();
   const router = useRouter();
-  const [createSessionDate, setCreateSessionDate] = useState<Date | null>(null);
+  const [_createSessionDate, setCreateSessionDate] = useState<Date | null>(
+    null,
+  );
 
-  const { data: profile, loading: profileLoading } = useApi<TutorProfile>("/api/tutor/profile");
-  const { data: sessions } = useApi<TutoringSession[]>("/api/tutor/sessions?limit=50");
+  const { data: profile, loading: _profileLoading } =
+    useApi<TutorProfile>("/api/tutor/profile");
+  const { data: sessions } = useApi<TutoringSession[]>(
+    "/api/tutor/sessions?limit=50",
+  );
   const { data: students } = useApi<Student[]>("/api/tutor/students");
   const { data: analytics } = useApi<TutorAnalytics>("/api/tutor/analytics");
 
@@ -113,14 +117,12 @@ export default function TutorDashboardPage() {
     const now = new Date();
     return sessions
       .filter(
-        (s) =>
-          s.status === "scheduled" &&
-          new Date(s.scheduledStart) > now
+        (s) => s.status === "scheduled" && new Date(s.scheduledStart) > now,
       )
       .sort(
         (a, b) =>
           new Date(a.scheduledStart).getTime() -
-          new Date(b.scheduledStart).getTime()
+          new Date(b.scheduledStart).getTime(),
       )
       .slice(0, 5);
   }, [sessions]);
@@ -137,7 +139,14 @@ export default function TutorDashboardPage() {
       label: "Student",
       render: (_, row) => (
         <Stack direction="row" spacing={1} alignItems="center">
-          <Avatar sx={{ width: 28, height: 28, fontSize: 12, bgcolor: "primary.main" }}>
+          <Avatar
+            sx={{
+              width: 28,
+              height: 28,
+              fontSize: 12,
+              bgcolor: "primary.main",
+            }}
+          >
             {row.studentName?.charAt(0) ?? "S"}
           </Avatar>
           <Typography variant="body2">{row.studentName}</Typography>
@@ -152,10 +161,17 @@ export default function TutorDashboardPage() {
         return (
           <Stack spacing={0}>
             <Typography variant="body2">
-              {date.toLocaleDateString("en-ZA", { weekday: "short", month: "short", day: "numeric" })}
+              {date.toLocaleDateString("en-ZA", {
+                weekday: "short",
+                month: "short",
+                day: "numeric",
+              })}
             </Typography>
             <Typography variant="caption" color="text.secondary">
-              {date.toLocaleTimeString("en-ZA", { hour: "2-digit", minute: "2-digit" })}
+              {date.toLocaleTimeString("en-ZA", {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
             </Typography>
           </Stack>
         );
@@ -176,7 +192,13 @@ export default function TutorDashboardPage() {
           <Chip
             size="small"
             label={String(value).replace("_", " ")}
-            color={colors[value as string] as "info" | "warning" | "success" | "error"}
+            color={
+              colors[value as string] as
+                | "info"
+                | "warning"
+                | "success"
+                | "error"
+            }
             sx={{ textTransform: "capitalize" }}
           />
         );
@@ -256,7 +278,12 @@ export default function TutorDashboardPage() {
           >
             Schedule Session
           </Button>
-          <Button component={Link} href="/tutor/students" variant="outlined" size="large">
+          <Button
+            component={Link}
+            href="/tutor/students"
+            variant="outlined"
+            size="large"
+          >
             Manage Students
           </Button>
         </Stack>
@@ -351,7 +378,11 @@ export default function TutorDashboardPage() {
           <Card>
             <CardContent>
               <Stack spacing={2}>
-                <Stack direction="row" justifyContent="space-between" alignItems="center">
+                <Stack
+                  direction="row"
+                  justifyContent="space-between"
+                  alignItems="center"
+                >
                   <Typography variant="h6">Your Students</Typography>
                   <Button size="small" component={Link} href="/tutor/students">
                     View All
@@ -375,7 +406,11 @@ export default function TutorDashboardPage() {
                           bgcolor: alpha("#fff", 0.03),
                         }}
                       >
-                        <Stack direction="row" spacing={1.5} alignItems="center">
+                        <Stack
+                          direction="row"
+                          spacing={1.5}
+                          alignItems="center"
+                        >
                           <Avatar
                             sx={{
                               width: 36,
@@ -390,7 +425,10 @@ export default function TutorDashboardPage() {
                             <Typography variant="subtitle2">
                               {student.studentName}
                             </Typography>
-                            <Typography variant="caption" color="text.secondary">
+                            <Typography
+                              variant="caption"
+                              color="text.secondary"
+                            >
                               {student.studentEmail}
                             </Typography>
                           </Box>
@@ -398,7 +436,9 @@ export default function TutorDashboardPage() {
                         <Chip
                           size="small"
                           label={student.status}
-                          color={student.status === "active" ? "success" : "default"}
+                          color={
+                            student.status === "active" ? "success" : "default"
+                          }
                         />
                       </Stack>
                     ))}
@@ -413,7 +453,11 @@ export default function TutorDashboardPage() {
           <Card>
             <CardContent>
               <Stack spacing={2}>
-                <Stack direction="row" justifyContent="space-between" alignItems="center">
+                <Stack
+                  direction="row"
+                  justifyContent="space-between"
+                  alignItems="center"
+                >
                   <Typography variant="h6">Your Expertise</Typography>
                   <Button size="small" component={Link} href="/tutor/profile">
                     Edit Profile
@@ -448,7 +492,10 @@ export default function TutorDashboardPage() {
                         <Chip
                           size="small"
                           label={`${exp.yearsExperience}+ years`}
-                          sx={{ bgcolor: alpha("#FFD600", 0.1), color: "primary.main" }}
+                          sx={{
+                            bgcolor: alpha("#FFD600", 0.1),
+                            color: "primary.main",
+                          }}
                         />
                       </Stack>
                     ))}
@@ -456,24 +503,29 @@ export default function TutorDashboardPage() {
                 )}
 
                 {/* Specializations */}
-                {profile?.specializations && profile.specializations.length > 0 && (
-                  <Box sx={{ mt: 2 }}>
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                      Specializations
-                    </Typography>
-                    <Stack direction="row" spacing={1} flexWrap="wrap">
-                      {profile.specializations.map((spec) => (
-                        <Chip
-                          key={spec}
-                          label={spec}
-                          size="small"
-                          variant="outlined"
-                          sx={{ mb: 1 }}
-                        />
-                      ))}
-                    </Stack>
-                  </Box>
-                )}
+                {profile?.specializations &&
+                  profile.specializations.length > 0 && (
+                    <Box sx={{ mt: 2 }}>
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{ mb: 1 }}
+                      >
+                        Specializations
+                      </Typography>
+                      <Stack direction="row" spacing={1} flexWrap="wrap">
+                        {profile.specializations.map((spec) => (
+                          <Chip
+                            key={spec}
+                            label={spec}
+                            size="small"
+                            variant="outlined"
+                            sx={{ mb: 1 }}
+                          />
+                        ))}
+                      </Stack>
+                    </Box>
+                  )}
               </Stack>
             </CardContent>
           </Card>

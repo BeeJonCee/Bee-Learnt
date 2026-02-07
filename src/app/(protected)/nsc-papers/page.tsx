@@ -1,22 +1,20 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import Alert from "@mui/material/Alert";
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import CardActionArea from "@mui/material/CardActionArea";
+import CardContent from "@mui/material/CardContent";
+import Chip from "@mui/material/Chip";
+import FormControl from "@mui/material/FormControl";
+import Grid from "@mui/material/Grid";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 import Link from "next/link";
-import {
-  Alert,
-  Box,
-  Card,
-  CardActionArea,
-  CardContent,
-  Chip,
-  FormControl,
-  Grid,
-  InputLabel,
-  MenuItem,
-  Select,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { useMemo, useState } from "react";
 import { useApi } from "@/hooks/useApi";
 
 type NscPaper = {
@@ -26,7 +24,12 @@ type NscPaper = {
   gradeId?: number | null;
   grade?: number | null;
   year: number;
-  session: "november" | "may_june" | "february_march" | "supplementary" | "exemplar";
+  session:
+    | "november"
+    | "may_june"
+    | "february_march"
+    | "supplementary"
+    | "exemplar";
   paperNumber: number;
   language: string;
   totalMarks?: number | null;
@@ -61,7 +64,9 @@ export default function NscPapersPage() {
   if (sessionFilter) queryParts.push(`session=${sessionFilter}`);
   const query = queryParts.join("&");
 
-  const { data, loading, error } = useApi<PaperListResponse>(`/api/nsc-papers?${query}`);
+  const { data, loading, error } = useApi<PaperListResponse>(
+    `/api/nsc-papers?${query}`,
+  );
   const { data: years } = useApi<number[]>("/api/nsc-papers/years");
 
   const papers = useMemo(() => data?.papers ?? [], [data]);
@@ -71,7 +76,8 @@ export default function NscPapersPage() {
       <Stack spacing={1} textAlign="center">
         <Typography variant="h3">NSC Past Papers</Typography>
         <Typography color="text.secondary">
-          Browse and practice with official National Senior Certificate past papers.
+          Browse and practice with official National Senior Certificate past
+          papers.
         </Typography>
       </Stack>
 
@@ -113,14 +119,17 @@ export default function NscPapersPage() {
       {loading ? (
         <Card>
           <CardContent>
-            <Typography color="text.secondary">Loading past papers...</Typography>
+            <Typography color="text.secondary">
+              Loading past papers...
+            </Typography>
           </CardContent>
         </Card>
       ) : papers.length === 0 ? (
         <Card>
           <CardContent>
             <Typography color="text.secondary">
-              No past papers found. Try adjusting the filters or run the NSC papers seed.
+              No past papers found. Try adjusting the filters or run the NSC
+              papers seed.
             </Typography>
           </CardContent>
         </Card>
@@ -129,7 +138,10 @@ export default function NscPapersPage() {
           {papers.map((paper) => (
             <Grid item xs={12} md={6} lg={4} key={paper.id}>
               <Card>
-                <CardActionArea component={Link} href={`/nsc-papers/${paper.id}`}>
+                <CardActionArea
+                  component={Link}
+                  href={`/nsc-papers/${paper.id}`}
+                >
                   <Box
                     sx={{
                       height: 140,
@@ -141,11 +153,24 @@ export default function NscPapersPage() {
                         "linear-gradient(135deg, rgba(246, 201, 69, 0.14), rgba(255,255,255,0))",
                     }}
                   >
-                    <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+                    <Stack
+                      direction="row"
+                      spacing={1}
+                      flexWrap="wrap"
+                      useFlexGap
+                    >
                       {paper.subjectName && (
-                        <Chip size="small" color="primary" label={paper.subjectName} />
+                        <Chip
+                          size="small"
+                          color="primary"
+                          label={paper.subjectName}
+                        />
                       )}
-                      <Chip size="small" variant="outlined" label={String(paper.year)} />
+                      <Chip
+                        size="small"
+                        variant="outlined"
+                        label={String(paper.year)}
+                      />
                       <Chip
                         size="small"
                         variant="outlined"
@@ -164,7 +189,12 @@ export default function NscPapersPage() {
                         {paper.subjectName ?? "Subject"} P{paper.paperNumber} —{" "}
                         {formatSession(paper.session)} {paper.year}
                       </Typography>
-                      <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
+                      <Stack
+                        direction="row"
+                        spacing={1}
+                        flexWrap="wrap"
+                        useFlexGap
+                      >
                         {paper.totalMarks && (
                           <Typography variant="caption" color="text.secondary">
                             {paper.totalMarks} marks

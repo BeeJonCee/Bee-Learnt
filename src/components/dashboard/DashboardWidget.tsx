@@ -1,19 +1,17 @@
 "use client";
 
-import { type ReactNode, useState } from "react";
-import {
-  Box,
-  Card,
-  CardContent,
-  CardHeader,
-  Collapse,
-  IconButton,
-  Tooltip,
-} from "@mui/material";
-import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import CloseIcon from "@mui/icons-material/Close";
+import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import CardHeader from "@mui/material/CardHeader";
+import Collapse from "@mui/material/Collapse";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
+import { type ReactNode, useState } from "react";
 import type { WidgetConfig } from "./WidgetRegistry";
 
 interface DashboardWidgetProps {

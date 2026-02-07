@@ -1,33 +1,31 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
-import {
-  Box,
-  Card,
-  Chip,
-  IconButton,
-  InputAdornment,
-  Menu,
-  MenuItem,
-  Pagination,
-  Stack,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  TableSortLabel,
-  TextField,
-  Typography,
-  alpha,
-  Skeleton,
-  Button,
-} from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
+import AddIcon from "@mui/icons-material/Add";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import AddIcon from "@mui/icons-material/Add";
+import SearchIcon from "@mui/icons-material/Search";
+import alpha from "@mui/material/alpha";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import Chip from "@mui/material/Chip";
+import IconButton from "@mui/material/IconButton";
+import InputAdornment from "@mui/material/InputAdornment";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import Pagination from "@mui/material/Pagination";
+import Skeleton from "@mui/material/Skeleton";
+import Stack from "@mui/material/Stack";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import TableSortLabel from "@mui/material/TableSortLabel";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import { useCallback, useMemo, useState } from "react";
 
 export interface Column<T> {
   id: keyof T | string;
@@ -90,7 +88,9 @@ export default function DataTable<T extends { id: string | number }>({
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedRow, setSelectedRow] = useState<T | null>(null);
-  const [filterAnchorEl, setFilterAnchorEl] = useState<null | HTMLElement>(null);
+  const [filterAnchorEl, setFilterAnchorEl] = useState<null | HTMLElement>(
+    null,
+  );
 
   // Filter data by search query
   const filteredData = useMemo(() => {
@@ -102,14 +102,12 @@ export default function DataTable<T extends { id: string | number }>({
         // Search all string fields
         return Object.values(row as Record<string, unknown>).some(
           (value) =>
-            typeof value === "string" && value.toLowerCase().includes(query)
+            typeof value === "string" && value.toLowerCase().includes(query),
         );
       }
       return searchKeys.some((key) => {
         const value = row[key];
-        return (
-          typeof value === "string" && value.toLowerCase().includes(query)
-        );
+        return typeof value === "string" && value.toLowerCase().includes(query);
       });
     });
   }, [data, searchQuery, searchKeys]);
@@ -322,6 +320,7 @@ export default function DataTable<T extends { id: string | number }>({
             {loading ? (
               // Loading skeleton
               Array.from({ length: pageSize }).map((_, index) => (
+                // biome-ignore lint/suspicious/noArrayIndexKey: skeleton rows have no identity
                 <TableRow key={index}>
                   {columns.map((column) => (
                     <TableCell
@@ -424,13 +423,13 @@ export default function DataTable<T extends { id: string | number }>({
           setSelectedRow(null);
         }}
       >
-        {actions?.map((action, index) => {
+        {actions?.map((action) => {
           if (selectedRow && action.show && !action.show(selectedRow)) {
             return null;
           }
           return (
             <MenuItem
-              key={index}
+              key={action.label}
               onClick={() => handleActionSelect(action)}
               sx={{
                 color: action.color ? `${action.color}.main` : "inherit",

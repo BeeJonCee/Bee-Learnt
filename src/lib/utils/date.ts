@@ -36,7 +36,10 @@ export function formatDistanceToNow(dateString: string): string {
 /**
  * Format a date to a readable string
  */
-export function formatDate(dateString: string, options?: Intl.DateTimeFormatOptions): string {
+export function formatDate(
+  dateString: string,
+  options?: Intl.DateTimeFormatOptions,
+): string {
   const date = new Date(dateString);
   return date.toLocaleDateString(undefined, options);
 }

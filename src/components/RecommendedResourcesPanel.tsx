@@ -1,33 +1,31 @@
 "use client";
 
+import ArticleIcon from "@mui/icons-material/Article";
+import BookIcon from "@mui/icons-material/Book";
+import LinkIcon from "@mui/icons-material/Link";
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
+import ThumbUpIcon from "@mui/icons-material/ThumbUp";
+import VideoLibraryIcon from "@mui/icons-material/VideoLibrary";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Chip from "@mui/material/Chip";
+import Grid from "@mui/material/Grid";
+import Rating from "@mui/material/Rating";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 import { useMemo } from "react";
 import {
-  Card,
-  CardContent,
-  Stack,
-  Typography,
-  Box,
-  Grid,
-  Chip,
-  Button,
-  Rating,
-} from "@mui/material";
-import {
-  BarChart,
   Bar,
-  XAxis,
-  YAxis,
+  BarChart,
   CartesianGrid,
-  Tooltip,
   Legend,
   ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
 } from "recharts";
-import BookIcon from "@mui/icons-material/Book";
-import VideoLibraryIcon from "@mui/icons-material/VideoLibrary";
-import ArticleIcon from "@mui/icons-material/Article";
-import LinkIcon from "@mui/icons-material/Link";
-import ThumbUpIcon from "@mui/icons-material/ThumbUp";
-import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import { useApi } from "@/hooks/useApi";
 import { apiFetch } from "@/lib/utils/api";
 
@@ -77,13 +75,16 @@ const typeLabelMap = {
 };
 
 export default function RecommendedResourcesPanel() {
-  const { data: resources, loading, error, refetch } = useApi<RecommendedResources>(
-    "/api/student/recommended-resources"
-  );
+  const {
+    data: resources,
+    loading,
+    error,
+    refetch,
+  } = useApi<RecommendedResources>("/api/student/recommended-resources");
 
   const categoryData = useMemo(
     () => resources?.categoryStats ?? [],
-    [resources?.categoryStats]
+    [resources?.categoryStats],
   );
 
   const handleSaveResource = async (resourceId: string, saved: boolean) => {
@@ -134,7 +135,11 @@ export default function RecommendedResourcesPanel() {
       <Card key={resource.id}>
         <CardContent>
           <Stack spacing={1.5}>
-            <Stack direction="row" alignItems="flex-start" justifyContent="space-between">
+            <Stack
+              direction="row"
+              alignItems="flex-start"
+              justifyContent="space-between"
+            >
               <Stack spacing={0.5} flex={1}>
                 <Stack direction="row" spacing={1} alignItems="center">
                   <Icon fontSize="small" color="primary" />
@@ -153,11 +158,20 @@ export default function RecommendedResourcesPanel() {
               />
             </Stack>
 
-            <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.4 }}>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{ lineHeight: 1.4 }}
+            >
               {resource.description}
             </Typography>
 
-            <Stack direction="row" spacing={2} alignItems="center" flexWrap="wrap">
+            <Stack
+              direction="row"
+              spacing={2}
+              alignItems="center"
+              flexWrap="wrap"
+            >
               <Stack direction="row" spacing={0.5} alignItems="center">
                 <Rating value={resource.rating} readOnly size="small" />
                 <Typography variant="caption" color="text.secondary">
@@ -171,8 +185,8 @@ export default function RecommendedResourcesPanel() {
                   resource.difficulty === "beginner"
                     ? "success"
                     : resource.difficulty === "intermediate"
-                    ? "warning"
-                    : "error"
+                      ? "warning"
+                      : "error"
                 }
               />
               <Typography variant="caption" color="text.secondary">
@@ -231,7 +245,10 @@ export default function RecommendedResourcesPanel() {
               <Box sx={{ height: 300 }}>
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={categoryData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      stroke="rgba(255,255,255,0.1)"
+                    />
                     <XAxis dataKey="name" stroke="rgba(255,255,255,0.5)" />
                     <YAxis stroke="rgba(255,255,255,0.5)" />
                     <Tooltip
@@ -242,7 +259,11 @@ export default function RecommendedResourcesPanel() {
                       }}
                     />
                     <Legend />
-                    <Bar dataKey="resources" fill="#8884d8" name="Total Resources" />
+                    <Bar
+                      dataKey="resources"
+                      fill="#8884d8"
+                      name="Total Resources"
+                    />
                     <Bar dataKey="avgRating" fill="#82ca9d" name="Avg Rating" />
                   </BarChart>
                 </ResponsiveContainer>
@@ -277,8 +298,8 @@ export default function RecommendedResourcesPanel() {
               {difficulty === "beginner"
                 ? "🌱 Beginner Friendly"
                 : difficulty === "intermediate"
-                ? "📈 Intermediate"
-                : "🚀 Advanced"}
+                  ? "📈 Intermediate"
+                  : "🚀 Advanced"}
             </Typography>
             <Grid container spacing={2}>
               {items.slice(0, 3).map((resource) => (
@@ -294,7 +315,9 @@ export default function RecommendedResourcesPanel() {
       {/* Trending Resources */}
       {resources.trending.length > 0 && (
         <Stack spacing={2}>
-          <Typography variant="h6">🔥 Trending Now ({resources.trending.length})</Typography>
+          <Typography variant="h6">
+            🔥 Trending Now ({resources.trending.length})
+          </Typography>
           <Grid container spacing={2}>
             {resources.trending.slice(0, 3).map((resource) => (
               <Grid item xs={12} md={6} lg={4} key={resource.id}>
@@ -319,7 +342,7 @@ export default function RecommendedResourcesPanel() {
                       resources.trending.length +
                       Object.values(resources.byDifficulty).reduce(
                         (sum, arr) => sum + arr.length,
-                        0
+                        0,
                       )}
                   </Typography>
                 </Stack>
@@ -331,10 +354,14 @@ export default function RecommendedResourcesPanel() {
                     <Rating
                       value={
                         categoryData.length > 0
-                          ? Number((
-                              categoryData.reduce((sum, cat) => sum + cat.avgRating, 0) /
-                              categoryData.length
-                            ).toFixed(1))
+                          ? Number(
+                              (
+                                categoryData.reduce(
+                                  (sum, cat) => sum + cat.avgRating,
+                                  0,
+                                ) / categoryData.length
+                              ).toFixed(1),
+                            )
                           : 0
                       }
                       readOnly
@@ -343,8 +370,10 @@ export default function RecommendedResourcesPanel() {
                     <Typography variant="caption" color="text.secondary">
                       {categoryData.length > 0
                         ? (
-                            categoryData.reduce((sum, cat) => sum + cat.avgRating, 0) /
-                            categoryData.length
+                            categoryData.reduce(
+                              (sum, cat) => sum + cat.avgRating,
+                              0,
+                            ) / categoryData.length
                           ).toFixed(1)
                         : 0}
                     </Typography>
@@ -353,8 +382,9 @@ export default function RecommendedResourcesPanel() {
               </Grid>
             </Grid>
             <Typography variant="body2" color="text.secondary">
-              Resources are curated based on your learning progress and difficulty level. Start
-              with beginner resources and progress to advanced materials.
+              Resources are curated based on your learning progress and
+              difficulty level. Start with beginner resources and progress to
+              advanced materials.
             </Typography>
           </Stack>
         </CardContent>

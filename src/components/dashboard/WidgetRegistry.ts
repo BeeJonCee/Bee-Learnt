@@ -1,5 +1,3 @@
-import type { ComponentType } from "react";
-
 // Widget configuration
 export interface WidgetConfig {
   id: string;
@@ -195,6 +193,8 @@ export function getWidgetConfig(id: string): WidgetConfig | undefined {
 }
 
 // Get widgets by category
-export function getWidgetsByCategory(category: WidgetConfig["category"]): WidgetConfig[] {
+export function getWidgetsByCategory(
+  category: WidgetConfig["category"],
+): WidgetConfig[] {
   return STUDENT_WIDGETS.filter((w) => w.category === category);
 }

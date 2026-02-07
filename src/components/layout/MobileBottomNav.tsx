@@ -1,18 +1,19 @@
 "use client";
 
-import { useMemo } from "react";
-import { usePathname, useRouter } from "next/navigation";
-import { BottomNavigation, BottomNavigationAction, Paper } from "@mui/material";
+import AssignmentIcon from "@mui/icons-material/Assignment";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
-import AssignmentIcon from "@mui/icons-material/Assignment";
-import SearchIcon from "@mui/icons-material/Search";
-import PersonIcon from "@mui/icons-material/Person";
-import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import PeopleIcon from "@mui/icons-material/People";
+import PersonIcon from "@mui/icons-material/Person";
 import SchoolIcon from "@mui/icons-material/School";
-import { useAuth } from "@/providers/AuthProvider";
+import SearchIcon from "@mui/icons-material/Search";
+import BottomNavigation from "@mui/material/BottomNavigation";
+import BottomNavigationAction from "@mui/material/BottomNavigationAction";
+import Paper from "@mui/material/Paper";
+import { usePathname, useRouter } from "next/navigation";
+import { useMemo } from "react";
 import { getDashboardPath } from "@/lib/navigation";
+import { useAuth } from "@/providers/AuthProvider";
 
 interface NavItem {
   label: string;
@@ -55,8 +56,6 @@ export default function MobileBottomNav() {
           { label: "Search", value: "/search", icon: SearchIcon },
           { label: "Account", value: "/account", icon: PersonIcon },
         ];
-
-      case "STUDENT":
       default:
         return [
           { label: "Home", value: dashboardPath, icon: DashboardIcon },
@@ -71,7 +70,8 @@ export default function MobileBottomNav() {
   // Determine the current navigation value based on pathname
   const currentValue = useMemo(() => {
     const match = navItems.find(
-      (item) => pathname === item.value || pathname.startsWith(`${item.value}/`)
+      (item) =>
+        pathname === item.value || pathname.startsWith(`${item.value}/`),
     );
     return match?.value ?? "";
   }, [pathname, navItems]);

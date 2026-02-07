@@ -1,52 +1,50 @@
 "use client";
 
-import { type ReactNode, useMemo, useState } from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import {
-  AppBar,
-  Avatar,
-  Box,
-  Button,
-  Divider,
-  Drawer,
-  IconButton,
-  List,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Stack,
-  Toolbar,
-  Typography,
-} from "@mui/material";
-import { useTheme } from "@mui/material/styles";
-import useMediaQuery from "@mui/material/useMediaQuery";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
+import AccessibilityNewIcon from "@mui/icons-material/AccessibilityNew";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
+import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import DescriptionIcon from "@mui/icons-material/Description";
 import FactCheckIcon from "@mui/icons-material/FactCheck";
 import GroupIcon from "@mui/icons-material/Group";
+import GroupsIcon from "@mui/icons-material/Groups";
 import LogoutIcon from "@mui/icons-material/Logout";
 import MailIcon from "@mui/icons-material/Mail";
 import MenuIcon from "@mui/icons-material/Menu";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import SearchIcon from "@mui/icons-material/Search";
 import ShowChartIcon from "@mui/icons-material/ShowChart";
-import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
-import GroupsIcon from "@mui/icons-material/Groups";
-import AccessibilityNewIcon from "@mui/icons-material/AccessibilityNew";
-import { useColorMode } from "@/providers/ThemeModeProvider";
-import { getDashboardPath } from "@/lib/navigation";
-import { useAuth } from "@/providers/AuthProvider";
+import AppBar from "@mui/material/AppBar";
+import Avatar from "@mui/material/Avatar";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Divider from "@mui/material/Divider";
+import Drawer from "@mui/material/Drawer";
+import IconButton from "@mui/material/IconButton";
+import List from "@mui/material/List";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
+import Stack from "@mui/material/Stack";
+import { useTheme } from "@mui/material/styles";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { type ReactNode, useMemo, useState } from "react";
+import MobileBottomNav from "@/components/layout/MobileBottomNav";
 import NotificationCenter from "@/components/NotificationCenter";
 import NotificationToast from "@/components/NotificationToast";
-import MobileBottomNav from "@/components/layout/MobileBottomNav";
+import { getDashboardPath } from "@/lib/navigation";
+import { useAuth } from "@/providers/AuthProvider";
+import { useColorMode } from "@/providers/ThemeModeProvider";
 
 const drawerWidth = 280;
 const collapsedDrawerWidth = 88;
@@ -202,36 +200,36 @@ export default function AppShell({ children }: { children: ReactNode }) {
             const selected =
               pathname === item.href || pathname.startsWith(`${item.href}/`);
             return (
-                <ListItemButton
-                  key={item.href}
-                  component={Link}
-                  href={item.href}
-                  selected={selected}
-                  onClick={() => setMobileOpen(false)}
-                  sx={{
-                    borderRadius: 2,
-                    mb: 0.5,
-                    color: selected ? "#101010" : "text.secondary",
+              <ListItemButton
+                key={item.href}
+                component={Link}
+                href={item.href}
+                selected={selected}
+                onClick={() => setMobileOpen(false)}
+                sx={{
+                  borderRadius: 2,
+                  mb: 0.5,
+                  color: selected ? "#101010" : "text.secondary",
+                  backgroundColor: selected
+                    ? "rgba(246, 201, 69, 0.95)"
+                    : "transparent",
+                  justifyContent: showLabels ? "flex-start" : "center",
+                  px: showLabels ? 2 : 1.5,
+                  "&:hover": {
                     backgroundColor: selected
                       ? "rgba(246, 201, 69, 0.95)"
-                      : "transparent",
-                    justifyContent: showLabels ? "flex-start" : "center",
-                    px: showLabels ? 2 : 1.5,
-                    "&:hover": {
-                      backgroundColor: selected
-                        ? "rgba(246, 201, 69, 0.95)"
-                        : "rgba(255, 255, 255, 0.06)",
-                    },
+                      : "rgba(255, 255, 255, 0.06)",
+                  },
+                }}
+              >
+                <ListItemIcon
+                  sx={{
+                    minWidth: showLabels ? 40 : "auto",
+                    mr: showLabels ? 1 : 0,
+                    color: selected ? "#101010" : "inherit",
+                    justifyContent: "center",
                   }}
                 >
-                  <ListItemIcon
-                    sx={{
-                      minWidth: showLabels ? 40 : "auto",
-                      mr: showLabels ? 1 : 0,
-                      color: selected ? "#101010" : "inherit",
-                      justifyContent: "center",
-                    }}
-                  >
                   <item.icon fontSize="small" />
                 </ListItemIcon>
                 {showLabels && (
@@ -308,25 +306,30 @@ export default function AppShell({ children }: { children: ReactNode }) {
                 {user?.role === "PARENT"
                   ? "Parent"
                   : user?.role === "ADMIN"
-                  ? "Admin"
-                  : user?.role === "TUTOR"
-                  ? "Tutor"
-                  : "Student"}
+                    ? "Admin"
+                    : user?.role === "TUTOR"
+                      ? "Tutor"
+                      : "Student"}
               </Typography>
             </Box>
-            <Avatar sx={{ bgcolor: "secondary.main" }}>{user?.name?.[0]}</Avatar>
+            <Avatar sx={{ bgcolor: "secondary.main" }}>
+              {user?.name?.[0]}
+            </Avatar>
           </Stack>
         </Toolbar>
       </AppBar>
 
-      <Box component="nav" sx={{ width: isDesktop ? effectiveDrawerWidth : 0, flexShrink: 0 }}>
+      <Box
+        component="nav"
+        sx={{ width: isDesktop ? effectiveDrawerWidth : 0, flexShrink: 0 }}
+      >
         {isDesktop ? (
           <Drawer
             variant="permanent"
             sx={{
               width: effectiveDrawerWidth,
               flexShrink: 0,
-              [`& .MuiDrawer-paper`]: {
+              "& .MuiDrawer-paper": {
                 width: effectiveDrawerWidth,
                 boxSizing: "border-box",
                 backgroundImage: "none",
@@ -349,7 +352,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
             onClose={() => setMobileOpen(false)}
             ModalProps={{ keepMounted: true }}
             sx={{
-              [`& .MuiDrawer-paper`]: {
+              "& .MuiDrawer-paper": {
                 width: drawerWidth,
                 boxSizing: "border-box",
                 backgroundImage: "none",

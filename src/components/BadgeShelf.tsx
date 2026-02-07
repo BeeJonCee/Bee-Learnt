@@ -1,13 +1,11 @@
 "use client";
 
-import {
-  Card,
-  CardContent,
-  Chip,
-  Stack,
-  Typography,
-} from "@mui/material";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Chip from "@mui/material/Chip";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 import { useApi } from "@/hooks/useApi";
 
 type Badge = {

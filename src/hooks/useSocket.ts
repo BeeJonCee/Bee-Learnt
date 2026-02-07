@@ -70,12 +70,14 @@ export function useNotifications() {
       markNotificationRead(notificationId);
       setNotifications((prev) =>
         prev.map((n) =>
-          n.id === notificationId ? { ...n, readAt: new Date().toISOString() } : n
-        )
+          n.id === notificationId
+            ? { ...n, readAt: new Date().toISOString() }
+            : n,
+        ),
       );
       setUnreadCount((prev) => Math.max(0, prev - 1));
     },
-    [markNotificationRead]
+    [markNotificationRead],
   );
 
   const clearAll = useCallback(() => {
@@ -147,7 +149,9 @@ export function useChatRoom(roomId: number | null) {
   const { socket, joinRoom, leaveRoom, sendMessage, startTyping, stopTyping } =
     useSocketContext();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [typingUsers, setTypingUsers] = useState<Map<string, TypingIndicator>>(new Map());
+  const [typingUsers, setTypingUsers] = useState<Map<string, TypingIndicator>>(
+    new Map(),
+  );
   const [isJoined, setIsJoined] = useState(false);
 
   // Join room on mount, leave on unmount
@@ -209,7 +213,7 @@ export function useChatRoom(roomId: number | null) {
         sendMessage(roomId, content);
       }
     },
-    [roomId, sendMessage]
+    [roomId, sendMessage],
   );
 
   const typing = useCallback(() => {

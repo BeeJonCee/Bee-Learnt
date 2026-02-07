@@ -1,16 +1,14 @@
 "use client";
 
+import Autocomplete from "@mui/material/Autocomplete";
+import Box from "@mui/material/Box";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import Stack from "@mui/material/Stack";
+import TextField from "@mui/material/TextField";
 import { useMemo } from "react";
-import {
-  Autocomplete,
-  Box,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  Stack,
-  TextField,
-} from "@mui/material";
 import { z } from "zod";
 import FormModal, { FormField } from "@/components/ui/FormModal";
 
@@ -22,7 +20,11 @@ export const sessionSchema = z.object({
   scheduledEnd: z.string().min(1, "End time is required"),
   subjectId: z.string().optional(),
   moduleId: z.string().optional(),
-  meetingLink: z.string().url("Must be a valid URL").optional().or(z.literal("")),
+  meetingLink: z
+    .string()
+    .url("Must be a valid URL")
+    .optional()
+    .or(z.literal("")),
   location: z.string().optional(),
 });
 
@@ -123,7 +125,9 @@ export default function SessionForm({
       title: session.title,
       description: session.description,
       studentId: session.studentId,
-      scheduledStart: new Date(session.scheduledStart).toISOString().slice(0, 16),
+      scheduledStart: new Date(session.scheduledStart)
+        .toISOString()
+        .slice(0, 16),
       scheduledEnd: new Date(session.scheduledEnd).toISOString().slice(0, 16),
       subjectId: session.subjectId?.toString(),
       moduleId: session.moduleId?.toString(),
@@ -193,7 +197,9 @@ export default function SessionForm({
                 <Stack>
                   <span>{option.name}</span>
                   {option.email && (
-                    <span style={{ fontSize: 12, color: "#888" }}>{option.email}</span>
+                    <span style={{ fontSize: 12, color: "#888" }}>
+                      {option.email}
+                    </span>
                   )}
                 </Stack>
               </Box>

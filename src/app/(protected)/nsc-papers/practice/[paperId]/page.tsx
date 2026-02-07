@@ -1,18 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import Alert from "@mui/material/Alert";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Chip from "@mui/material/Chip";
+import Divider from "@mui/material/Divider";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 import { useParams, useRouter } from "next/navigation";
-import {
-  Alert,
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Chip,
-  Divider,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { useState } from "react";
 import { useApi } from "@/hooks/useApi";
 import { apiFetch } from "@/lib/utils/api";
 
@@ -53,15 +51,21 @@ export default function NscPaperPracticePage() {
   const [creating, setCreating] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
 
-  const { data: paper, loading: paperLoading, error: paperError } =
-    useApi<NscPaperDetail>(
-      Number.isFinite(paperId) ? `/api/nsc-papers/${paperId}` : null
-    );
+  const {
+    data: paper,
+    loading: paperLoading,
+    error: paperError,
+  } = useApi<NscPaperDetail>(
+    Number.isFinite(paperId) ? `/api/nsc-papers/${paperId}` : null,
+  );
 
-  const { data: questions, loading: questionsLoading, error: questionsError } =
-    useApi<NscQuestion[]>(
-      Number.isFinite(paperId) ? `/api/nsc-papers/${paperId}/questions` : null
-    );
+  const {
+    data: questions,
+    loading: questionsLoading,
+    error: questionsError,
+  } = useApi<NscQuestion[]>(
+    Number.isFinite(paperId) ? `/api/nsc-papers/${paperId}/questions` : null,
+  );
 
   const loading = paperLoading || questionsLoading;
   const error = paperError || questionsError;
@@ -78,7 +82,7 @@ export default function NscPaperPracticePage() {
     try {
       const result = await apiFetch<{ assessmentId: number }>(
         `/api/nsc-papers/${paperId}/import-to-bank`,
-        { method: "POST", body: JSON.stringify({}) }
+        { method: "POST", body: JSON.stringify({}) },
       );
       // If a linked assessment exists, navigate to it
       if (result?.assessmentId) {
@@ -86,7 +90,9 @@ export default function NscPaperPracticePage() {
       }
     } catch (err) {
       setActionError(
-        err instanceof Error ? err.message : "Unable to create practice assessment."
+        err instanceof Error
+          ? err.message
+          : "Unable to create practice assessment.",
       );
     } finally {
       setCreating(false);
@@ -141,10 +147,7 @@ export default function NscPaperPracticePage() {
                   >
                     {creating ? "Setting up..." : "Start timed practice"}
                   </Button>
-                  <Button
-                    variant="outlined"
-                    href={`/nsc-papers/${paperId}`}
-                  >
+                  <Button variant="outlined" href={`/nsc-papers/${paperId}`}>
                     Back to paper
                   </Button>
                 </Stack>
@@ -152,12 +155,12 @@ export default function NscPaperPracticePage() {
             </CardContent>
           </Card>
 
-          {(!questions || questions.length === 0) ? (
+          {!questions || questions.length === 0 ? (
             <Card>
               <CardContent>
                 <Typography color="text.secondary">
-                  No extracted questions available for this paper yet. You can still
-                  download the PDF from the paper detail page.
+                  No extracted questions available for this paper yet. You can
+                  still download the PDF from the paper detail page.
                 </Typography>
               </CardContent>
             </Card>
@@ -182,7 +185,11 @@ export default function NscPaperPracticePage() {
                           variant="outlined"
                           label={`Q${q.questionNumber}`}
                         />
-                        <Chip size="small" variant="outlined" label={`${q.marks} marks`} />
+                        <Chip
+                          size="small"
+                          variant="outlined"
+                          label={`${q.marks} marks`}
+                        />
                         {q.sectionLabel && (
                           <Chip
                             size="small"
@@ -192,7 +199,10 @@ export default function NscPaperPracticePage() {
                         )}
                       </Stack>
 
-                      <Typography variant="body1" sx={{ whiteSpace: "pre-wrap" }}>
+                      <Typography
+                        variant="body1"
+                        sx={{ whiteSpace: "pre-wrap" }}
+                      >
                         {q.questionText}
                       </Typography>
 
@@ -214,7 +224,10 @@ export default function NscPaperPracticePage() {
                                 bgcolor: "action.hover",
                               }}
                             >
-                              <Typography variant="body2" sx={{ whiteSpace: "pre-wrap" }}>
+                              <Typography
+                                variant="body2"
+                                sx={{ whiteSpace: "pre-wrap" }}
+                              >
                                 {q.memoText}
                               </Typography>
                             </Box>

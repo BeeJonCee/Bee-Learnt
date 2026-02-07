@@ -46,7 +46,9 @@ export const assignmentCreateSchema = z.object({
   description: z.string().optional(),
   dueDate: z.string().datetime(),
   priority: z.enum(["low", "medium", "high"]).default("medium"),
-  status: z.enum(["todo", "in_progress", "submitted", "graded"]).default("todo"),
+  status: z
+    .enum(["todo", "in_progress", "submitted", "graded"])
+    .default("todo"),
   grade: z.number().int().min(9).max(12),
 });
 
@@ -80,7 +82,7 @@ export const quizSubmitSchema = z.object({
     z.object({
       questionId: z.number().int().positive(),
       answer: z.string().min(1),
-    })
+    }),
   ),
 });
 
@@ -166,7 +168,7 @@ export const aiTutorSchema = z.object({
     z.object({
       role: z.enum(["user", "assistant"]),
       content: z.string().min(1),
-    })
+    }),
   ),
 });
 

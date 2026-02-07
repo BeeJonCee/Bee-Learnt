@@ -1,49 +1,37 @@
 "use client";
 
-import { useMemo } from "react";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
+import FlagIcon from "@mui/icons-material/Flag";
+import MenuBookIcon from "@mui/icons-material/MenuBook";
+import SchoolIcon from "@mui/icons-material/School";
+import TrendingUpIcon from "@mui/icons-material/TrendingUp";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Chip from "@mui/material/Chip";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import Grid from "@mui/material/Grid";
+import LinearProgress from "@mui/material/LinearProgress";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import { useMemo, useState } from "react";
 import {
-  Card,
-  CardContent,
-  Stack,
-  Typography,
-  Box,
-  LinearProgress,
-  Chip,
-  Button,
-  Grid,
-  Stepper,
-  Step,
-  StepLabel,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
-  MenuItem,
-} from "@mui/material";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
+  Area,
+  AreaChart,
   CartesianGrid,
-  Tooltip,
   Legend,
   ResponsiveContainer,
-  AreaChart,
-  Area,
-  BarChart,
-  Bar,
+  Tooltip,
+  XAxis,
+  YAxis,
 } from "recharts";
-import SchoolIcon from "@mui/icons-material/School";
-import FlagIcon from "@mui/icons-material/Flag";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import TrendingUpIcon from "@mui/icons-material/TrendingUp";
-import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
-import MenuBookIcon from "@mui/icons-material/MenuBook";
 import { useApi } from "@/hooks/useApi";
-import { useState } from "react";
 import { apiFetch } from "@/lib/utils/api";
 
 type PathMilestone = {
@@ -80,20 +68,27 @@ type LearningPaths = {
   active: LearningPath[];
   completed: LearningPath[];
   recommended: LearningPath[];
-  progressOverTime: { date: string; hoursCompleted: number; pathsActive: number }[];
+  progressOverTime: {
+    date: string;
+    hoursCompleted: number;
+    pathsActive: number;
+  }[];
 };
 
 export default function LearningPathPanel() {
-  const { data: paths, loading, error, refetch } = useApi<LearningPaths>(
-    "/api/student/learning-paths"
-  );
+  const {
+    data: paths,
+    loading,
+    error,
+    refetch,
+  } = useApi<LearningPaths>("/api/student/learning-paths");
 
   const [selectedPath, setSelectedPath] = useState<LearningPath | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const progressData = useMemo(
     () => paths?.progressOverTime ?? [],
-    [paths?.progressOverTime]
+    [paths?.progressOverTime],
   );
 
   const activePath = paths?.active[0];
@@ -116,7 +111,9 @@ export default function LearningPathPanel() {
     return (
       <Card>
         <CardContent>
-          <Typography color="text.secondary">Loading learning paths...</Typography>
+          <Typography color="text.secondary">
+            Loading learning paths...
+          </Typography>
         </CardContent>
       </Card>
     );
@@ -144,7 +141,11 @@ export default function LearningPathPanel() {
     >
       <CardContent>
         <Stack spacing={2}>
-          <Stack direction="row" alignItems="flex-start" justifyContent="space-between">
+          <Stack
+            direction="row"
+            alignItems="flex-start"
+            justifyContent="space-between"
+          >
             <Stack spacing={0.5}>
               <Stack direction="row" spacing={1} alignItems="center">
                 <SchoolIcon color="primary" />
@@ -163,8 +164,8 @@ export default function LearningPathPanel() {
                   path.difficulty === "beginner"
                     ? "success"
                     : path.difficulty === "intermediate"
-                    ? "warning"
-                    : "error"
+                      ? "warning"
+                      : "error"
                 }
                 size="small"
               />
@@ -182,13 +183,21 @@ export default function LearningPathPanel() {
           <Typography variant="body2">{path.description}</Typography>
 
           <Stack spacing={1}>
-            <Stack direction="row" justifyContent="space-between" alignItems="center">
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+            >
               <Typography variant="subtitle2">Progress</Typography>
               <Typography variant="subtitle2" fontWeight={600}>
                 {path.progress}%
               </Typography>
             </Stack>
-            <LinearProgress variant="determinate" value={path.progress} sx={{ height: 8 }} />
+            <LinearProgress
+              variant="determinate"
+              value={path.progress}
+              sx={{ height: 8 }}
+            />
             <Stack direction="row" spacing={3} flexWrap="wrap">
               <Stack direction="row" spacing={0.5} alignItems="center">
                 <AccessTimeIcon fontSize="small" color="inherit" />
@@ -219,7 +228,11 @@ export default function LearningPathPanel() {
     <Card variant="outlined">
       <CardContent>
         <Stack spacing={1.5}>
-          <Stack direction="row" alignItems="flex-start" justifyContent="space-between">
+          <Stack
+            direction="row"
+            alignItems="flex-start"
+            justifyContent="space-between"
+          >
             <Stack spacing={0.5} flex={1}>
               <Stack direction="row" spacing={1} alignItems="center">
                 {milestone.status === "completed" ? (
@@ -268,8 +281,8 @@ export default function LearningPathPanel() {
                 milestone.status === "completed"
                   ? "success"
                   : milestone.status === "in_progress"
-                  ? "warning"
-                  : "default"
+                    ? "warning"
+                    : "default"
               }
             />
           </Stack>
@@ -312,7 +325,10 @@ export default function LearningPathPanel() {
                 </Typography>
                 <Typography variant="body2" fontWeight={600}>
                   {milestone.estimatedHours > 0
-                    ? ((milestone.actualHours / milestone.estimatedHours) * 100).toFixed(0)
+                    ? (
+                        (milestone.actualHours / milestone.estimatedHours) *
+                        100
+                      ).toFixed(0)
                     : 0}
                   %
                 </Typography>
@@ -322,7 +338,8 @@ export default function LearningPathPanel() {
 
           {milestone.status === "completed" && milestone.completedDate && (
             <Typography variant="caption" color="success.main">
-              ✓ Completed on {new Date(milestone.completedDate).toLocaleDateString()}
+              ✓ Completed on{" "}
+              {new Date(milestone.completedDate).toLocaleDateString()}
             </Typography>
           )}
         </Stack>
@@ -338,7 +355,11 @@ export default function LearningPathPanel() {
           <Card>
             <CardContent>
               <Stack spacing={1}>
-                <Typography color="text.secondary" variant="caption" fontWeight={600}>
+                <Typography
+                  color="text.secondary"
+                  variant="caption"
+                  fontWeight={600}
+                >
                   ACTIVE PATHS
                 </Typography>
                 <Typography variant="h5" fontWeight={600}>
@@ -357,7 +378,11 @@ export default function LearningPathPanel() {
           <Card>
             <CardContent>
               <Stack spacing={1}>
-                <Typography color="text.secondary" variant="caption" fontWeight={600}>
+                <Typography
+                  color="text.secondary"
+                  variant="caption"
+                  fontWeight={600}
+                >
                   COMPLETED
                 </Typography>
                 <Typography variant="h5" fontWeight={600}>
@@ -376,7 +401,11 @@ export default function LearningPathPanel() {
           <Card>
             <CardContent>
               <Stack spacing={1}>
-                <Typography color="text.secondary" variant="caption" fontWeight={600}>
+                <Typography
+                  color="text.secondary"
+                  variant="caption"
+                  fontWeight={600}
+                >
                   HOURS LOGGED
                 </Typography>
                 <Typography variant="h5" fontWeight={600}>
@@ -393,7 +422,11 @@ export default function LearningPathPanel() {
           <Card>
             <CardContent>
               <Stack spacing={1}>
-                <Typography color="text.secondary" variant="caption" fontWeight={600}>
+                <Typography
+                  color="text.secondary"
+                  variant="caption"
+                  fontWeight={600}
+                >
                   RECOMMENDED
                 </Typography>
                 <Typography variant="h5" fontWeight={600}>
@@ -420,7 +453,10 @@ export default function LearningPathPanel() {
               <Box sx={{ height: 300 }}>
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={progressData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      stroke="rgba(255,255,255,0.1)"
+                    />
                     <XAxis dataKey="date" stroke="rgba(255,255,255,0.5)" />
                     <YAxis stroke="rgba(255,255,255,0.5)" />
                     <Tooltip
@@ -479,7 +515,12 @@ export default function LearningPathPanel() {
                   </Typography>
                   <Stack direction="row" spacing={1} flexWrap="wrap">
                     {path.skillsGained.map((skill) => (
-                      <Chip key={skill} label={skill} variant="outlined" size="small" />
+                      <Chip
+                        key={skill}
+                        label={skill}
+                        variant="outlined"
+                        size="small"
+                      />
                     ))}
                   </Stack>
                 </Stack>
@@ -521,8 +562,8 @@ export default function LearningPathPanel() {
                             path.difficulty === "beginner"
                               ? "success"
                               : path.difficulty === "intermediate"
-                              ? "warning"
-                              : "error"
+                                ? "warning"
+                                : "error"
                           }
                         />
                       </Stack>
@@ -533,11 +574,21 @@ export default function LearningPathPanel() {
                         {path.description}
                       </Typography>
                       <Stack direction="row" spacing={2} flexWrap="wrap">
-                        <Stack direction="row" spacing={0.5} alignItems="center">
+                        <Stack
+                          direction="row"
+                          spacing={0.5}
+                          alignItems="center"
+                        >
                           <AccessTimeIcon fontSize="small" />
-                          <Typography variant="caption">{path.totalHours}h</Typography>
+                          <Typography variant="caption">
+                            {path.totalHours}h
+                          </Typography>
                         </Stack>
-                        <Stack direction="row" spacing={0.5} alignItems="center">
+                        <Stack
+                          direction="row"
+                          spacing={0.5}
+                          alignItems="center"
+                        >
                           <MenuBookIcon fontSize="small" />
                           <Typography variant="caption">
                             {path.milestones.length} milestones
@@ -583,7 +634,8 @@ export default function LearningPathPanel() {
                       right: 10,
                       width: 40,
                       height: 40,
-                      background: "radial-gradient(circle, #4caf50 0%, rgba(76,175,80,0.1) 100%)",
+                      background:
+                        "radial-gradient(circle, #4caf50 0%, rgba(76,175,80,0.1) 100%)",
                       borderRadius: "50%",
                       display: "flex",
                       alignItems: "center",
@@ -620,7 +672,12 @@ export default function LearningPathPanel() {
       )}
 
       {/* Enroll Dialog */}
-      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="sm" fullWidth>
+      <Dialog
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        maxWidth="sm"
+        fullWidth
+      >
         <DialogTitle>Enroll in Learning Path</DialogTitle>
         <DialogContent>
           {selectedPath && (
@@ -651,16 +708,17 @@ export default function LearningPathPanel() {
                       selectedPath.difficulty === "beginner"
                         ? "success"
                         : selectedPath.difficulty === "intermediate"
-                        ? "warning"
-                        : "error"
+                          ? "warning"
+                          : "error"
                     }
                     sx={{ width: "fit-content" }}
                   />
                 </Stack>
               </Stack>
               <Typography variant="body2">
-                This learning path contains {selectedPath.milestones.length} milestones and will
-                help you develop key skills in {selectedPath.subject}.
+                This learning path contains {selectedPath.milestones.length}{" "}
+                milestones and will help you develop key skills in{" "}
+                {selectedPath.subject}.
               </Typography>
             </Stack>
           )}

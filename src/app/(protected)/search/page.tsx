@@ -1,23 +1,26 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import {
-  Card,
-  CardContent,
-  Chip,
-  Grid,
-  InputAdornment,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Chip from "@mui/material/Chip";
+import Grid from "@mui/material/Grid";
+import InputAdornment from "@mui/material/InputAdornment";
+import Stack from "@mui/material/Stack";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 import { apiFetch } from "@/lib/utils/api";
 
 type SearchResults = {
   subjects: { id: number; name: string; description?: string | null }[];
-  modules: { id: number; title: string; description?: string | null; grade: number }[];
+  modules: {
+    id: number;
+    title: string;
+    description?: string | null;
+    grade: number;
+  }[];
   lessons: { id: number; title: string }[];
   resources: { id: number; title: string; url: string; type: string }[];
 };
@@ -39,7 +42,7 @@ export default function SearchPage() {
       setError(null);
       try {
         const data = await apiFetch<SearchResults>(
-          `/api/search?query=${encodeURIComponent(query.trim())}`
+          `/api/search?query=${encodeURIComponent(query.trim())}`,
         );
         setResults(data);
       } catch (err) {
@@ -75,9 +78,7 @@ export default function SearchPage() {
         fullWidth
       />
 
-      {loading && (
-        <Typography color="text.secondary">Searching...</Typography>
-      )}
+      {loading && <Typography color="text.secondary">Searching...</Typography>}
       {error && <Typography color="error">{error}</Typography>}
 
       {results && (
@@ -88,7 +89,9 @@ export default function SearchPage() {
                 <Typography variant="h6">Subjects</Typography>
                 <Stack spacing={1.5} sx={{ mt: 2 }}>
                   {results.subjects.length === 0 ? (
-                    <Typography color="text.secondary">No subjects found.</Typography>
+                    <Typography color="text.secondary">
+                      No subjects found.
+                    </Typography>
                   ) : (
                     results.subjects.map((subject) => (
                       <Stack key={subject.id} spacing={0.5}>
@@ -116,7 +119,9 @@ export default function SearchPage() {
                 <Typography variant="h6">Modules</Typography>
                 <Stack spacing={1.5} sx={{ mt: 2 }}>
                   {results.modules.length === 0 ? (
-                    <Typography color="text.secondary">No modules found.</Typography>
+                    <Typography color="text.secondary">
+                      No modules found.
+                    </Typography>
                   ) : (
                     results.modules.map((module) => (
                       <Stack key={module.id} spacing={0.5}>
@@ -147,7 +152,9 @@ export default function SearchPage() {
                 <Typography variant="h6">Lessons</Typography>
                 <Stack spacing={1.5} sx={{ mt: 2 }}>
                   {results.lessons.length === 0 ? (
-                    <Typography color="text.secondary">No lessons found.</Typography>
+                    <Typography color="text.secondary">
+                      No lessons found.
+                    </Typography>
                   ) : (
                     results.lessons.map((lesson) => (
                       <Typography
@@ -171,7 +178,9 @@ export default function SearchPage() {
                 <Typography variant="h6">Resources</Typography>
                 <Stack spacing={1.5} sx={{ mt: 2 }}>
                   {results.resources.length === 0 ? (
-                    <Typography color="text.secondary">No resources found.</Typography>
+                    <Typography color="text.secondary">
+                      No resources found.
+                    </Typography>
                   ) : (
                     results.resources.map((resource) => (
                       <Stack key={resource.id} spacing={0.5}>

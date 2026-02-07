@@ -1,15 +1,13 @@
 "use client";
 
-import {
-  Box,
-  Card,
-  CardContent,
-  Chip,
-  Link,
-  Stack,
-  Typography,
-} from "@mui/material";
 import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Chip from "@mui/material/Chip";
+import Link from "@mui/material/Link";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 import { useApi } from "@/hooks/useApi";
 
 type LessonResource = {
@@ -26,7 +24,7 @@ type LessonResourcesProps = {
 
 export default function LessonResources({ lessonId }: LessonResourcesProps) {
   const { data, loading, error } = useApi<LessonResource[]>(
-    lessonId ? `/api/resources?lessonId=${lessonId}` : null
+    lessonId ? `/api/resources?lessonId=${lessonId}` : null,
   );
 
   const resources = data ?? [];
@@ -60,7 +58,9 @@ export default function LessonResources({ lessonId }: LessonResourcesProps) {
               {resources.map((resource) => (
                 <Stack key={resource.id} spacing={1}>
                   <Stack direction="row" spacing={1} alignItems="center">
-                    <Typography variant="subtitle1">{resource.title}</Typography>
+                    <Typography variant="subtitle1">
+                      {resource.title}
+                    </Typography>
                     <Chip label={resource.type} size="small" />
                   </Stack>
                   {resource.type === "video" && (
@@ -94,7 +94,12 @@ export default function LessonResources({ lessonId }: LessonResourcesProps) {
                   {resource.tags && resource.tags.length > 0 && (
                     <Stack direction="row" spacing={1} flexWrap="wrap">
                       {resource.tags.map((tag) => (
-                        <Chip key={tag} label={tag} size="small" variant="outlined" />
+                        <Chip
+                          key={tag}
+                          label={tag}
+                          size="small"
+                          variant="outlined"
+                        />
                       ))}
                     </Stack>
                   )}

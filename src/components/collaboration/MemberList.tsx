@@ -1,7 +1,14 @@
 "use client";
 
-import { Avatar, Box, Chip, List, ListItem, ListItemAvatar, ListItemText, Typography } from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
+import Avatar from "@mui/material/Avatar";
+import Box from "@mui/material/Box";
+import Chip from "@mui/material/Chip";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemAvatar from "@mui/material/ListItemAvatar";
+import ListItemText from "@mui/material/ListItemText";
+import Typography from "@mui/material/Typography";
 import { useApi } from "@/hooks/useApi";
 
 interface Member {
@@ -18,7 +25,7 @@ interface MemberListProps {
 
 export default function MemberList({ roomId }: MemberListProps) {
   const { data: members, loading } = useApi<Member[]>(
-    `/api/collaboration/rooms/${roomId}/members`
+    `/api/collaboration/rooms/${roomId}/members`,
   );
 
   if (loading) {
@@ -55,7 +62,9 @@ export default function MemberList({ roomId }: MemberListProps) {
           <ListItem key={member.userId} sx={{ px: 1, py: 0.5 }}>
             <ListItemAvatar sx={{ minWidth: 36 }}>
               <Avatar sx={{ width: 28, height: 28, fontSize: "0.75rem" }}>
-                {member.userName?.[0]?.toUpperCase() ?? <PersonIcon fontSize="small" />}
+                {member.userName?.[0]?.toUpperCase() ?? (
+                  <PersonIcon fontSize="small" />
+                )}
               </Avatar>
             </ListItemAvatar>
             <ListItemText

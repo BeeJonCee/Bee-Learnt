@@ -1,18 +1,16 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Chip,
-  Stack,
-  Typography,
-} from "@mui/material";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import StopIcon from "@mui/icons-material/Stop";
 import TimerIcon from "@mui/icons-material/Timer";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Chip from "@mui/material/Chip";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import { useEffect, useRef, useState } from "react";
 import { useApi } from "@/hooks/useApi";
 import { apiFetch } from "@/lib/utils/api";
 
@@ -35,7 +33,8 @@ function formatDuration(seconds: number) {
 }
 
 export default function StudyTimerCard() {
-  const { data, loading, error, refetch } = useApi<StudySummary>("/api/study/summary");
+  const { data, loading, error, refetch } =
+    useApi<StudySummary>("/api/study/summary");
   const [running, setRunning] = useState(false);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const startedAtRef = useRef<number | null>(null);
@@ -86,7 +85,9 @@ export default function StudyTimerCard() {
     }
   };
 
-  const weeklyHours = data ? (data.streak.weeklyMinutes / 60).toFixed(1) : "0.0";
+  const weeklyHours = data
+    ? (data.streak.weeklyMinutes / 60).toFixed(1)
+    : "0.0";
 
   return (
     <Card>
@@ -102,9 +103,15 @@ export default function StudyTimerCard() {
           </Typography>
 
           <Stack direction="row" spacing={1} flexWrap="wrap">
-            <Chip label={`Streak: ${data?.streak.currentStreak ?? 0} days`} size="small" />
+            <Chip
+              label={`Streak: ${data?.streak.currentStreak ?? 0} days`}
+              size="small"
+            />
             <Chip label={`Weekly: ${weeklyHours} hrs`} size="small" />
-            <Chip label={`Best: ${data?.streak.longestStreak ?? 0} days`} size="small" />
+            <Chip
+              label={`Best: ${data?.streak.longestStreak ?? 0} days`}
+              size="small"
+            />
           </Stack>
 
           {error && (

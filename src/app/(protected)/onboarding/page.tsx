@@ -1,27 +1,25 @@
 ﻿"use client";
 
-import { useMemo, useState } from "react";
+import Alert from "@mui/material/Alert";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Chip from "@mui/material/Chip";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import Stack from "@mui/material/Stack";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
 import { useRouter } from "next/navigation";
-import {
-  Alert,
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Chip,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
-import { useAuth } from "@/providers/AuthProvider";
+import { useMemo, useState } from "react";
 import HexModulePicker from "@/components/HexModulePicker";
 import { useApi } from "@/hooks/useApi";
-import { apiFetch } from "@/lib/utils/api";
 import { getDashboardPath } from "@/lib/navigation";
+import { apiFetch } from "@/lib/utils/api";
+import { useAuth } from "@/providers/AuthProvider";
 
 type OnboardingModule = {
   id: number;
@@ -41,9 +39,11 @@ export default function OnboardingPage() {
   const router = useRouter();
   const { user } = useAuth();
   const { data, loading, error, refetch } = useApi<OnboardingResponse>(
-    "/api/onboarding/modules"
+    "/api/onboarding/modules",
   );
-  const [pendingModule, setPendingModule] = useState<OnboardingModule | null>(null);
+  const [pendingModule, setPendingModule] = useState<OnboardingModule | null>(
+    null,
+  );
   const [accessCode, setAccessCode] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -54,13 +54,13 @@ export default function OnboardingPage() {
       modules.filter(
         (module) =>
           !module.selected &&
-          (pendingModule ? module.id !== pendingModule.id : true)
+          (pendingModule ? module.id !== pendingModule.id : true),
       ),
-    [modules, pendingModule]
+    [modules, pendingModule],
   );
   const unlockedModules = useMemo(
     () => modules.filter((module) => module.status === "unlocked"),
-    [modules]
+    [modules],
   );
 
   const handleVerify = async () => {
@@ -77,7 +77,9 @@ export default function OnboardingPage() {
       setPendingModule(null);
       setAccessCode("");
     } catch (err) {
-      setSubmitError(err instanceof Error ? err.message : "Invalid access code");
+      setSubmitError(
+        err instanceof Error ? err.message : "Invalid access code",
+      );
     } finally {
       setSubmitting(false);
     }
@@ -118,7 +120,8 @@ export default function OnboardingPage() {
                   subjectName: module.subjectName,
                 }))}
                 onPick={(module) => {
-                  const fullModule = modules.find((item) => item.id === module.id) ?? null;
+                  const fullModule =
+                    modules.find((item) => item.id === module.id) ?? null;
                   setPendingModule(fullModule);
                   setAccessCode("");
                   setSubmitError(null);
@@ -165,7 +168,10 @@ export default function OnboardingPage() {
         </Button>
       </Box>
 
-      <Dialog open={Boolean(pendingModule)} onClose={() => setPendingModule(null)}>
+      <Dialog
+        open={Boolean(pendingModule)}
+        onClose={() => setPendingModule(null)}
+      >
         <DialogTitle>Enter access code</DialogTitle>
         <DialogContent>
           <Stack spacing={2} sx={{ mt: 1 }}>
@@ -188,7 +194,11 @@ export default function OnboardingPage() {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setPendingModule(null)}>Cancel</Button>
-          <Button variant="contained" onClick={handleVerify} disabled={submitting}>
+          <Button
+            variant="contained"
+            onClick={handleVerify}
+            disabled={submitting}
+          >
             {submitting ? "Unlocking..." : "Unlock module"}
           </Button>
         </DialogActions>

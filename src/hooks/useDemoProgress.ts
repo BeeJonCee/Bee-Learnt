@@ -1,12 +1,12 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { getLessonById, type Lesson } from "@/lib/demo-data";
 import {
   getLessonProgress,
-  upsertLessonProgress,
   type LessonProgress,
+  upsertLessonProgress,
 } from "@/lib/demo-storage";
-import { getLessonById, type Lesson } from "@/lib/demo-data";
 
 export function useDemoProgress(userId?: string | null) {
   const [progress, setProgress] = useState<Record<number, LessonProgress>>({});
@@ -27,7 +27,7 @@ export function useDemoProgress(userId?: string | null) {
         [lessonId]: entry,
       }));
     },
-    [userId]
+    [userId],
   );
 
   const markLessonComplete = useCallback(
@@ -42,21 +42,24 @@ export function useDemoProgress(userId?: string | null) {
         [lessonId]: entry,
       }));
     },
-    [userId]
+    [userId],
   );
 
   const recentProgress = useMemo(() => {
     return Object.values(progress)
       .sort((a, b) => {
-        return new Date(b.lastAccessed).getTime() - new Date(a.lastAccessed).getTime();
+        return (
+          new Date(b.lastAccessed).getTime() -
+          new Date(a.lastAccessed).getTime()
+        );
       })
       .slice(0, 5)
       .map((entry) => ({
         ...entry,
         lesson: getLessonById(entry.lessonId),
       }))
-      .filter(
-        (entry): entry is LessonProgress & { lesson: Lesson } => Boolean(entry.lesson)
+      .filter((entry): entry is LessonProgress & { lesson: Lesson } =>
+        Boolean(entry.lesson),
       );
   }, [progress]);
 

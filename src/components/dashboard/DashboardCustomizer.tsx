@@ -1,28 +1,25 @@
 "use client";
 
-import {
-  Box,
-  Button,
-  Divider,
-  Drawer,
-  FormControlLabel,
-  IconButton,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Switch,
-  Typography,
-} from "@mui/material";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import CloseIcon from "@mui/icons-material/Close";
+import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
+import PeopleIcon from "@mui/icons-material/People";
 import RestoreIcon from "@mui/icons-material/Restore";
 import SchoolIcon from "@mui/icons-material/School";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
-import PeopleIcon from "@mui/icons-material/People";
-import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
-import type { WidgetConfig } from "./WidgetRegistry";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Divider from "@mui/material/Divider";
+import Drawer from "@mui/material/Drawer";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import IconButton from "@mui/material/IconButton";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import Switch from "@mui/material/Switch";
+import Typography from "@mui/material/Typography";
 import type { WidgetSettings } from "@/hooks/useDashboardLayout";
+import type { WidgetConfig } from "./WidgetRegistry";
 
 interface DashboardCustomizerProps {
   open: boolean;
@@ -66,10 +63,12 @@ export default function DashboardCustomizer({
       acc[widget.category].push(widget);
       return acc;
     },
-    {} as Record<WidgetConfig["category"], WidgetConfig[]>
+    {} as Record<WidgetConfig["category"], WidgetConfig[]>,
   );
 
-  const categories = Object.keys(widgetsByCategory) as WidgetConfig["category"][];
+  const categories = Object.keys(
+    widgetsByCategory,
+  ) as WidgetConfig["category"][];
 
   return (
     <Drawer
@@ -104,8 +103,13 @@ export default function DashboardCustomizer({
 
       {/* Content */}
       <Box sx={{ flex: 1, overflow: "auto", py: 1 }}>
-        <Typography variant="body2" color="text.secondary" sx={{ px: 2, pb: 1 }}>
-          Toggle widgets to show or hide them on your dashboard. Drag widgets to reorder them.
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{ px: 2, pb: 1 }}
+        >
+          Toggle widgets to show or hide them on your dashboard. Drag widgets to
+          reorder them.
         </Typography>
 
         {categories.map((category) => {
@@ -132,7 +136,8 @@ export default function DashboardCustomizer({
 
               <List dense disablePadding>
                 {categoryWidgets.map((widget) => {
-                  const isVisible = widgetSettings[widget.id]?.visible !== false;
+                  const isVisible =
+                    widgetSettings[widget.id]?.visible !== false;
                   const isRequired = !widget.removable;
 
                   return (

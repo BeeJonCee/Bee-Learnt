@@ -1,20 +1,19 @@
 "use client";
 
+import MenuBookIcon from "@mui/icons-material/MenuBook";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import Box from "@mui/material/Box";
+import Breadcrumbs from "@mui/material/Breadcrumbs";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Chip from "@mui/material/Chip";
+import MuiLink from "@mui/material/Link";
+
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 import NextLink from "next/link";
 import { useParams } from "next/navigation";
-import {
-  Box,
-  Breadcrumbs,
-  Button,
-  Card,
-  CardContent,
-  Chip,
-  Link as MuiLink,
-  Stack,
-  Typography,
-} from "@mui/material";
-import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import MenuBookIcon from "@mui/icons-material/MenuBook";
 import { useApi } from "@/hooks/useApi";
 
 type Subject = {
@@ -39,10 +38,10 @@ export default function SubjectDetailPage() {
   const idParam = params?.id;
   const id = Number(Array.isArray(idParam) ? idParam[0] : idParam);
   const { data: subject, loading: subjectLoading } = useApi<Subject>(
-    Number.isNaN(id) ? null : `/api/subjects/${id}`
+    Number.isNaN(id) ? null : `/api/subjects/${id}`,
   );
   const { data: modules, loading: modulesLoading } = useApi<Module[]>(
-    Number.isNaN(id) ? null : `/api/modules?subjectId=${id}`
+    Number.isNaN(id) ? null : `/api/modules?subjectId=${id}`,
   );
 
   if (subjectLoading) {
@@ -71,7 +70,12 @@ export default function SubjectDetailPage() {
   return (
     <Stack spacing={4}>
       <Breadcrumbs sx={{ color: "text.secondary" }}>
-        <MuiLink component={NextLink} href="/subjects" color="inherit" underline="hover">
+        <MuiLink
+          component={NextLink}
+          href="/subjects"
+          color="inherit"
+          underline="hover"
+        >
           Subjects
         </MuiLink>
         <Typography color="text.primary">{subject.name}</Typography>
@@ -90,7 +94,9 @@ export default function SubjectDetailPage() {
               size="small"
             />
             <Typography variant="h3">{subject.name}</Typography>
-            <Typography color="text.secondary">{subject.description}</Typography>
+            <Typography color="text.secondary">
+              {subject.description}
+            </Typography>
           </Stack>
           <Box
             sx={{
@@ -110,7 +116,7 @@ export default function SubjectDetailPage() {
           <Typography variant="h5">Learning modules</Typography>
         </Stack>
         <Stack spacing={2}>
-          {(modulesLoading ? [] : modules ?? []).map((module) => (
+          {(modulesLoading ? [] : (modules ?? [])).map((module) => (
             <Card key={module.id}>
               <CardContent>
                 <Stack

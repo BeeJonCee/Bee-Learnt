@@ -1,21 +1,19 @@
 "use client";
 
-import { useState, useCallback } from "react";
-import {
-  Box,
-  Button,
-  CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-  Stack,
-  Typography,
-  alpha,
-} from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import DeleteIcon from "@mui/icons-material/Delete";
+import alpha from "@mui/material/alpha";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import CircularProgress from "@mui/material/CircularProgress";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import IconButton from "@mui/material/IconButton";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import { useCallback, useState } from "react";
 import type { ZodSchema } from "zod";
 
 type FormMode = "create" | "update" | "delete" | "view";
@@ -44,7 +42,13 @@ interface FormFieldProps {
   children: React.ReactNode;
 }
 
-export function FormField({ label, name, error, required, children }: FormFieldProps) {
+export function FormField({
+  label,
+  name,
+  error,
+  required,
+  children,
+}: FormFieldProps) {
   return (
     <Box>
       <Typography
@@ -63,7 +67,11 @@ export function FormField({ label, name, error, required, children }: FormFieldP
       </Typography>
       {children}
       {error && (
-        <Typography variant="caption" color="error" sx={{ mt: 0.5, display: "block" }}>
+        <Typography
+          variant="caption"
+          color="error"
+          sx={{ mt: 0.5, display: "block" }}
+        >
           {error}
         </Typography>
       )}
@@ -77,7 +85,7 @@ export default function FormModal<T extends Record<string, unknown>>({
   mode,
   title,
   entityName,
-  data,
+  data: _data,
   schema,
   onSubmit,
   onDelete,
@@ -183,7 +191,7 @@ export default function FormModal<T extends Record<string, unknown>>({
         setSubmitting(false);
       }
     },
-    [schema, onSubmit, onClose]
+    [schema, onSubmit, onClose],
   );
 
   const handleDelete = useCallback(async () => {
@@ -287,7 +295,9 @@ export default function FormModal<T extends Record<string, unknown>>({
               onClick={handleDelete}
               disabled={submitting}
               startIcon={
-                submitting ? <CircularProgress size={16} color="inherit" /> : null
+                submitting ? (
+                  <CircularProgress size={16} color="inherit" />
+                ) : null
               }
             >
               {submitting ? "Deleting..." : "Delete"}

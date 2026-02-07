@@ -1,14 +1,12 @@
 "use client";
 
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Chip from "@mui/material/Chip";
+import Divider from "@mui/material/Divider";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 import { useMemo } from "react";
-import {
-  Card,
-  CardContent,
-  Chip,
-  Divider,
-  Stack,
-  Typography,
-} from "@mui/material";
 import { useApi } from "@/hooks/useApi";
 
 type EventItem = {
@@ -47,7 +45,7 @@ export default function WeeklySchedulePanel() {
   to.setHours(23, 59, 59, 999);
 
   const { data, loading, error } = useApi<EventItem[]>(
-    `/api/events?from=${from.toISOString()}&to=${to.toISOString()}&limit=20`
+    `/api/events?from=${from.toISOString()}&to=${to.toISOString()}&limit=20`,
   );
 
   const grouped = useMemo(() => {
@@ -73,7 +71,11 @@ export default function WeeklySchedulePanel() {
     <Card>
       <CardContent>
         <Stack spacing={2}>
-          <Stack direction="row" alignItems="center" justifyContent="space-between">
+          <Stack
+            direction="row"
+            alignItems="center"
+            justifyContent="space-between"
+          >
             <Typography variant="h6">Weekly schedule</Typography>
             <Chip label="Next 7 days" size="small" />
           </Stack>
@@ -82,7 +84,9 @@ export default function WeeklySchedulePanel() {
           ) : error ? (
             <Typography color="error">{error}</Typography>
           ) : (data ?? []).length === 0 ? (
-            <Typography color="text.secondary">No sessions scheduled yet.</Typography>
+            <Typography color="text.secondary">
+              No sessions scheduled yet.
+            </Typography>
           ) : (
             <Stack spacing={2}>
               {grouped.map((group) => (
@@ -100,10 +104,23 @@ export default function WeeklySchedulePanel() {
                         <Stack
                           key={event.id}
                           spacing={0.5}
-                          sx={{ borderRadius: 2, border: "1px solid", borderColor: "divider", p: 1.25 }}
+                          sx={{
+                            borderRadius: 2,
+                            border: "1px solid",
+                            borderColor: "divider",
+                            p: 1.25,
+                          }}
                         >
-                          <Stack direction="row" spacing={1} alignItems="center">
-                            <Typography variant="subtitle2" fontWeight={600} flex={1}>
+                          <Stack
+                            direction="row"
+                            spacing={1}
+                            alignItems="center"
+                          >
+                            <Typography
+                              variant="subtitle2"
+                              fontWeight={600}
+                              flex={1}
+                            >
                               {event.title}
                             </Typography>
                             <Chip label={event.audience} size="small" />

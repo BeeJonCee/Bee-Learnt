@@ -1,22 +1,20 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import Alert from "@mui/material/Alert";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Chip from "@mui/material/Chip";
+import Divider from "@mui/material/Divider";
+import LinearProgress from "@mui/material/LinearProgress";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import {
-  Alert,
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Chip,
-  Divider,
-  LinearProgress,
-  Stack,
-  Typography,
-} from "@mui/material";
-import { apiFetch } from "@/lib/utils/api";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import QuestionRenderer from "@/components/assessments/QuestionRenderer";
 import { useTimer } from "@/hooks/useTimer";
+import { apiFetch } from "@/lib/utils/api";
 
 type StartAttemptPayload = {
   attemptId: string;
@@ -95,7 +93,9 @@ export default function TakeAssessmentPage() {
         }
 
         if (attemptIdFromQuery) {
-          const cached = window.sessionStorage.getItem(`beelearn-attempt:${attemptIdFromQuery}`);
+          const cached = window.sessionStorage.getItem(
+            `beelearn-attempt:${attemptIdFromQuery}`,
+          );
           if (cached) {
             const parsed = JSON.parse(cached) as StartAttemptPayload;
             if (active) setPayload(parsed);
@@ -103,20 +103,30 @@ export default function TakeAssessmentPage() {
           }
         }
 
-        const started = await apiFetch<StartAttemptPayload>(`/api/assessments/${assessmentId}/start`, {
-          method: "POST",
-        });
-        window.sessionStorage.setItem(`beelearn-attempt:${started.attemptId}`, JSON.stringify(started));
+        const started = await apiFetch<StartAttemptPayload>(
+          `/api/assessments/${assessmentId}/start`,
+          {
+            method: "POST",
+          },
+        );
+        window.sessionStorage.setItem(
+          `beelearn-attempt:${started.attemptId}`,
+          JSON.stringify(started),
+        );
 
         if (!active) return;
         setPayload(started);
 
         router.replace(
-          `/assessments/${assessmentId}/take?attemptId=${encodeURIComponent(started.attemptId)}`
+          `/assessments/${assessmentId}/take?attemptId=${encodeURIComponent(started.attemptId)}`,
         );
       } catch (err) {
         if (!active) return;
-        setError(err instanceof Error ? err.message : "Unable to load assessment attempt.");
+        setError(
+          err instanceof Error
+            ? err.message
+            : "Unable to load assessment attempt.",
+        );
       } finally {
         if (active) setHydrating(false);
       }
@@ -135,13 +145,15 @@ export default function TakeAssessmentPage() {
       section.questions.map((q) => ({
         ...q,
         sectionTitle: section.title ?? `Section ${section.order}`,
-      }))
+      })),
     );
   }, [payload]);
 
   const current = flatQuestions[currentIndex] ?? null;
   const progress =
-    flatQuestions.length > 0 ? Math.round(((currentIndex + 1) / flatQuestions.length) * 100) : 0;
+    flatQuestions.length > 0
+      ? Math.round(((currentIndex + 1) / flatQuestions.length) * 100)
+      : 0;
 
   const saveAnswer = async (assessmentQuestionId: number, value: unknown) => {
     if (!attemptId) return;
@@ -164,8 +176,8 @@ export default function TakeAssessmentPage() {
       setAnswers((prev) => ({ ...prev, [questionId]: value }));
       void saveAnswer(questionId, value);
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [attemptId]
+    // biome-ignore lint/correctness/useExhaustiveDependencies: setAnswers is stable
+    [saveAnswer],
   );
 
   const handleSubmit = async () => {
@@ -176,7 +188,9 @@ export default function TakeAssessmentPage() {
       await apiFetch(`/api/attempts/${attemptId}/submit`, { method: "POST" });
       router.push(`/assessments/results/${encodeURIComponent(attemptId)}`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Unable to submit attempt.");
+      setError(
+        err instanceof Error ? err.message : "Unable to submit attempt.",
+      );
     } finally {
       setSubmitting(false);
     }
@@ -188,7 +202,9 @@ export default function TakeAssessmentPage() {
         {error && <Alert severity="error">{error}</Alert>}
         <Card>
           <CardContent>
-            <Typography color="text.secondary">Preparing assessment...</Typography>
+            <Typography color="text.secondary">
+              Preparing assessment...
+            </Typography>
           </CardContent>
         </Card>
       </Stack>
@@ -215,12 +231,18 @@ export default function TakeAssessmentPage() {
       <Card>
         <CardContent>
           <Stack spacing={1.5}>
-            <Stack direction="row" justifyContent="space-between" alignItems="center" flexWrap="wrap" useFlexGap>
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+              flexWrap="wrap"
+              useFlexGap
+            >
               <Stack spacing={0.5}>
                 <Typography variant="h5">{payload.assessment.title}</Typography>
                 <Typography variant="caption" color="text.secondary">
-                  Question {currentIndex + 1} of {flatQuestions.length} • {current.points} pts •{" "}
-                  {current.sectionTitle}
+                  Question {currentIndex + 1} of {flatQuestions.length} •{" "}
+                  {current.points} pts • {current.sectionTitle}
                 </Typography>
               </Stack>
               <Stack direction="row" spacing={1} alignItems="center">
@@ -239,7 +261,11 @@ export default function TakeAssessmentPage() {
               </Stack>
             </Stack>
 
-            <LinearProgress variant="determinate" value={progress} sx={{ height: 10, borderRadius: 6 }} />
+            <LinearProgress
+              variant="determinate"
+              value={progress}
+              sx={{ height: 10, borderRadius: 6 }}
+            />
 
             {payload.assessment.instructions ? (
               <>
@@ -264,8 +290,8 @@ export default function TakeAssessmentPage() {
               i === currentIndex
                 ? "primary"
                 : answers[q.assessmentQuestionId] !== undefined
-                ? "success"
-                : "default"
+                  ? "success"
+                  : "default"
             }
             variant={i === currentIndex ? "filled" : "outlined"}
             onClick={() => setCurrentIndex(i)}
@@ -290,7 +316,11 @@ export default function TakeAssessmentPage() {
       </Card>
 
       <Box>
-        <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5} justifyContent="space-between">
+        <Stack
+          direction={{ xs: "column", sm: "row" }}
+          spacing={1.5}
+          justifyContent="space-between"
+        >
           <Stack direction="row" spacing={1.5}>
             <Button
               variant="outlined"
@@ -302,13 +332,22 @@ export default function TakeAssessmentPage() {
             <Button
               variant="outlined"
               disabled={currentIndex >= flatQuestions.length - 1}
-              onClick={() => setCurrentIndex((prev) => Math.min(prev + 1, flatQuestions.length - 1))}
+              onClick={() =>
+                setCurrentIndex((prev) =>
+                  Math.min(prev + 1, flatQuestions.length - 1),
+                )
+              }
             >
               Next
             </Button>
           </Stack>
 
-          <Button variant="contained" color="primary" onClick={handleSubmit} disabled={submitting}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleSubmit}
+            disabled={submitting}
+          >
             {submitting ? "Submitting..." : "Submit"}
           </Button>
         </Stack>

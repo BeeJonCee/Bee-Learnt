@@ -1,28 +1,26 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import {
-  Alert,
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Chip,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  FormControl,
-  Grid,
-  InputLabel,
-  MenuItem,
-  Select,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
+import Alert from "@mui/material/Alert";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Chip from "@mui/material/Chip";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import FormControl from "@mui/material/FormControl";
+import Grid from "@mui/material/Grid";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import Stack from "@mui/material/Stack";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import { useMemo, useState } from "react";
 import { useApi } from "@/hooks/useApi";
 import { apiFetch } from "@/lib/utils/api";
 
@@ -71,7 +69,12 @@ const defaultColors = [
 ];
 
 export default function TimetablePage() {
-  const { data: entries, loading, error, refetch } = useApi<TimetableEntry[]>("/api/timetable");
+  const {
+    data: entries,
+    loading,
+    error,
+    refetch,
+  } = useApi<TimetableEntry[]>("/api/timetable");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
@@ -126,7 +129,9 @@ export default function TimetablePage() {
       });
       refetch();
     } catch (err) {
-      setActionError(err instanceof Error ? err.message : "Failed to create entry.");
+      setActionError(
+        err instanceof Error ? err.message : "Failed to create entry.",
+      );
     } finally {
       setSaving(false);
     }
@@ -175,7 +180,11 @@ export default function TimetablePage() {
             <Grid item xs={12} sm={6} md key={day}>
               <Card sx={{ minHeight: 200 }}>
                 <CardContent>
-                  <Typography variant="subtitle2" gutterBottom sx={{ fontWeight: 700 }}>
+                  <Typography
+                    variant="subtitle2"
+                    gutterBottom
+                    sx={{ fontWeight: 700 }}
+                  >
                     {dayLabels[day]}
                   </Typography>
                   {entriesByDay[day].length === 0 ? (
@@ -205,7 +214,10 @@ export default function TimetablePage() {
                               <Typography variant="body2" fontWeight={600}>
                                 {entry.title}
                               </Typography>
-                              <Typography variant="caption" color="text.secondary">
+                              <Typography
+                                variant="caption"
+                                color="text.secondary"
+                              >
                                 {entry.startTime} – {entry.endTime}
                               </Typography>
                               {entry.location && (
@@ -224,7 +236,10 @@ export default function TimetablePage() {
                               label=""
                               variant="outlined"
                               onClick={() => handleDelete(entry.id)}
-                              sx={{ minWidth: 0, "& .MuiChip-label": { px: 0 } }}
+                              sx={{
+                                minWidth: 0,
+                                "& .MuiChip-label": { px: 0 },
+                              }}
                             />
                           </Stack>
                         </Box>
@@ -239,14 +254,21 @@ export default function TimetablePage() {
       )}
 
       {/* Create dialog */}
-      <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="xs" fullWidth>
+      <Dialog
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        maxWidth="xs"
+        fullWidth
+      >
         <DialogTitle>Add timetable entry</DialogTitle>
         <DialogContent>
           <Stack spacing={2} sx={{ mt: 1 }}>
             <TextField
               label="Title"
               value={form.title}
-              onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, title: e.target.value }))
+              }
               fullWidth
               required
               size="small"
@@ -256,7 +278,9 @@ export default function TimetablePage() {
               <Select
                 value={form.dayOfWeek}
                 label="Day"
-                onChange={(e) => setForm((f) => ({ ...f, dayOfWeek: e.target.value }))}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, dayOfWeek: e.target.value }))
+                }
               >
                 {DAYS.map((d) => (
                   <MenuItem key={d} value={d}>
@@ -270,7 +294,9 @@ export default function TimetablePage() {
                 label="Start"
                 type="time"
                 value={form.startTime}
-                onChange={(e) => setForm((f) => ({ ...f, startTime: e.target.value }))}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, startTime: e.target.value }))
+                }
                 size="small"
                 fullWidth
                 slotProps={{ inputLabel: { shrink: true } }}
@@ -279,7 +305,9 @@ export default function TimetablePage() {
                 label="End"
                 type="time"
                 value={form.endTime}
-                onChange={(e) => setForm((f) => ({ ...f, endTime: e.target.value }))}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, endTime: e.target.value }))
+                }
                 size="small"
                 fullWidth
                 slotProps={{ inputLabel: { shrink: true } }}
@@ -288,7 +316,9 @@ export default function TimetablePage() {
             <TextField
               label="Location"
               value={form.location}
-              onChange={(e) => setForm((f) => ({ ...f, location: e.target.value }))}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, location: e.target.value }))
+              }
               fullWidth
               size="small"
             />
@@ -297,13 +327,20 @@ export default function TimetablePage() {
               <Select
                 value={form.color}
                 label="Color"
-                onChange={(e) => setForm((f) => ({ ...f, color: e.target.value }))}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, color: e.target.value }))
+                }
               >
                 {defaultColors.map((c) => (
                   <MenuItem key={c} value={c}>
                     <Stack direction="row" spacing={1} alignItems="center">
                       <Box
-                        sx={{ width: 16, height: 16, borderRadius: "50%", bgcolor: c }}
+                        sx={{
+                          width: 16,
+                          height: 16,
+                          borderRadius: "50%",
+                          bgcolor: c,
+                        }}
                       />
                       <Typography variant="body2">{c}</Typography>
                     </Stack>
