@@ -27,11 +27,6 @@ type AuthContextValue = {
     password: string;
     role: "STUDENT" | "PARENT";
   }) => Promise<void>;
-  magicLinkLogin: (email: string, callbackURL?: string) => Promise<void>;
-  socialLogin: (
-    provider: "google" | "facebook" | "apple",
-    callbackURL?: string,
-  ) => Promise<void>;
   sendEmailOtp: (email: string) => Promise<void>;
   verifyEmailOtp: (email: string, code: string) => Promise<void>;
   logout: () => void;
@@ -174,23 +169,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
-  const magicLinkLogin = useCallback(
-    async (_email: string, _callbackURL?: string) => {
-      throw new Error("Magic link login is not enabled in this deployment.");
-    },
-    [],
-  );
-
-  const socialLogin = useCallback(
-    async (
-      _provider: "google" | "facebook" | "apple",
-      _callbackURL?: string,
-    ) => {
-      throw new Error("Social login is not enabled in this deployment.");
-    },
-    [],
-  );
-
   const logout = useCallback(() => {
     clearStoredAuth();
     setUser(null);
@@ -204,8 +182,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       loading,
       login,
       register,
-      magicLinkLogin,
-      socialLogin,
       sendEmailOtp,
       verifyEmailOtp,
       logout,
@@ -216,8 +192,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       loading,
       login,
       register,
-      magicLinkLogin,
-      socialLogin,
       sendEmailOtp,
       verifyEmailOtp,
       logout,
