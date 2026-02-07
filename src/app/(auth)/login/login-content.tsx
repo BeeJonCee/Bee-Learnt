@@ -10,6 +10,7 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { useRouter, useSearchParams } from "next/navigation";
 import { type FormEvent, useEffect, useMemo, useState } from "react";
+import SocialLoginButtons from "@/components/auth/SocialLoginButtons";
 import { getDashboardPath } from "@/lib/navigation";
 import { useAuth } from "@/providers/AuthProvider";
 
@@ -150,6 +151,8 @@ export default function LoginPageContent() {
             <Typography variant="body2" color="text.secondary">
               Need an account? <a href="/register">Create one</a>
             </Typography>
+
+            <SocialLoginButtons disabled={loading} />
           </Stack>
         </Paper>
       </Grid>

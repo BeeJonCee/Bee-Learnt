@@ -16,6 +16,8 @@ import {
   setStoredAuth,
 } from "@/lib/auth/storage";
 
+type SocialProvider = "google" | "facebook" | "apple";
+
 type AuthContextValue = {
   user: AuthUser | null;
   token: string | null;
@@ -29,6 +31,7 @@ type AuthContextValue = {
   }) => Promise<void>;
   sendEmailOtp: (email: string) => Promise<void>;
   verifyEmailOtp: (email: string, code: string) => Promise<void>;
+  socialLogin: (provider: SocialProvider) => void;
   logout: () => void;
 };
 
@@ -175,6 +178,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setToken(null);
   }, []);
 
+  const socialLogin = useCallback((provider: SocialProvider) => {
+    import("@/lib/auth/client").then(({ authClient }) => {
+      authClient.signIn.social({
+        provider,
+        callbackURL: "/social-callback",
+      });
+    });
+  }, []);
+
   const value = useMemo(
     () => ({
       user,
@@ -184,6 +196,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       register,
       sendEmailOtp,
       verifyEmailOtp,
+      socialLogin,
       logout,
     }),
     [
@@ -194,6 +207,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       register,
       sendEmailOtp,
       verifyEmailOtp,
+      socialLogin,
       logout,
     ],
   );

@@ -11,6 +11,7 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { useRouter } from "next/navigation";
 import { type FormEvent, useState } from "react";
+import SocialLoginButtons from "@/components/auth/SocialLoginButtons";
 import { getDashboardPath } from "@/lib/navigation";
 import { useAuth } from "@/providers/AuthProvider";
 
@@ -135,6 +136,14 @@ export default function RegisterPage() {
 
             <Typography variant="body2" color="text.secondary">
               Already have an account? <a href="/login">Sign in</a>
+            </Typography>
+
+            <SocialLoginButtons
+              disabled={loading}
+              dividerText="or sign up with"
+            />
+            <Typography variant="caption" color="text.secondary">
+              Social sign-up creates a Student account by default.
             </Typography>
           </Stack>
         </Paper>
