@@ -83,34 +83,34 @@ export function getTheme(mode: PaletteMode) {
       borderRadius: 16,
     },
     typography: {
-      fontFamily: "var(--font-body)",
+      fontFamily: 'var(--font-body), "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
       h1: {
-        fontFamily: "var(--font-display)",
+        fontFamily: 'var(--font-display), "Plus Jakarta Sans", "Inter", sans-serif',
         fontWeight: 700,
         letterSpacing: "-0.02em",
       },
       h2: {
-        fontFamily: "var(--font-display)",
+        fontFamily: 'var(--font-display), "Plus Jakarta Sans", "Inter", sans-serif',
         fontWeight: 700,
       },
       h3: {
-        fontFamily: "var(--font-display)",
+        fontFamily: 'var(--font-display), "Plus Jakarta Sans", "Inter", sans-serif',
         fontWeight: 700,
       },
       h4: {
-        fontFamily: "var(--font-display)",
+        fontFamily: 'var(--font-display), "Plus Jakarta Sans", "Inter", sans-serif',
         fontWeight: 700,
       },
       h5: {
-        fontFamily: "var(--font-display)",
+        fontFamily: 'var(--font-display), "Plus Jakarta Sans", "Inter", sans-serif',
         fontWeight: 600,
       },
       h6: {
-        fontFamily: "var(--font-display)",
+        fontFamily: 'var(--font-display), "Plus Jakarta Sans", "Inter", sans-serif',
         fontWeight: 600,
       },
       button: {
-        fontFamily: "var(--font-ui)",
+        fontFamily: 'var(--font-body), "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
         fontWeight: 600,
         textTransform: "none",
       },

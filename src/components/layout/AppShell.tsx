@@ -27,13 +27,17 @@ import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import DashboardIcon from "@mui/icons-material/Dashboard";
+import DescriptionIcon from "@mui/icons-material/Description";
 import FactCheckIcon from "@mui/icons-material/FactCheck";
 import GroupIcon from "@mui/icons-material/Group";
 import LogoutIcon from "@mui/icons-material/Logout";
+import MailIcon from "@mui/icons-material/Mail";
 import MenuIcon from "@mui/icons-material/Menu";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import SearchIcon from "@mui/icons-material/Search";
+import ShowChartIcon from "@mui/icons-material/ShowChart";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import GroupsIcon from "@mui/icons-material/Groups";
 import AccessibilityNewIcon from "@mui/icons-material/AccessibilityNew";
@@ -92,6 +96,30 @@ export default function AppShell({ children }: { children: ReactNode }) {
         href: "/assessments",
         icon: FactCheckIcon,
         visible: role === "STUDENT" || role === "TUTOR" || role === "ADMIN",
+      },
+      {
+        label: "NSC Papers",
+        href: "/nsc-papers",
+        icon: DescriptionIcon,
+        visible: role === "STUDENT" || role === "TUTOR" || role === "ADMIN",
+      },
+      {
+        label: "Progress",
+        href: "/progress",
+        icon: ShowChartIcon,
+        visible: role === "STUDENT",
+      },
+      {
+        label: "Timetable",
+        href: "/timetable",
+        icon: CalendarMonthIcon,
+        visible: role === "STUDENT" || role === "TUTOR",
+      },
+      {
+        label: "Messages",
+        href: "/messages",
+        icon: MailIcon,
+        visible: true,
       },
       {
         label: "Search",

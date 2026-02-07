@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import {
   Alert,
@@ -8,16 +8,15 @@ import {
   Button,
   Card,
   CardContent,
+  Chip,
   Divider,
-  FormControlLabel,
   LinearProgress,
-  Radio,
-  RadioGroup,
   Stack,
-  TextField,
   Typography,
 } from "@mui/material";
 import { apiFetch } from "@/lib/utils/api";
+import QuestionRenderer from "@/components/assessments/QuestionRenderer";
+import { useTimer } from "@/hooks/useTimer";
 
 type StartAttemptPayload = {
   attemptId: string;
@@ -48,19 +47,6 @@ type StartAttemptPayload = {
   }>;
 };
 
-function extractOptions(raw: unknown): string[] {
-  if (Array.isArray(raw)) {
-    return raw.filter((value): value is string => typeof value === "string");
-  }
-  if (raw && typeof raw === "object") {
-    const options = (raw as any).options;
-    if (Array.isArray(options)) {
-      return options.filter((value: unknown): value is string => typeof value === "string");
-    }
-  }
-  return [];
-}
-
 export default function TakeAssessmentPage() {
   const params = useParams<{ id: string }>();
   const searchParams = useSearchParams();
@@ -78,6 +64,23 @@ export default function TakeAssessmentPage() {
   const [answers, setAnswers] = useState<Record<number, unknown>>({});
 
   const attemptId = payload?.attemptId ?? attemptIdFromQuery;
+  const timeLimitSeconds = (payload?.assessment.timeLimitMinutes ?? 0) * 60;
+
+  const handleAutoSubmit = useCallback(async () => {
+    if (!attemptId) return;
+    try {
+      await apiFetch(`/api/attempts/${attemptId}/submit`, { method: "POST" });
+      router.push(`/assessments/results/${encodeURIComponent(attemptId)}`);
+    } catch {
+      // if auto-submit fails, the user can still manually submit
+    }
+  }, [attemptId, router]);
+
+  const timer = useTimer({
+    durationSeconds: timeLimitSeconds || 999999,
+    onExpire: timeLimitSeconds ? handleAutoSubmit : undefined,
+    autoStart: !!timeLimitSeconds && !!payload,
+  });
 
   useEffect(() => {
     let active = true;
@@ -91,7 +94,6 @@ export default function TakeAssessmentPage() {
           throw new Error("Invalid assessment id.");
         }
 
-        // Try sessionStorage first (fast path).
         if (attemptIdFromQuery) {
           const cached = window.sessionStorage.getItem(`beelearn-attempt:${attemptIdFromQuery}`);
           if (cached) {
@@ -101,7 +103,6 @@ export default function TakeAssessmentPage() {
           }
         }
 
-        // Fallback: (re)start an attempt (e.g. after a refresh).
         const started = await apiFetch<StartAttemptPayload>(`/api/assessments/${assessmentId}/start`, {
           method: "POST",
         });
@@ -110,7 +111,6 @@ export default function TakeAssessmentPage() {
         if (!active) return;
         setPayload(started);
 
-        // Keep URL in sync for reloadability.
         router.replace(
           `/assessments/${assessmentId}/take?attemptId=${encodeURIComponent(started.attemptId)}`
         );
@@ -159,6 +159,15 @@ export default function TakeAssessmentPage() {
     }
   };
 
+  const handleChange = useCallback(
+    (questionId: number, value: unknown) => {
+      setAnswers((prev) => ({ ...prev, [questionId]: value }));
+      void saveAnswer(questionId, value);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [attemptId]
+  );
+
   const handleSubmit = async () => {
     if (!attemptId) return;
     setError(null);
@@ -197,8 +206,7 @@ export default function TakeAssessmentPage() {
     );
   }
 
-  const currentAnswer = answers[current.assessmentQuestionId];
-  const options = extractOptions(current.options);
+  const answeredCount = Object.keys(answers).length;
 
   return (
     <Stack spacing={2.5}>
@@ -207,12 +215,28 @@ export default function TakeAssessmentPage() {
       <Card>
         <CardContent>
           <Stack spacing={1.5}>
-            <Stack spacing={0.5}>
-              <Typography variant="h5">{payload.assessment.title}</Typography>
-              <Typography variant="caption" color="text.secondary">
-                Question {currentIndex + 1} of {flatQuestions.length} • {current.points} pts •{" "}
-                {current.sectionTitle}
-              </Typography>
+            <Stack direction="row" justifyContent="space-between" alignItems="center" flexWrap="wrap" useFlexGap>
+              <Stack spacing={0.5}>
+                <Typography variant="h5">{payload.assessment.title}</Typography>
+                <Typography variant="caption" color="text.secondary">
+                  Question {currentIndex + 1} of {flatQuestions.length} • {current.points} pts •{" "}
+                  {current.sectionTitle}
+                </Typography>
+              </Stack>
+              <Stack direction="row" spacing={1} alignItems="center">
+                {timeLimitSeconds > 0 && (
+                  <Chip
+                    label={timer.formatted}
+                    color={timer.isWarning ? "error" : "default"}
+                    variant={timer.isWarning ? "filled" : "outlined"}
+                  />
+                )}
+                <Chip
+                  size="small"
+                  variant="outlined"
+                  label={`${answeredCount}/${flatQuestions.length} answered`}
+                />
+              </Stack>
             </Stack>
 
             <LinearProgress variant="determinate" value={progress} sx={{ height: 10, borderRadius: 6 }} />
@@ -229,52 +253,39 @@ export default function TakeAssessmentPage() {
         </CardContent>
       </Card>
 
+      {/* Question navigation chips */}
+      <Stack direction="row" spacing={0.5} flexWrap="wrap" useFlexGap>
+        {flatQuestions.map((q, i) => (
+          <Chip
+            key={q.assessmentQuestionId}
+            label={i + 1}
+            size="small"
+            color={
+              i === currentIndex
+                ? "primary"
+                : answers[q.assessmentQuestionId] !== undefined
+                ? "success"
+                : "default"
+            }
+            variant={i === currentIndex ? "filled" : "outlined"}
+            onClick={() => setCurrentIndex(i)}
+            sx={{ minWidth: 32 }}
+          />
+        ))}
+      </Stack>
+
       <Card>
         <CardContent>
-          <Stack spacing={2}>
-            <Typography variant="h6">{current.questionText}</Typography>
-
-            {current.type === "multiple_choice" && options.length > 0 ? (
-              <RadioGroup
-                value={typeof currentAnswer === "string" ? currentAnswer : ""}
-                onChange={async (event) => {
-                  const value = event.target.value;
-                  setAnswers((prev) => ({ ...prev, [current.assessmentQuestionId]: value }));
-                  await saveAnswer(current.assessmentQuestionId, value);
-                }}
-              >
-                {options.map((option) => (
-                  <FormControlLabel
-                    key={option}
-                    value={option}
-                    control={<Radio />}
-                    label={option}
-                  />
-                ))}
-              </RadioGroup>
-            ) : (
-              <TextField
-                label={current.type === "essay" ? "Your response" : "Answer"}
-                multiline={current.type === "essay"}
-                minRows={current.type === "essay" ? 6 : 1}
-                value={typeof currentAnswer === "string" ? currentAnswer : ""}
-                onChange={(event) => {
-                  const value = event.target.value;
-                  setAnswers((prev) => ({ ...prev, [current.assessmentQuestionId]: value }));
-                }}
-                onBlur={async (event) => {
-                  const value = normalizeString(event.target.value) ?? "";
-                  await saveAnswer(current.assessmentQuestionId, value);
-                }}
-              />
-            )}
-
-            {savingQuestionId === current.assessmentQuestionId ? (
-              <Typography variant="caption" color="text.secondary">
-                Saving...
-              </Typography>
-            ) : null}
-          </Stack>
+          <QuestionRenderer
+            question={current}
+            answer={answers[current.assessmentQuestionId]}
+            onChange={handleChange}
+          />
+          {savingQuestionId === current.assessmentQuestionId ? (
+            <Typography variant="caption" color="text.secondary" sx={{ mt: 1 }}>
+              Saving...
+            </Typography>
+          ) : null}
         </CardContent>
       </Card>
 
@@ -304,8 +315,4 @@ export default function TakeAssessmentPage() {
       </Box>
     </Stack>
   );
-}
-
-function normalizeString(value: unknown) {
-  return typeof value === "string" ? value.trim() : null;
 }
